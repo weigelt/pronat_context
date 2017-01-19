@@ -14,13 +14,13 @@ import java.util.Set;
 import edu.kit.ipd.parse.conditionDetection.CommandType;
 import edu.kit.ipd.parse.contextanalyzer.data.ContextIndividual;
 import edu.kit.ipd.parse.contextanalyzer.data.State;
-import edu.kit.ipd.parse.contextanalyzer.data.entities.ObjectEntity.DeterminerType;
 import edu.kit.ipd.parse.contextanalyzer.data.relations.EntityStateRelation;
 import edu.kit.ipd.parse.contextanalyzer.data.relations.Relation;
 import edu.kit.ipd.parse.contextanalyzer.util.GraphUtils;
 import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
+import edu.kit.ipd.parse.luna.graph.Pair;
 
 /**
  * @author Tobias Hey
@@ -37,6 +37,8 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	private DeterminerType determiner = DeterminerType.UNKNOWN;
 
 	private String quantity = "one";
+
+	private Pair<String, Double> wnSense = null;
 
 	private List<String> possessivePronouns;
 
@@ -79,8 +81,8 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		this.setDescribingAdjectives(describingAdjectives);
 	}
 
-	public ObjectEntity(String name, GrammaticalNumber gNumber, DeterminerType det, String quantity,
-			List<String> possessivePronouns, List<INode> reference, List<String> describingAdjectives) {
+	public ObjectEntity(String name, GrammaticalNumber gNumber, DeterminerType det, String quantity, List<String> possessivePronouns,
+			List<INode> reference, List<String> describingAdjectives) {
 		super(name, gNumber, reference);
 		this.setDeterminer(det);
 		this.setQuantity(quantity);
@@ -275,6 +277,7 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		node.setAttributeValue(ENTITY_TYPE, TYPE);
 		node.setAttributeValue(DETERMINER, getDeterminer());
 		node.setAttributeValue(QUANTITY, getQuantity());
+		node.setAttributeValue(WN_SENSE, getWNSense());
 		node.setAttributeValue(POSSESSIVE_PRONOUN, Arrays.toString(getPossessivePronouns().toArray()));
 		node.setAttributeValue(DESCRIBING_ADJECTIVES, Arrays.toString(getDescribingAdjectives().toArray()));
 		node.setAttributeValue(SYNONYMS, Arrays.toString(getSynonyms().toArray()));
@@ -292,6 +295,7 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		node.setAttributeValue(ENTITY_TYPE, TYPE);
 		node.setAttributeValue(DETERMINER, getDeterminer());
 		node.setAttributeValue(QUANTITY, getQuantity());
+		node.setAttributeValue(WN_SENSE, getWNSense());
 		node.setAttributeValue(POSSESSIVE_PRONOUN, Arrays.toString(getPossessivePronouns().toArray()));
 		node.setAttributeValue(DESCRIBING_ADJECTIVES, Arrays.toString(getDescribingAdjectives().toArray()));
 		node.setAttributeValue(SYNONYMS, Arrays.toString(getSynonyms().toArray()));
@@ -311,7 +315,7 @@ public class ObjectEntity extends Entity implements IStateOwner {
 					&& Objects.equals(describingAdjectives, other.getDescribingAdjectives()) && Objects.equals(synonyms, other.synonyms)
 					&& Objects.equals(directHypernyms, other.getDirectHypernyms())
 					&& Objects.equals(directHyponyms, other.getDirectHyponyms()) && Objects.equals(meronyms, other.getMeronyms())
-					&& Objects.equals(holonyms, other.getHolonyms());
+					&& Objects.equals(holonyms, other.getHolonyms()) && Objects.equals(wnSense, other.getWNSense());
 		}
 		return false;
 	}
@@ -347,6 +351,11 @@ public class ObjectEntity extends Entity implements IStateOwner {
 				directHypernyms, directHyponyms, meronyms, holonyms);
 		entity.setCommandType(cmdType);
 		entity.setStatement(statement);
+		if (node.getAttributeValue(WN_SENSE) != null) {
+			Pair<String, Double> wnSense = (Pair<String, Double>) node.getAttributeValue(WN_SENSE);
+			entity.setWNSense(wnSense);
+
+		}
 		for (List<INode> list : refs.subList(1, refs.size())) {
 			entity.setReference(list);
 		}
@@ -366,6 +375,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 			}
 			if (!Objects.equals(quantity, other.getQuantity())) {
 				setQuantity(other.getQuantity());
+				changed = true;
+			}
+			if (!Objects.equals(wnSense, other.getWNSense())) {
+				setWNSense(other.getWNSense());
 				changed = true;
 			}
 			for (String pronoun : other.getPossessivePronouns()) {
@@ -445,6 +458,21 @@ public class ObjectEntity extends Entity implements IStateOwner {
 			states.add((State) esRel.getEnd());
 		}
 		return states;
+	}
+
+	/**
+	 * @return the wnSense
+	 */
+	public Pair<String, Double> getWNSense() {
+		return wnSense;
+	}
+
+	/**
+	 * @param wnSense
+	 *            the wnSense to set
+	 */
+	public void setWNSense(Pair<String, Double> wnSense) {
+		this.wnSense = wnSense;
 	}
 
 }

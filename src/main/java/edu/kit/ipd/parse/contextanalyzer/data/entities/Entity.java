@@ -45,6 +45,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	protected static final String COMMAND_TYPE = "cmdtype";
 	protected static final String STATEMENT = "statementNumber";
 	protected static final String IS_SYSTEM = "isSystem";
+	protected static final String WN_SENSE = "wnSense";
 
 	private String name = "";
 
@@ -164,6 +165,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 		nodeType.addAttributeToType("String", MERONYMS);
 		nodeType.addAttributeToType("String", HOLONYMS);
 		nodeType.addAttributeToType("String", IS_SYSTEM);
+		nodeType.addAttributeToType("Pair<String,Double>", WN_SENSE);
 		return nodeType;
 	}
 

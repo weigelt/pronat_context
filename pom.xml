@@ -44,6 +44,7 @@
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>ShallowNLP</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -64,35 +65,44 @@
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>ontology_connection</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
-    <groupId>info.debatty</groupId>
-    <artifactId>java-string-similarity</artifactId>
-    <version>RELEASE</version>
-</dependency>
+			<groupId>info.debatty</groupId>
+			<artifactId>java-string-similarity</artifactId>
+			<version>RELEASE</version>
+		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>condition_detection</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>SRLabeler</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>ner</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>luna</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>graphBuilder</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>edu.kit.ipd.parse</groupId>
+			<artifactId>wsd</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+
 		</dependency>
 	</dependencies>
-	
-	
-	
 </project>

@@ -29,6 +29,7 @@ import edu.kit.ipd.parse.contextanalyzer.util.WordNetUtils;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
+import edu.kit.ipd.parse.luna.graph.Pair;
 import edu.kit.ipd.parse.ner.NERTagger;
 import edu.kit.ipd.parse.ontology_connection.Domain;
 import edu.kit.ipd.parse.ontology_connection.IClassContainer;
@@ -230,13 +231,36 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 			}
 		}
+		Pair<String, Double> wnSense = getWnSense(phrase);
 		ObjectEntity entity = new ObjectEntity(name, gNumber, det, quantity, possessivePronoun, reference, describingAdjectives,
 				WordNetUtils.getSynonyms(name, POS.NOUN, dictionary), WordNetUtils.getDirectHypernyms(name, POS.NOUN, dictionary),
 				WordNetUtils.getDirectHyponyms(name, POS.NOUN, dictionary), WordNetUtils.getMeronyms(name, POS.NOUN, dictionary),
 				WordNetUtils.getHolonyms(name, POS.NOUN, dictionary));
 		entity.setCommandType(ContextUtils.getMostLikelyCmdType(phrase));
 		entity.setStatement(mostLikelyConditionNumber);
+		entity.setWNSense(wnSense);
 		return entity;
+	}
+
+	private Pair<String, Double> getWnSense(List<INode> phrase) {
+		if (phrase.get(0).getType().containsAttribute("wsdSenses", "List<Pair<String, Double>>")) {
+			List<Pair<String, Double>> wnsenses = new ArrayList<>();
+			for (INode node : phrase) {
+
+				if (node.getAttributeValue("wsdSenses") != null) {
+					wnsenses.add(((List<Pair<String, Double>>) node.getAttributeValue("wsdSenses")).get(0));
+				}
+			}
+			if (wnsenses.size() == 1) {
+				return wnsenses.get(0);
+			} else {
+				if (!wnsenses.isEmpty()) {
+					return wnsenses.get(wnsenses.size() - 1);
+				}
+			}
+		}
+
+		return null;
 	}
 
 	/**
