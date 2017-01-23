@@ -27,7 +27,6 @@ import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.ontology_connection.Domain;
-import edu.kit.ipd.parse.srlabeler.SRLabeler;
 import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.dictionary.Dictionary;
 
@@ -41,6 +40,19 @@ import net.sf.extjwnl.dictionary.Dictionary;
 public class ActionRecognizer implements IContextAnalyzer {
 
 	private static final String COMMAND_TYPE = "commandType";
+	private static final String SRL_ARCTYPE_NAME = "srl";
+	private static final String ROLE_VALUE_NAME = "role";
+	private static final String CORRESPONDING_VERB = "correspondingVerb";
+	private static final String VN_ROLE_NAME = "vnRole";
+	private static final String ROLE_CONFIDENCE_NAME = "roleConfidence";
+	private static final String IOBES = "IOBES";
+	private static final String PROPBANK_ROLE_DESCRIPTION = "pbRole";
+	private static final String EVENT_TYPES = "eventTypes";
+	private static final String FRAME_NET_FRAMES = "frameNetFrames";
+	private static final String VERB_NET_FRAMES = "verbNetFrames";
+	private static final String PROP_BANK_ROLESET_DESCR = "propBankRolesetDescr";
+	private static final String PROP_BANK_ROLESET_ID = "propBankRolesetID";
+	private static final String FN_ROLE_NAME = "fnRole";
 	private Dictionary dictionary;
 	private IGraph graph;
 	private Context currentContext;
@@ -124,9 +136,9 @@ public class ActionRecognizer implements IContextAnalyzer {
 						}
 					}
 					IArc srlVerbArc = getSRLVerbArc(verb);
-					actionName = (String) srlVerbArc.getAttributeValue(SRLabeler.CORRESPONDING_VERB);
+					actionName = (String) srlVerbArc.getAttributeValue(CORRESPONDING_VERB);
 
-					if ((String) srlVerbArc.getAttributeValue(SRLabeler.PROP_BANK_ROLESET_ID) != null) {
+					if ((String) srlVerbArc.getAttributeValue(PROP_BANK_ROLESET_ID) != null) {
 
 						action = getSRLInformation(srlVerbArc, actionSequence);
 						action.setCommandType(cmdType);
@@ -140,20 +152,20 @@ public class ActionRecognizer implements IContextAnalyzer {
 						action.setCommandType(cmdType);
 					}
 
-					Set<? extends IArc> srlArcs = verb.getOutgoingArcsOfType(graph.getArcType(SRLabeler.SRL_ARCTYPE_NAME));
+					Set<? extends IArc> srlArcs = verb.getOutgoingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME));
 
 					for (IArc arc : srlArcs) {
 						if (arc.getTargetNode() != verb) {
 							List<INode> roleNodes = getRoleNodes(arc);
 							Entity correspondingEntity = getIntersectingEntity(context.getEntities(), roleNodes);
 							if (correspondingEntity != null && action != null) {
-								String verbNetRoleString = (String) arc.getAttributeValue(SRLabeler.VN_ROLE_NAME);
+								String verbNetRoleString = (String) arc.getAttributeValue(VN_ROLE_NAME);
 								List<String> verbNetRoles = GraphUtils.getListFromArrayToString(verbNetRoleString);
-								String frameNetRoleString = (String) arc.getAttributeValue(SRLabeler.FN_ROLE_NAME);
+								String frameNetRoleString = (String) arc.getAttributeValue(FN_ROLE_NAME);
 								List<String> frameNetRoles = GraphUtils.getListFromArrayToString(frameNetRoleString);
-								Relation relation = new SRLArgumentRelation((String) arc.getAttributeValue(SRLabeler.ROLE_VALUE_NAME),
-										(String) arc.getAttributeValue(SRLabeler.PROPBANK_ROLE_DESCRIPTION), verbNetRoles, frameNetRoles,
-										action, correspondingEntity);
+								Relation relation = new SRLArgumentRelation((String) arc.getAttributeValue(ROLE_VALUE_NAME),
+										(String) arc.getAttributeValue(PROPBANK_ROLE_DESCRIPTION), verbNetRoles, frameNetRoles, action,
+										correspondingEntity);
 								srlRelations.add(relation);
 								//action.addRelation(relation);
 								//correspondingEntity.addRelation(relation);
@@ -210,15 +222,15 @@ public class ActionRecognizer implements IContextAnalyzer {
 	 */
 	private Action getSRLInformation(IArc srlVerbArc, List<INode> actionSequence) {
 		Action action;
-		String actionName = (String) srlVerbArc.getAttributeValue(SRLabeler.CORRESPONDING_VERB);
-		double confidence = (Double) srlVerbArc.getAttributeValue(SRLabeler.ROLE_CONFIDENCE_NAME);
-		String propBankRolesetID = (String) srlVerbArc.getAttributeValue(SRLabeler.PROP_BANK_ROLESET_ID);
-		String propBankRolesetDescription = (String) srlVerbArc.getAttributeValue(SRLabeler.PROP_BANK_ROLESET_DESCR);
-		String verbNetFramesString = (String) srlVerbArc.getAttributeValue(SRLabeler.VERB_NET_FRAMES);
+		String actionName = (String) srlVerbArc.getAttributeValue(CORRESPONDING_VERB);
+		double confidence = (Double) srlVerbArc.getAttributeValue(ROLE_CONFIDENCE_NAME);
+		String propBankRolesetID = (String) srlVerbArc.getAttributeValue(PROP_BANK_ROLESET_ID);
+		String propBankRolesetDescription = (String) srlVerbArc.getAttributeValue(PROP_BANK_ROLESET_DESCR);
+		String verbNetFramesString = (String) srlVerbArc.getAttributeValue(VERB_NET_FRAMES);
 		List<String> verbNetFrames = GraphUtils.getListFromArrayToString(verbNetFramesString);
-		String frameNetFramesString = (String) srlVerbArc.getAttributeValue(SRLabeler.FRAME_NET_FRAMES);
+		String frameNetFramesString = (String) srlVerbArc.getAttributeValue(FRAME_NET_FRAMES);
 		List<String> frameNetFrames = GraphUtils.getListFromArrayToString(frameNetFramesString);
-		String eventTypesString = (String) srlVerbArc.getAttributeValue(SRLabeler.EVENT_TYPES);
+		String eventTypesString = (String) srlVerbArc.getAttributeValue(EVENT_TYPES);
 		List<String> eventTypes = GraphUtils.getListFromArrayToString(eventTypesString);
 
 		action = new Action(actionName, confidence, propBankRolesetID, propBankRolesetDescription, verbNetFrames, frameNetFrames,
@@ -253,17 +265,17 @@ public class ActionRecognizer implements IContextAnalyzer {
 	private List<INode> getRoleNodes(IArc arc) {
 		List<INode> roleNodes = new ArrayList<>();
 		INode current = arc.getTargetNode();
-		String role = (String) arc.getAttributeValue(SRLabeler.ROLE_VALUE_NAME);
+		String role = (String) arc.getAttributeValue(ROLE_VALUE_NAME);
 		if (role != "V") {
-			String correspondingVerb = (String) arc.getAttributeValue(SRLabeler.CORRESPONDING_VERB);
+			String correspondingVerb = (String) arc.getAttributeValue(CORRESPONDING_VERB);
 			roleNodes.add(current);
 
-			while (GraphUtils.hasOutgoingArcOfType(current, SRLabeler.SRL_ARCTYPE_NAME, graph)) {
-				Set<? extends IArc> arcs = current.getOutgoingArcsOfType(graph.getArcType(SRLabeler.SRL_ARCTYPE_NAME));
+			while (GraphUtils.hasOutgoingArcOfType(current, SRL_ARCTYPE_NAME, graph)) {
+				Set<? extends IArc> arcs = current.getOutgoingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME));
 				INode last = current;
 				for (IArc iArc : arcs) {
-					if (iArc.getAttributeValue(SRLabeler.CORRESPONDING_VERB).equals(correspondingVerb)
-							&& iArc.getAttributeValue(SRLabeler.ROLE_VALUE_NAME).equals(role)) {
+					if (iArc.getAttributeValue(CORRESPONDING_VERB).equals(correspondingVerb)
+							&& iArc.getAttributeValue(ROLE_VALUE_NAME).equals(role)) {
 						roleNodes.add(iArc.getTargetNode());
 						current = iArc.getTargetNode();
 					}
@@ -277,8 +289,8 @@ public class ActionRecognizer implements IContextAnalyzer {
 	}
 
 	private IArc getSRLVerbArc(INode node) {
-		for (IArc arc : node.getIncomingArcsOfType(graph.getArcType(SRLabeler.SRL_ARCTYPE_NAME))) {
-			if (arc.getAttributeValue(SRLabeler.ROLE_VALUE_NAME).equals("V")) {
+		for (IArc arc : node.getIncomingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME))) {
+			if (arc.getAttributeValue(ROLE_VALUE_NAME).equals("V")) {
 				return arc;
 			}
 		}

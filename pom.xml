@@ -73,11 +73,6 @@
 		</dependency>
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
-			<artifactId>SRLabeler</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>ner</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -102,6 +97,11 @@
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>condition_detection</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>edu.kit.ipd.parse</groupId>
+			<artifactId>SRLabeler</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
