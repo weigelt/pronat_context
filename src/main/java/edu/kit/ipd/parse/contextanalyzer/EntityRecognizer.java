@@ -30,7 +30,6 @@ import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.Pair;
-import edu.kit.ipd.parse.ner.NERTagger;
 import edu.kit.ipd.parse.ontology_connection.Domain;
 import edu.kit.ipd.parse.ontology_connection.IClassContainer;
 import edu.kit.ipd.parse.ontology_connection.system.ISystemClass;
@@ -56,6 +55,8 @@ public class EntityRecognizer implements IContextAnalyzer {
 	private enum EntityType {
 		PRONOUN, OBJECT, SUBJECT, SYSTEM, UNKNOWN
 	}
+
+	private static final String NER_ATTRIBUTE_NAME = "ner";
 
 	private IGraph graph;
 	private Context currentContext;
@@ -705,7 +706,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 	}
 
 	private boolean isActingSubject(INode node) {
-		String ner = (String) node.getAttributeValue(NERTagger.NER_ATTRIBUTE_NAME);
+		String ner = (String) node.getAttributeValue(NER_ATTRIBUTE_NAME);
 		/*
 		 * SRL produces more failures
 		 *
