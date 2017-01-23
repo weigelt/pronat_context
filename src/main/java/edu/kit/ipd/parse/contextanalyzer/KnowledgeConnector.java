@@ -734,6 +734,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 		double confidence = 0.1;
 		IndexWord indexWord = WordNetUtils.getIndexWord(objectEntity.getName(), POS.NOUN, dictionary);
 		String[] split = objectEntity.getName().split(" ");
+		//TODO: use lemma as comparison
 		if (indexWord != null && !indexWord.getLemma().contains(split[split.length - 1].toLowerCase())) {
 			indexWord = WordNetUtils.getIndexWord(split[split.length - 1], POS.NOUN, dictionary);
 		}
@@ -1100,8 +1101,11 @@ public class KnowledgeConnector implements IContextAnalyzer {
 
 			for (ObjectConcept objectConcept : objectConcepts) {
 				if (objectConcept.hasIndexWordLemma()) {
+					Set<String> wnSynsets = getObjectConceptWNSynsets(concept);
+					Set<String> wnSynsetsCandidate = getObjectConceptWNSynsets(objectConcept);
 					IndexWord candidate = WordNetUtils.getIndexWord(objectConcept.getIndexWordLemma(), POS.NOUN, dictionary);
-					LeastCommonSubsumer result = WordNetUtils.getLeastCommonSubsumer(current, candidate);
+					LeastCommonSubsumer result = WordNetUtils.getLeastCommonSubsumer(current, candidate, wnSynsets, wnSynsetsCandidate,
+							dictionary);
 					if (result != null) {
 						Double linSim = WordNetUtils.calculateLinSimilarity(result.getSynsetOne(), result.getSynsetTwo(),
 								result.getLeastCommonSubsumer());
@@ -1171,6 +1175,21 @@ public class KnowledgeConnector implements IContextAnalyzer {
 
 		}
 
+	}
+
+	private Set<String> getObjectConceptWNSynsets(ObjectConcept concept) {
+		Set<String> result = new HashSet<>();
+		List<Relation> relations = concept.getRelationsOfType(EntityConceptRelation.class);
+		for (Relation relation : relations) {
+			EntityConceptRelation rel = (EntityConceptRelation) relation;
+			if (rel.getStart() instanceof ObjectEntity) {
+				ObjectEntity entity = (ObjectEntity) rel.getStart();
+				if (entity.getWNSense() != null) {
+					result.add(entity.getWNSense().getLeft());
+				}
+			}
+		}
+		return result;
 	}
 
 	private void removeRedundantEdges(AbstractConcept concept, AbstractConcept subsumerConcept) {

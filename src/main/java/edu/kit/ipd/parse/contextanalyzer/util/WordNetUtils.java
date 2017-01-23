@@ -5,6 +5,7 @@ package edu.kit.ipd.parse.contextanalyzer.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
@@ -36,11 +37,35 @@ public final class WordNetUtils {
 
 	}
 
-	public static final LeastCommonSubsumer getLeastCommonSubsumer(IndexWord current, IndexWord candidate) {
+	public static final LeastCommonSubsumer getLeastCommonSubsumer(IndexWord current, IndexWord candidate, Set<String> wnSynsets,
+			Set<String> wnSynsetsCandidate, Dictionary dictionary) {
 		LeastCommonSubsumer result = null;
 		double icMax = 0.0;
-		for (Synset currSynset : current.getSenses()) {
-			for (Synset candSynset : candidate.getSenses()) {
+		List<Synset> currSynsets = new ArrayList<>();
+		List<Synset> candSynsets = new ArrayList<>();
+		if (!wnSynsets.isEmpty()) {
+			for (String synset : wnSynsets) {
+				Synset syn = getSynsetForID(synset, dictionary);
+				if (syn != null) {
+					currSynsets.add(syn);
+				}
+			}
+		} else {
+			currSynsets.addAll(current.getSenses());
+		}
+
+		if (!wnSynsetsCandidate.isEmpty()) {
+			for (String synset : wnSynsetsCandidate) {
+				Synset syn = getSynsetForID(synset, dictionary);
+				if (syn != null) {
+					candSynsets.add(syn);
+				}
+			}
+		} else {
+			candSynsets.addAll(candidate.getSenses());
+		}
+		for (Synset currSynset : currSynsets) {
+			for (Synset candSynset : candSynsets) {
 				try {
 					RelationshipList list = RelationshipFinder.findRelationships(currSynset, candSynset, PointerType.HYPERNYM);
 					for (Relationship relationship : list) {
