@@ -291,10 +291,9 @@ public class KnowledgeConnector implements IContextAnalyzer {
 						if (actionConcept.hasRelationsOfType(ActionConceptRelation.class)) {
 							List<Relation> acRel = actionConcept.getRelationsOfType(ActionConceptRelation.class);
 							confidence = ((ActionConceptRelation) acRel.get(0)).getConfidence();
-							if (confidence >= 1.0) {
+							confidence *= 3;
+							if (confidence > 1.0) {
 								confidence = 1.0;
-							} else {
-								confidence += 0.1;
 							}
 							for (Relation relation : acRel) {
 								if (relation instanceof ActionConceptRelation) {
@@ -748,11 +747,12 @@ public class KnowledgeConnector implements IContextAnalyzer {
 						if (objectConcept.hasRelationsOfType(EntityConceptRelation.class)) {
 							List<Relation> ecRel = objectConcept.getRelationsOfType(EntityConceptRelation.class);
 							confidence = ((EntityConceptRelation) ecRel.get(0)).getConfidence();
-							if (confidence >= 1.0) {
+
+							confidence *= 3;
+							if (confidence > 1.0) {
 								confidence = 1.0;
-							} else {
-								confidence += 0.1;
 							}
+
 							for (Relation relation : ecRel) {
 								if (relation instanceof EntityConceptRelation) {
 									((EntityConceptRelation) relation).setConfidence(confidence);
