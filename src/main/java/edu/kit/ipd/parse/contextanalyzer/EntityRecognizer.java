@@ -211,7 +211,11 @@ public class EntityRecognizer implements IContextAnalyzer {
 			String pos = (String) node.getAttributeValue("pos");
 			if (isNoun(node)) {
 				reference.add(node);
-				name = determineName(name, node);
+				if (phrase.indexOf(node) == phrase.size() - 1 && !((String) node.getAttributeValue("lemma")).equals("")) {
+					name = determineName(name, (String) node.getAttributeValue("lemma"));
+				} else {
+					name = determineName(name, (String) node.getAttributeValue("value"));
+				}
 				gNumber = determineGrammaticalNumber(gNumber, quantity, pos);
 			} else if (isAdjective(pos)) {
 				reference.add(node);
@@ -222,12 +226,17 @@ public class EntityRecognizer implements IContextAnalyzer {
 				det = DeterminerType.SPECIFIC;
 			} else if (isDeterminer(pos)) {
 				reference.add(node);
-				String lemma = (String) node.getAttributeValue("value");
+				String lemma = (String) node.getAttributeValue("lemma");
+				if (lemma.equals("")) {
+					lemma = (String) node.getAttributeValue("value");
+				}
 				det = determineDeterminer(lemma);
 			} else if (isCardinalNumber(pos)) {
 				reference.add(node);
-				String lemma = (String) node.getAttributeValue("value");
-				//TODO lemmatize
+				String lemma = (String) node.getAttributeValue("lemma");
+				if (lemma.equals("")) {
+					lemma = (String) node.getAttributeValue("value");
+				}
 				quantity = lemma;
 
 			}
@@ -289,7 +298,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 		for (INode node : phrase) {
 			String pos = (String) node.getAttributeValue("pos");
 			if (isPersonalPronoun(pos)) {
-				name = determineName(name, node);
+				name = determineName(name, (String) node.getAttributeValue("value"));
 				reference.add(node);
 			}
 		}
@@ -333,7 +342,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 		for (INode node : nouns) {
 			if (isActingSubject(node) || getSystem(phrase).contains(node)) {
 				String pos = (String) node.getAttributeValue("pos");
-				name = determineName(name, node);
+				name = determineName(name, (String) node.getAttributeValue("value"));
 				switch (pos) {
 				case "NNP":
 					gNumber = GrammaticalNumber.SINGULAR;
@@ -371,7 +380,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 		int mostLikelyConditionNumber = ContextUtils.getMostLikelyConditionNumber(phrase);
 		for (INode node : phrase) {
 			if (getSystem(phrase).contains(node)) {
-				name = determineName(name, node);
+				name = determineName(name, (String) node.getAttributeValue("value"));
 			}
 		}
 		entity = new SubjectEntity(name, GrammaticalNumber.SINGULAR, phrase, getGender(name), true);
@@ -559,12 +568,12 @@ public class EntityRecognizer implements IContextAnalyzer {
 	 * @param node
 	 * @return
 	 */
-	private String determineName(String name, INode node) {
+	private String determineName(String name, String word) {
 		if (!name.isEmpty()) {
-			name += " " + (String) node.getAttributeValue("value");
+			name += " " + word;
 
 		} else {
-			name += (String) node.getAttributeValue("value");
+			name += word;
 
 		}
 		return name;
