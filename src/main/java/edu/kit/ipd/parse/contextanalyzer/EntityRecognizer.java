@@ -232,10 +232,21 @@ public class EntityRecognizer implements IContextAnalyzer {
 			}
 		}
 		Pair<String, Double> wnSense = getWnSense(phrase);
-		ObjectEntity entity = new ObjectEntity(name, gNumber, det, quantity, possessivePronoun, reference, describingAdjectives,
-				WordNetUtils.getSynonyms(name, POS.NOUN, dictionary), WordNetUtils.getDirectHypernyms(name, POS.NOUN, dictionary),
-				WordNetUtils.getDirectHyponyms(name, POS.NOUN, dictionary), WordNetUtils.getMeronyms(name, POS.NOUN, dictionary),
-				WordNetUtils.getHolonyms(name, POS.NOUN, dictionary));
+		ObjectEntity entity;
+		if (wnSense != null) {
+			entity = new ObjectEntity(name, gNumber, det, quantity, possessivePronoun, reference, describingAdjectives,
+					WordNetUtils.getSynonyms(name, POS.NOUN, dictionary, wnSense.getLeft()),
+					WordNetUtils.getDirectHypernyms(name, POS.NOUN, dictionary, wnSense.getLeft()),
+					WordNetUtils.getDirectHyponyms(name, POS.NOUN, dictionary, wnSense.getLeft()),
+					WordNetUtils.getMeronyms(name, POS.NOUN, dictionary, wnSense.getLeft()),
+					WordNetUtils.getHolonyms(name, POS.NOUN, dictionary, wnSense.getLeft()));
+		} else {
+			entity = new ObjectEntity(name, gNumber, det, quantity, possessivePronoun, reference, describingAdjectives,
+					WordNetUtils.getSynonyms(name, POS.NOUN, dictionary), WordNetUtils.getDirectHypernyms(name, POS.NOUN, dictionary),
+					WordNetUtils.getDirectHyponyms(name, POS.NOUN, dictionary), WordNetUtils.getMeronyms(name, POS.NOUN, dictionary),
+					WordNetUtils.getHolonyms(name, POS.NOUN, dictionary));
+		}
+
 		entity.setCommandType(ContextUtils.getMostLikelyCmdType(phrase));
 		entity.setStatement(mostLikelyConditionNumber);
 		entity.setWNSense(wnSense);
