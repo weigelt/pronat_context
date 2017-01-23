@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer;
 
@@ -41,7 +41,7 @@ import net.sf.extjwnl.dictionary.Dictionary;
 /**
  * This {@link IContextAnalyzer} analyzes the current {@link IGraph} and
  * {@link Context} for occurring {@link Entity}s
- * 
+ *
  * @author Tobias Hey
  *
  */
@@ -49,7 +49,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * This enum represents the possible {@link Entity} Types
-	 * 
+	 *
 	 * @author Tobias Hey
 	 *
 	 */
@@ -71,7 +71,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Constructs new {@link EntityRecognizer}
-	 * 
+	 *
 	 * @param dictionary
 	 *            The WordNet {@link Dictionary}
 	 * @param stanfordDict
@@ -94,7 +94,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * edu.kit.ipd.parse.contextanalyzer.IContextAnalyzer#analyze(edu.kit.ipd.
 	 * parse.luna.graph.IGraph)
@@ -113,7 +113,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 	 * Returns all {@link Entity}s occurring in the specified utterance
 	 * {@link INode}s and integrates new Information into possibly already
 	 * detected {@link Entity}s in the specified {@link Context}
-	 * 
+	 *
 	 * @param utteranceNodes
 	 * @param context
 	 * @return
@@ -192,7 +192,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Returns the {@link ObjectEntity} contained in the specified phrase
-	 * 
+	 *
 	 * @param phrase
 	 *            the phrase to check
 	 * @return the {@link ObjectEntity} contained in the specified phrase
@@ -254,11 +254,12 @@ public class EntityRecognizer implements IContextAnalyzer {
 	}
 
 	private Pair<String, Double> getWnSense(List<INode> phrase) {
-		if (phrase.get(0).getType().containsAttribute("wsdSenses", "List<Pair<String, Double>>")) {
+		if (phrase.get(0).getType().containsAttribute("wsdSenses", new ArrayList<Pair<String, Double>>().getClass().getName())) {
 			List<Pair<String, Double>> wnsenses = new ArrayList<>();
 			for (INode node : phrase) {
 
-				if (node.getAttributeValue("wsdSenses") != null) {
+				if (node.getAttributeValue("wsdSenses") != null
+						&& !((List<Pair<String, Double>>) node.getAttributeValue("wsdSenses")).isEmpty()) {
 					wnsenses.add(((List<Pair<String, Double>>) node.getAttributeValue("wsdSenses")).get(0));
 				}
 			}
@@ -276,7 +277,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Returns the {@link PronounEntity} contained in the specified phrase
-	 * 
+	 *
 	 * @param phrase
 	 * @return
 	 */
@@ -314,7 +315,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Returns the {@link SubjectEntity} contained in the specified phrase
-	 * 
+	 *
 	 * @param phrase
 	 * @return
 	 */
@@ -359,7 +360,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Returns the {@link SubjectEntity} contained in the specified phrase
-	 * 
+	 *
 	 * @param phrase
 	 * @return
 	 */
@@ -381,7 +382,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 	/**
 	 * Returns the possible {@link EntityType} of the {@link Entity} in the
 	 * specified Noun Phrase
-	 * 
+	 *
 	 * @param phrase
 	 * @return
 	 */
@@ -443,7 +444,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Checks whether the specified phrase contains a Noun
-	 * 
+	 *
 	 * @param phrase
 	 * @return
 	 */
@@ -458,7 +459,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Returns all Conjunction in specified {@link INode}s
-	 * 
+	 *
 	 * @param list
 	 * @return
 	 */
@@ -475,7 +476,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 	/**
 	 * Sets the existing {@link ConjunctionRelation}s between {@link Entity}s
 	 * next to each other
-	 * 
+	 *
 	 * @param entitiesOfNounPhrase
 	 * @param conjunctions
 	 */
@@ -494,7 +495,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * splits the specified Noun Phrase at any occurring conjunctions
-	 * 
+	 *
 	 * @param phrase
 	 * @return
 	 */
@@ -518,7 +519,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Retruns the {@link DeterminerType} of the specified lemma
-	 * 
+	 *
 	 * @param lemma
 	 */
 	private DeterminerType determineDeterminer(String lemma) {
@@ -552,7 +553,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 	/**
 	 * Concatenates the specified name with the name of the specified
 	 * {@link INode}
-	 * 
+	 *
 	 * @param name
 	 * @param node
 	 * @return
@@ -570,7 +571,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Retruns the {@link GrammaticalNumber} of the specified pos tag
-	 * 
+	 *
 	 * @param gNumber
 	 * @param quantity
 	 * @param pos
@@ -607,7 +608,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 	/**
 	 * Returns all {@link INode}s belonging to all noun phrases of the specified
 	 * utterance {@link INode}s
-	 * 
+	 *
 	 * @param utteranceNodes
 	 * @return
 	 */
@@ -635,7 +636,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Returns all Pronouns not contained in any noun phrase
-	 * 
+	 *
 	 * @param utteranceNodes
 	 * @return
 	 */
@@ -658,7 +659,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Returns all System occurrences not in any noun phrase
-	 * 
+	 *
 	 * @param utteranceNodes
 	 * @return
 	 */
@@ -707,7 +708,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 		String ner = (String) node.getAttributeValue(NERTagger.NER_ATTRIBUTE_NAME);
 		/*
 		 * SRL produces more failures
-		 * 
+		 *
 		 * Set<? extends IArc> srlArcs =
 		 * node.getIncomingArcsOfType(graph.getArcType(SRLabeler.
 		 * SRL_ARCTYPE_NAME)); for (IArc arc : srlArcs) { String
@@ -737,7 +738,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 	/**
 	 * Returns the {@link INode} belonging to the System name in the specified
 	 * {@link INode}s
-	 * 
+	 *
 	 * @param nodes
 	 * @return
 	 */
@@ -749,7 +750,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 			int position = 0;
 			for (int i = 0; i < nodes.size(); i++) {
 				INode node = nodes.get(i);
-				String name = ((String) node.getAttributeValue("value"));
+				String name = (String) node.getAttributeValue("value");
 
 				if (!isSystem) {
 					if (sysName.get(0).equalsIgnoreCase(name)) {
@@ -784,7 +785,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Analyzes the specified name of any hints for {@link Gender}
-	 * 
+	 *
 	 * @param name
 	 * @return
 	 */
@@ -799,7 +800,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 		if (len > 1 && Character.isUpperCase(firstLetter)) {
 			int firstNameIdx = len - 2;
 			String secondToLast = words.get(firstNameIdx);
-			if (firstNameIdx > 1 && (secondToLast.length() == 1 || (secondToLast.length() == 2 && secondToLast.endsWith(".")))) {
+			if (firstNameIdx > 1 && (secondToLast.length() == 1 || secondToLast.length() == 2 && secondToLast.endsWith("."))) {
 				firstNameIdx--;
 			}
 

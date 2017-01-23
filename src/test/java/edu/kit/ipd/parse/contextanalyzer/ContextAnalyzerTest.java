@@ -6,10 +6,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.contextanalyzer.data.Context;
+import edu.kit.ipd.parse.contextanalyzer.data.entities.Entity;
+import edu.kit.ipd.parse.contextanalyzer.data.entities.ObjectEntity;
 import edu.kit.ipd.parse.graphBuilder.GraphBuilder;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.data.PrePipelineData;
 import edu.kit.ipd.parse.luna.graph.IGraph;
+import edu.kit.ipd.parse.luna.graph.Pair;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
 import edu.kit.ipd.parse.luna.tools.StringToHypothesis;
 import edu.kit.ipd.parse.ner.NERTagger;
@@ -58,6 +61,15 @@ public class ContextAnalyzerTest {
 			contextAnalyzer.setGraph(wsd.getGraph());
 			contextAnalyzer.exec();
 			Context result = contextAnalyzer.getContext();
+			for (Entity entity : result.getEntities()) {
+				if (entity instanceof ObjectEntity) {
+					Pair<String, Double> oE = ((ObjectEntity) entity).getWNSense();
+					if (!(oE == null)) {
+						System.out.println(oE);
+
+					}
+				}
+			}
 			System.out.println(result.getEntities());
 			System.out.println(result.getActions());
 		} catch (MissingDataException e) {
