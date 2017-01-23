@@ -44,7 +44,6 @@ import edu.kit.ipd.parse.ontology_connection.object.IObject;
 import edu.kit.ipd.parse.ontology_connection.state.IState;
 import edu.kit.ipd.parse.ontology_connection.system.ISystemClass;
 import info.debatty.java.stringsimilarity.JaroWinkler;
-import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.dictionary.Dictionary;
@@ -734,7 +733,6 @@ public class KnowledgeConnector implements IContextAnalyzer {
 		double confidence = 0.1;
 		IndexWord indexWord = WordNetUtils.getIndexWord(objectEntity.getName(), POS.NOUN, dictionary);
 		String[] split = objectEntity.getName().split(" ");
-		//TODO: use lemma as comparison
 		if (indexWord != null && !indexWord.getLemma().contains(split[split.length - 1].toLowerCase())) {
 			indexWord = WordNetUtils.getIndexWord(split[split.length - 1], POS.NOUN, dictionary);
 		}
@@ -892,17 +890,6 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	 */
 	private String getComparableName(Entity objectEntity) {
 		String comparableName = objectEntity.getName();
-		if (objectEntity.getGrammaticalNumber().equals(GrammaticalNumber.PLURAL)) {
-			try {
-
-				IndexWord lookup = dictionary.lookupIndexWord(POS.NOUN, comparableName);
-				if (lookup != null) {
-					comparableName = lookup.getLemma();
-				}
-			} catch (JWNLException e) {
-				e.printStackTrace();
-			}
-		}
 		comparableName = comparableName.replaceAll(" ", "").toLowerCase();
 		return comparableName;
 	}
@@ -916,17 +903,6 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	 */
 	private String getAdjectiveName(ObjectEntity objectEntity) {
 		String comparableName = objectEntity.getName();
-		if (objectEntity.getGrammaticalNumber().equals(GrammaticalNumber.PLURAL)) {
-			try {
-
-				IndexWord lookup = dictionary.lookupIndexWord(POS.NOUN, comparableName);
-				if (lookup != null) {
-					comparableName = lookup.getLemma();
-				}
-			} catch (JWNLException e) {
-				e.printStackTrace();
-			}
-		}
 		if (!objectEntity.getDescribingAdjectives().isEmpty()) {
 			String name = "";
 			for (String adjective : objectEntity.getDescribingAdjectives()) {
