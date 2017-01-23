@@ -31,9 +31,9 @@ public final class WordNetUtils {
 		try {
 			return dictionary.lookupIndexWord(pos, name);
 		} catch (JWNLException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
+
 	}
 
 	public static final LeastCommonSubsumer getLeastCommonSubsumer(IndexWord current, IndexWord candidate) {
@@ -114,6 +114,37 @@ public final class WordNetUtils {
 		return hypernymResult;
 	}
 
+	public static final List<String> getDirectHypernyms(String name, POS pos, Dictionary dictionary, String wnSynset) {
+		List<String> hypernymResult = new ArrayList<>();
+		IndexWord indexWord;
+		Synset synset;
+		try {
+			indexWord = dictionary.lookupIndexWord(pos, name);
+			if (indexWord != null) {
+				synset = getSynsetForIDWithIW(indexWord, wnSynset);
+			} else {
+				synset = getSynsetForID(wnSynset, dictionary);
+			}
+
+			if (synset != null) {
+				PointerTargetNodeList hypernyms = PointerUtils.getDirectHypernyms(synset);
+				for (PointerTargetNode pointerTargetNode : hypernyms) {
+					for (Word word : pointerTargetNode.getSynset().getWords()) {
+						if (!hypernymResult.contains(word.getLemma())) {
+							hypernymResult.add(word.getLemma());
+						}
+					}
+				}
+			} else {
+				return getDirectHypernyms(name, pos, dictionary);
+			}
+		} catch (JWNLException e) {
+			return new ArrayList<String>();
+		}
+
+		return hypernymResult;
+	}
+
 	public static final List<String> getDirectHyponyms(String name, POS pos, Dictionary dictionary) {
 		List<String> hyponymResult = new ArrayList<>();
 		IndexWord indexWord;
@@ -147,7 +178,38 @@ public final class WordNetUtils {
 				}
 			}
 		} catch (JWNLException e) {
-			e.printStackTrace();
+			return new ArrayList<String>();
+		}
+
+		return hyponymResult;
+	}
+
+	public static final List<String> getDirectHyponyms(String name, POS pos, Dictionary dictionary, String wnSynset) {
+		List<String> hyponymResult = new ArrayList<>();
+		IndexWord indexWord;
+		Synset synset;
+		try {
+			indexWord = dictionary.lookupIndexWord(pos, name);
+			if (indexWord != null) {
+				synset = getSynsetForIDWithIW(indexWord, wnSynset);
+			} else {
+				synset = getSynsetForID(wnSynset, dictionary);
+			}
+			if (synset != null) {
+				PointerTargetNodeList hyponyms = PointerUtils.getDirectHyponyms(synset);
+				for (PointerTargetNode pointerTargetNode : hyponyms) {
+					for (Word word : pointerTargetNode.getSynset().getWords()) {
+						if (!hyponymResult.contains(word.getLemma())) {
+							hyponymResult.add(word.getLemma());
+						}
+					}
+				}
+			} else {
+				return getDirectHyponyms(name, pos, dictionary);
+			}
+
+		} catch (JWNLException e) {
+			return new ArrayList<String>();
 		}
 
 		return hyponymResult;
@@ -187,7 +249,38 @@ public final class WordNetUtils {
 
 			}
 		} catch (JWNLException e) {
-			e.printStackTrace();
+			return new ArrayList<String>();
+		}
+
+		return holonymResult;
+	}
+
+	public static final List<String> getHolonyms(String name, POS pos, Dictionary dictionary, String wnSynset) {
+		List<String> holonymResult = new ArrayList<>();
+		IndexWord indexWord;
+		Synset synset;
+		try {
+			indexWord = dictionary.lookupIndexWord(pos, name);
+			if (indexWord != null) {
+				synset = getSynsetForIDWithIW(indexWord, wnSynset);
+			} else {
+				synset = getSynsetForID(wnSynset, dictionary);
+			}
+			if (synset != null) {
+				PointerTargetNodeList holonyms = PointerUtils.getHolonyms(synset);
+				for (PointerTargetNode pointerTargetNode : holonyms) {
+					for (Word word : pointerTargetNode.getSynset().getWords()) {
+						if (!holonymResult.contains(word.getLemma())) {
+							holonymResult.add(word.getLemma());
+						}
+					}
+				}
+			} else {
+				return getHolonyms(name, pos, dictionary);
+			}
+
+		} catch (JWNLException e) {
+			return new ArrayList<String>();
 		}
 
 		return holonymResult;
@@ -226,10 +319,76 @@ public final class WordNetUtils {
 				}
 			}
 		} catch (JWNLException e) {
-			e.printStackTrace();
+			return new ArrayList<String>();
 		}
 
 		return meronymResult;
+	}
+
+	public static final List<String> getMeronyms(String name, POS pos, Dictionary dictionary, String wnSynset) {
+		List<String> meronymResult = new ArrayList<>();
+		IndexWord indexWord;
+		Synset synset;
+		try {
+			indexWord = dictionary.lookupIndexWord(pos, name);
+			if (indexWord != null) {
+				synset = getSynsetForIDWithIW(indexWord, wnSynset);
+			} else {
+				synset = getSynsetForID(wnSynset, dictionary);
+			}
+			if (synset != null) {
+				PointerTargetNodeList meronyms = PointerUtils.getMeronyms(synset);
+				for (PointerTargetNode pointerTargetNode : meronyms) {
+					for (Word word : pointerTargetNode.getSynset().getWords()) {
+						if (!meronymResult.contains(word.getLemma())) {
+							meronymResult.add(word.getLemma());
+						}
+					}
+				}
+			} else {
+				return getMeronyms(name, pos, dictionary);
+			}
+
+		} catch (JWNLException e) {
+			return new ArrayList<String>();
+		}
+
+		return meronymResult;
+	}
+
+	private static Synset getSynsetForIDWithIW(IndexWord indexWord, String wnSynset) {
+		if (wnSynset != null)
+			for (Synset synset : indexWord.getSenses()) {
+				long wnSet = Long.valueOf(wnSynset.substring(3, wnSynset.length() - 1));
+				if (synset.getOffset() == wnSet) {
+					return synset;
+				}
+			}
+		return null;
+	}
+
+	private static Synset getSynsetForID(String wnSynset, Dictionary dictionary) {
+		if (wnSynset != null && !wnSynset.equals("")) {
+			long wnSet = Long.valueOf(wnSynset.substring(3, wnSynset.length() - 1));
+			POS pos;
+			if (wnSynset.endsWith("n")) {
+				pos = POS.NOUN;
+			} else if (wnSynset.endsWith("a")) {
+				pos = POS.ADJECTIVE;
+			} else if (wnSynset.endsWith("v")) {
+				pos = POS.VERB;
+			} else {
+				pos = POS.ADVERB;
+			}
+			try {
+				return dictionary.getSynsetAt(pos, wnSet);
+			} catch (JWNLException e) {
+				return null;
+			}
+
+		}
+
+		return null;
 	}
 
 	public static final List<String> getSynonyms(String name, POS pos, Dictionary dictionary) {
@@ -237,6 +396,7 @@ public final class WordNetUtils {
 		try {
 			IndexWord indexWord = dictionary.lookupIndexWord(pos, name);
 			if (indexWord != null) {
+
 				int taggedSenses = indexWord.sortSenses();
 				if (taggedSenses != 0) {
 					for (int i = 0; i < taggedSenses; i++) {
@@ -260,9 +420,39 @@ public final class WordNetUtils {
 						}
 					}
 				}
+
 			}
 		} catch (JWNLException e) {
-			e.printStackTrace();
+			return new ArrayList<String>();
+		}
+
+		return synonyms;
+	}
+
+	public static final List<String> getSynonyms(String name, POS pos, Dictionary dictionary, String wnSynset) {
+		List<String> synonyms = new ArrayList<>();
+		Synset syn;
+		try {
+			IndexWord indexWord = dictionary.lookupIndexWord(pos, name);
+			if (indexWord != null) {
+				syn = getSynsetForIDWithIW(indexWord, wnSynset);
+			} else {
+				syn = getSynsetForID(wnSynset, dictionary);
+			}
+			if (syn != null) {
+				for (Word word : syn.getWords()) {
+					if (!word.getLemma().equalsIgnoreCase(name) && !word.getLemma().equals(indexWord.getLemma())) {
+						if (!synonyms.contains(word.getLemma())) {
+							synonyms.add(word.getLemma());
+						}
+					}
+				}
+			} else {
+				return getSynonyms(name, pos, dictionary);
+			}
+
+		} catch (JWNLException e) {
+			return new ArrayList<String>();
 		}
 
 		return synonyms;
@@ -333,7 +523,38 @@ public final class WordNetUtils {
 				}
 			}
 		} catch (JWNLException e) {
-			e.printStackTrace();
+			return new ArrayList<String>();
+		}
+
+		return antonymResult;
+	}
+
+	public static final List<String> getAntonyms(String name, POS pos, Dictionary dictionary, String wnSynset) {
+		List<String> antonymResult = new ArrayList<>();
+		IndexWord indexWord;
+		Synset synset;
+		try {
+			indexWord = dictionary.lookupIndexWord(pos, name);
+			if (indexWord != null) {
+				synset = getSynsetForIDWithIW(indexWord, wnSynset);
+			} else {
+				synset = getSynsetForID(wnSynset, dictionary);
+			}
+			if (synset != null) {
+				PointerTargetNodeList antonyms = PointerUtils.getAntonyms(synset);
+				for (PointerTargetNode pointerTargetNode : antonyms) {
+					for (Word word : pointerTargetNode.getSynset().getWords()) {
+						if (!antonymResult.contains(word.getLemma())) {
+							antonymResult.add(word.getLemma());
+						}
+					}
+				}
+			} else {
+				return getAntonyms(name, pos, dictionary);
+			}
+
+		} catch (JWNLException e) {
+			return new ArrayList<String>();
 		}
 
 		return antonymResult;
@@ -370,7 +591,7 @@ public final class WordNetUtils {
 				}
 			}
 		} catch (JWNLException e) {
-			e.printStackTrace();
+			return new ArrayList<String>();
 		}
 
 		return antonymResult;
