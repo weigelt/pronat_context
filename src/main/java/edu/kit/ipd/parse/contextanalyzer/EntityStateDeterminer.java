@@ -10,9 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.kit.ipd.parse.conditionDetection.CommandType;
 import edu.kit.ipd.parse.contextanalyzer.data.AbstractConcept;
 import edu.kit.ipd.parse.contextanalyzer.data.ActionConcept;
+import edu.kit.ipd.parse.contextanalyzer.data.CommandType;
 import edu.kit.ipd.parse.contextanalyzer.data.Context;
 import edu.kit.ipd.parse.contextanalyzer.data.EntityConcept;
 import edu.kit.ipd.parse.contextanalyzer.data.ObjectConcept;

@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.kit.ipd.parse.conditionDetection.CommandType;
+import edu.kit.ipd.parse.contextanalyzer.data.CommandType;
 import edu.kit.ipd.parse.contextanalyzer.data.ContextIndividual;
 import edu.kit.ipd.parse.contextanalyzer.data.State;
 import edu.kit.ipd.parse.contextanalyzer.data.relations.EntityStateRelation;
