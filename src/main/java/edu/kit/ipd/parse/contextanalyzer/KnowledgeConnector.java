@@ -324,9 +324,9 @@ public class KnowledgeConnector implements IContextAnalyzer {
 			for (String antonym : action.getAntonyms()) {
 				AbstractConcept candidate = getWordNetCandidate(antonym, (int) action.getReference().get(0).getAttributeValue("position"),
 						domain.getMethods().asSet());
-				if (candidate != null) {
-					actionConcept.addEqualConcept(candidate);
-					candidate.addEqualConcept(candidate);
+				if (candidate != null && candidate instanceof ActionConcept) {
+					actionConcept.addAntonymAction((ActionConcept) candidate);
+					((ActionConcept) candidate).addAntonymAction(actionConcept);
 				}
 
 			}
