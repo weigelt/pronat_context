@@ -85,7 +85,9 @@ public class ContextAnalyzerTest {
 		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
 		executePreviousStages(ppd);
 		try {
-			contextAnalyzer.setGraph(ppd.getGraph());
+			wsd.setGraph(ppd.getGraph());
+			wsd.exec();
+			contextAnalyzer.setGraph(wsd.getGraph());
 			contextAnalyzer.exec();
 			Context result = contextAnalyzer.getContext();
 			System.out.println(result.getEntities());
@@ -103,7 +105,9 @@ public class ContextAnalyzerTest {
 		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
 		executePreviousStages(ppd);
 		try {
-			contextAnalyzer.setGraph(ppd.getGraph());
+			wsd.setGraph(ppd.getGraph());
+			wsd.exec();
+			contextAnalyzer.setGraph(wsd.getGraph());
 			contextAnalyzer.exec();
 			Context result = contextAnalyzer.getContext();
 			System.out.println(result.getEntities());
@@ -121,7 +125,9 @@ public class ContextAnalyzerTest {
 		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
 		executePreviousStages(ppd);
 		try {
-			contextAnalyzer.setGraph(ppd.getGraph());
+			wsd.setGraph(ppd.getGraph());
+			wsd.exec();
+			contextAnalyzer.setGraph(wsd.getGraph());
 			contextAnalyzer.exec();
 			Context result = contextAnalyzer.getContext();
 			System.out.println(result.getEntities());
@@ -139,7 +145,9 @@ public class ContextAnalyzerTest {
 		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
 		executePreviousStages(ppd);
 		try {
-			contextAnalyzer.setGraph(ppd.getGraph());
+			wsd.setGraph(ppd.getGraph());
+			wsd.exec();
+			contextAnalyzer.setGraph(wsd.getGraph());
 			contextAnalyzer.exec();
 			Context result = contextAnalyzer.getContext();
 			System.out.println(result.getEntities());
@@ -157,7 +165,9 @@ public class ContextAnalyzerTest {
 		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
 		executePreviousStages(ppd);
 		try {
-			contextAnalyzer.setGraph(ppd.getGraph());
+			wsd.setGraph(ppd.getGraph());
+			wsd.exec();
+			contextAnalyzer.setGraph(wsd.getGraph());
 			contextAnalyzer.exec();
 			Context result = contextAnalyzer.getContext();
 			System.out.println(result.getEntities());
@@ -178,6 +188,9 @@ public class ContextAnalyzerTest {
 			Context prev = new Context();
 			Context result = new Context();
 			IGraph graph = ppd.getGraph();
+			wsd.setGraph(ppd.getGraph());
+			wsd.exec();
+			graph = wsd.getGraph();
 			do {
 				prev = result;
 				contextAnalyzer.setGraph(graph);
@@ -204,6 +217,9 @@ public class ContextAnalyzerTest {
 			Context prev = new Context();
 			Context result = new Context();
 			IGraph graph = ppd.getGraph();
+			wsd.setGraph(ppd.getGraph());
+			wsd.exec();
+			graph = wsd.getGraph();
 			do {
 				prev = result;
 				contextAnalyzer.setGraph(graph);
@@ -230,6 +246,9 @@ public class ContextAnalyzerTest {
 			Context prev = new Context();
 			Context result = new Context();
 			IGraph graph = ppd.getGraph();
+			wsd.setGraph(ppd.getGraph());
+			wsd.exec();
+			graph = wsd.getGraph();
 			do {
 				prev = result;
 				contextAnalyzer.setGraph(graph);
