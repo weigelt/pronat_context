@@ -63,10 +63,10 @@ public final class CorpusTexts {
 						textList.add(new Pair<String, String>(last, tokens[j]));
 					} else if (j + 1 < tokens.length) {
 						if (!tokens[j + 1].startsWith("[")) {
-							textList.add(new Pair<String, String>(tokens[j], ""));
+							textList.add(new Pair<String, String>(tokens[j], null));
 						}
 					} else {
-						textList.add(new Pair<String, String>(tokens[j], ""));
+						textList.add(new Pair<String, String>(tokens[j], null));
 					}
 
 					last = tokens[j];

@@ -1,17 +1,26 @@
 package edu.kit.ipd.parse.contextanalyzer;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ipd.parse.contextanalyzer.data.Action;
+import edu.kit.ipd.parse.contextanalyzer.data.ActionConcept;
 import edu.kit.ipd.parse.contextanalyzer.data.Context;
+import edu.kit.ipd.parse.contextanalyzer.data.ContextIndividual;
+import edu.kit.ipd.parse.contextanalyzer.data.EntityConcept;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.Entity;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.ObjectEntity;
+import edu.kit.ipd.parse.contextanalyzer.data.entities.PronounEntity;
+import edu.kit.ipd.parse.contextanalyzer.util.ContextUtils;
+import edu.kit.ipd.parse.contextanalyzer.util.GraphUtils;
 import edu.kit.ipd.parse.graphBuilder.GraphBuilder;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.data.PrePipelineData;
 import edu.kit.ipd.parse.luna.graph.IGraph;
+import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.Pair;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
 import edu.kit.ipd.parse.luna.tools.StringToHypothesis;
@@ -30,6 +39,7 @@ public class ContextAnalyzerTest {
 	Wsd wsd;
 	PrePipelineData ppd;
 	HashMap<String, String> texts;
+	HashMap<String, List<Pair<String, String>>> evalTexts;
 
 	@Before
 	public void setUp() {
@@ -44,6 +54,7 @@ public class ContextAnalyzerTest {
 		snlp = new ShallowNLP();
 		snlp.init();
 		texts = CorpusTexts.texts;
+		evalTexts = CorpusTexts.evalTexts;
 		contextAnalyzer = new ContextAnalyzer();
 		contextAnalyzer.init();
 	}
@@ -181,7 +192,8 @@ public class ContextAnalyzerTest {
 	@Test
 	public void multiple() {
 		ppd = new PrePipelineData();
-		String input = "Armar go to the fridge next to the oven and then to the dishwasher and the flatiron which is near the microwave";
+		List<Pair<String, String>> text = evalTexts.get("s6p01");
+		String input = prepareInputString(text);
 		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
 		executePreviousStages(ppd);
 		try {
@@ -201,10 +213,117 @@ public class ContextAnalyzerTest {
 				System.out.println(result.getActions());
 				System.out.println(result.getConcepts());
 			} while (!prev.equals(result));
+			HashMap<Integer, Integer> indexMap = produceIndexMappings(text, graph);
+			int[] res = evaluateConceptBuilding(text, result, indexMap);
+			System.out.println(
+					"Total: " + res[0] + ", truePositive: " + res[1] + ", falsePositive: " + res[2] + ", falseNegative: " + res[3]);
 		} catch (MissingDataException e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	private HashMap<Integer, Integer> produceIndexMappings(List<Pair<String, String>> text, IGraph graph) {
+		HashMap<Integer, Integer> result = new HashMap<>();
+		int index = 0;
+		try {
+			List<INode> nodes = GraphUtils.getNodesOfUtterance(graph);
+			for (INode node : nodes) {
+				if (node.getType().containsAttribute("position", "int") && node.getType().containsAttribute("value", "String")) {
+					for (int i = index; i < text.size(); i++) {
+						if (text.get(i).getLeft().equals(node.getAttributeValue("value"))) {
+							result.put(i, (Integer) node.getAttributeValue("position"));
+							index = i + 1;
+							break;
+						}
+					}
+				}
+			}
+		} catch (MissingDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	private int[] evaluateConceptBuilding(List<Pair<String, String>> text, Context result, HashMap<Integer, Integer> indexMap) {
+		int tp = 0;
+		int fp = 0;
+		int fn = 0;
+		int total = 0;
+		for (int i = 0; i < text.size(); i++) {
+			Pair<String, String> pair = text.get(i);
+			String word = pair.getLeft();
+			String annotation = pair.getRight();
+			if (annotation != null && indexMap.containsKey(i)) {
+				total++;
+				int position = indexMap.get(i);
+				ContextIndividual ci = getContainingContextIndividual(position, result);
+				if (ci instanceof Entity) {
+					EntityConcept concept = ContextUtils.getMostLikelyEntityConcept(ci.getRelations());
+					if (concept != null) {
+						if (concept.getName().toLowerCase().equals(annotation.replaceAll("[", "").replaceAll("]", "").split(",")[0])) {
+							tp++;
+						} else {
+							System.out.println("Word:" + word + " at position " + position + " has related Concept: " + concept.getName()
+									+ " but Concept " + annotation.replaceAll("[", "").replaceAll("]", "").split(",")[0] + " was expected");
+							fn++;
+							fp++;
+						}
+					} else {
+						System.out.println("Word:" + word + " at position " + position + " has no related Concept!");
+						fn++;
+					}
+				} else if (ci instanceof Action) {
+					ActionConcept concept = ContextUtils.getMostLikelyActionConcept(ci.getRelations());
+					if (concept != null) {
+						if (concept.getName().toLowerCase().equals(annotation.replaceAll("[", "").replaceAll("]", "").split(",")[0])) {
+							tp++;
+						} else {
+							System.out.println("Word:" + word + " at position " + position + " has related Concept: " + concept.getName()
+									+ " but Concept " + annotation.replaceAll("[", "").replaceAll("]", "").split(",")[0] + " was expected");
+							fn++;
+							fp++;
+						}
+					} else {
+						System.out.println("Word:" + word + " at position " + position + " has no related Concept!");
+						fn++;
+					}
+				}
+			}
+		}
+		return new int[] { total, tp, fp, fn };
+
+	}
+
+	private ContextIndividual getContainingContextIndividual(int position, Context result) {
+		for (Entity entity : result.getEntities()) {
+			if (!(entity instanceof PronounEntity)) {
+
+				for (INode node : entity.getReference()) {
+					if ((int) node.getAttributeValue("position") == position) {
+						return entity;
+					}
+				}
+			}
+		}
+		for (Action action : result.getActions()) {
+			for (INode node : action.getReference()) {
+				if ((int) node.getAttributeValue("position") == position) {
+					return action;
+				}
+			}
+		}
+		return null;
+	}
+
+	private String prepareInputString(List<Pair<String, String>> text) {
+		String input = "";
+		for (Pair<String, String> pair : text) {
+			input += " " + pair.getLeft();
+		}
+		input = input.trim();
+		return input;
 	}
 
 	@Test
