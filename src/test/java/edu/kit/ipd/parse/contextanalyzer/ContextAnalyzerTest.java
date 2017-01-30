@@ -1,12 +1,15 @@
 package edu.kit.ipd.parse.contextanalyzer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ipd.parse.contextanalyzer.data.AbstractConcept;
 import edu.kit.ipd.parse.contextanalyzer.data.Action;
 import edu.kit.ipd.parse.contextanalyzer.data.ActionConcept;
 import edu.kit.ipd.parse.contextanalyzer.data.Context;
@@ -15,6 +18,9 @@ import edu.kit.ipd.parse.contextanalyzer.data.EntityConcept;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.Entity;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.ObjectEntity;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.PronounEntity;
+import edu.kit.ipd.parse.contextanalyzer.data.relations.ActionConceptRelation;
+import edu.kit.ipd.parse.contextanalyzer.data.relations.EntityConceptRelation;
+import edu.kit.ipd.parse.contextanalyzer.data.relations.Relation;
 import edu.kit.ipd.parse.contextanalyzer.util.ContextUtils;
 import edu.kit.ipd.parse.contextanalyzer.util.GraphUtils;
 import edu.kit.ipd.parse.graphBuilder.GraphBuilder;
@@ -215,9 +221,65 @@ public class ContextAnalyzerTest {
 	}
 
 	@Test
+	public void conceptBuildingEval() {
+		int total = 0;
+		int tp = 0;
+		int fp = 0;
+		int fn = 0;
+		List<String> failures = new ArrayList<>();
+		for (String id : evalTexts.keySet()) {
+			ppd = new PrePipelineData();
+			List<Pair<String, String>> text = evalTexts.get(id);
+			String input = prepareInputString(text);
+			ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
+			System.out.println(id);
+			executePreviousStages(ppd);
+			try {
+				Context prev = new Context();
+				Context result = new Context();
+				IGraph graph = ppd.getGraph();
+				wsd.setGraph(ppd.getGraph());
+				wsd.exec();
+				graph = wsd.getGraph();
+				do {
+					prev = result;
+					contextAnalyzer.setGraph(graph);
+					contextAnalyzer.exec();
+					result = contextAnalyzer.getContext();
+					graph = contextAnalyzer.getGraph();
+					System.out.println(result.getEntities());
+					System.out.println(result.getActions());
+					System.out.println(result.getConcepts());
+				} while (!prev.equals(result));
+				HashMap<Integer, Integer> indexMap = produceIndexMappings(text, graph);
+				Pair<List<String>, int[]> checkResult = evaluateConceptBuilding(text, result, indexMap);
+				total += checkResult.getRight()[0];
+				tp += checkResult.getRight()[1];
+				fp += checkResult.getRight()[2];
+				fn += checkResult.getRight()[3];
+				for (String failure : checkResult.getLeft()) {
+					failures.add(id + ": " + failure);
+				}
+			} catch (MissingDataException e) {
+				e.printStackTrace();
+			}
+		}
+		double precision = (double) tp / (double) (tp + fp);
+		double recall = (double) tp / (double) (tp + fn);
+		double f1 = (2 * precision * recall) / (precision + recall);
+		System.out.println("----------------------------------------------------");
+		System.out.println("| Correct Relations: " + tp + "/" + total + " | Additionally Detected: " + fp + "|");
+		System.out.println("| Precision = " + precision + "   Recall = " + recall + "  F1 = " + f1 + "|");
+		System.out.println("----------------------------------------------------");
+		for (String string : failures) {
+			System.out.println(string);
+		}
+	}
+
+	@Test
 	public void multiple() {
 		ppd = new PrePipelineData();
-		List<Pair<String, String>> text = evalTexts.get("s6p01");
+		List<Pair<String, String>> text = evalTexts.get("s7p04");
 		String input = prepareInputString(text);
 		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
 		executePreviousStages(ppd);
@@ -239,7 +301,7 @@ public class ContextAnalyzerTest {
 				System.out.println(result.getConcepts());
 			} while (!prev.equals(result));
 			HashMap<Integer, Integer> indexMap = produceIndexMappings(text, graph);
-			int[] res = evaluateConceptBuilding(text, result, indexMap);
+			int[] res = evaluateConceptBuilding(text, result, indexMap).getRight();
 			System.out.println(
 					"Total: " + res[0] + ", truePositive: " + res[1] + ", falsePositive: " + res[2] + ", falseNegative: " + res[3]);
 		} catch (MissingDataException e) {
@@ -271,11 +333,14 @@ public class ContextAnalyzerTest {
 		return result;
 	}
 
-	private int[] evaluateConceptBuilding(List<Pair<String, String>> text, Context result, HashMap<Integer, Integer> indexMap) {
+	private Pair<List<String>, int[]> evaluateConceptBuilding(List<Pair<String, String>> text, Context result,
+			HashMap<Integer, Integer> indexMap) {
 		int tp = 0;
 		int fp = 0;
 		int fn = 0;
 		int total = 0;
+		List<String> failures = new ArrayList<>();
+		HashSet<Relation> alreadyChecked = new HashSet<>();
 		for (int i = 0; i < text.size(); i++) {
 			Pair<String, String> pair = text.get(i);
 			String word = pair.getLeft();
@@ -287,37 +352,95 @@ public class ContextAnalyzerTest {
 				if (ci instanceof Entity) {
 					EntityConcept concept = ContextUtils.getMostLikelyEntityConcept(ci.getRelations());
 					if (concept != null) {
-						if (concept.getName().toLowerCase().equals(annotation.replaceAll("[", "").replaceAll("]", "").split(",")[0])) {
+						String conceptName = annotation.substring(1, annotation.length() - 1).trim();
+						if (annotation.contains(",")) {
+							conceptName = conceptName.split(",")[0];
+						}
+
+						if (concept.getName().toLowerCase().equals(conceptName.toLowerCase())) {
 							tp++;
 						} else {
-							System.out.println("Word:" + word + " at position " + position + " has related Concept: " + concept.getName()
-									+ " but Concept " + annotation.replaceAll("[", "").replaceAll("]", "").split(",")[0] + " was expected");
+							String failure = "Word:" + word + " at position " + position + " has related Concept: " + concept.getName()
+									+ " but Concept " + conceptName + " was expected";
+							failures.add(failure);
+
 							fn++;
 							fp++;
 						}
+						alreadyChecked.addAll(ci.getRelationsOfType(EntityConceptRelation.class));
 					} else {
-						System.out.println("Word:" + word + " at position " + position + " has no related Concept!");
+
+						String failure = "Word:" + word + " at position " + position + " has no related Concept!";
+						failures.add(failure);
+
 						fn++;
 					}
 				} else if (ci instanceof Action) {
 					ActionConcept concept = ContextUtils.getMostLikelyActionConcept(ci.getRelations());
 					if (concept != null) {
-						if (concept.getName().toLowerCase().equals(annotation.replaceAll("[", "").replaceAll("]", "").split(",")[0])) {
+						String conceptName = annotation.substring(1, annotation.length() - 1).trim();
+						String[] split = conceptName.split(",");
+						conceptName = split[0];
+						String synonym = "";
+						if (split.length > 1) {
+							synonym = split[1];
+						}
+						if (concept.getName().toLowerCase().equals(conceptName)
+								|| concept.getName().toLowerCase().equals(synonym.toLowerCase())) {
 							tp++;
 						} else {
-							System.out.println("Word:" + word + " at position " + position + " has related Concept: " + concept.getName()
-									+ " but Concept " + annotation.replaceAll("[", "").replaceAll("]", "").split(",")[0] + " was expected");
+							String failure = "Word:" + word + " at position " + position + " has related Concept: " + concept.getName()
+									+ " but Concept " + conceptName + " was expected";
+							failures.add(failure);
+
 							fn++;
 							fp++;
 						}
+						alreadyChecked.addAll(ci.getRelationsOfType(ActionConceptRelation.class));
 					} else {
-						System.out.println("Word:" + word + " at position " + position + " has no related Concept!");
+						String failure = "Word:" + word + " at position " + position + " has no related Concept!";
+						failures.add(failure);
+
 						fn++;
 					}
 				}
 			}
 		}
-		return new int[] { total, tp, fp, fn };
+		for (AbstractConcept abstractConcept : result.getConcepts()) {
+			HashSet<Entity> targets = new HashSet<>();
+			for (Relation relation : abstractConcept.getRelationsOfType(EntityConceptRelation.class)) {
+				if (!alreadyChecked.contains(relation)) {
+					Entity entity = ((EntityConceptRelation) relation).getStart();
+					if (!targets.contains(entity)) {
+						targets.add(entity);
+						String failure = "Entity:" + entity.getName() + " at position ["
+								+ entity.getReference().get(0).getAttributeValue("position") + "-"
+								+ entity.getReference().get(entity.getReference().size() - 1).getAttributeValue("position")
+								+ "] has related Concept: " + abstractConcept.getName() + " but no Concept was expected";
+						failures.add(failure);
+
+						fp++;
+					}
+				}
+			}
+			HashSet<Action> targetsA = new HashSet<>();
+			for (Relation relation : abstractConcept.getRelationsOfType(ActionConceptRelation.class)) {
+				if (!alreadyChecked.contains(relation)) {
+					Action action = ((ActionConceptRelation) relation).getStart();
+					if (!targetsA.contains(action)) {
+						targetsA.add(action);
+						String failure = "Action:" + action.getName() + " at position ["
+								+ action.getReference().get(0).getAttributeValue("position") + "-"
+								+ action.getReference().get(action.getReference().size() - 1).getAttributeValue("position")
+								+ "] has related Concept: " + abstractConcept.getName() + " but no Concept was expected";
+						failures.add(failure);
+
+						fp++;
+					}
+				}
+			}
+		}
+		return new Pair<List<String>, int[]>(failures, new int[] { total, tp, fp, fn });
 
 	}
 
