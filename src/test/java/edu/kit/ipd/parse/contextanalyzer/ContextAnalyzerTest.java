@@ -279,7 +279,7 @@ public class ContextAnalyzerTest {
 	@Test
 	public void multiple() {
 		ppd = new PrePipelineData();
-		List<Pair<String, String>> text = evalTexts.get("s7p04");
+		List<Pair<String, String>> text = evalTexts.get("s7p03");
 		String input = prepareInputString(text);
 		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
 		executePreviousStages(ppd);
