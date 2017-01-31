@@ -135,7 +135,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 
 			if (synonymCandidates.size() == 1) {
 				IMethod method = (IMethod) synonymCandidates.get(0).getLeft();
-				extractMethodConcept(action, method, synonymCandidates.get(0).getRight());
+				extractMethodConcept(action, method, synonymCandidates.get(0).getRight() * 0.5);
 			} else if (synonymCandidates.size() > 1) {
 				List<Pair<IIndividual, Double>> candidates = getMostLikelyCandidate(synonymCandidates);
 				if (candidates.size() == 1) {
@@ -736,8 +736,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 			indexWord = WordNetUtils.getIndexWord(split[split.length - 1], POS.NOUN, dictionary);
 		}
 		if (indexWord != null) {
-			if (context.hasConcept(getComparableName(objectEntity))) {
-				AbstractConcept concept = context.getConcept(getComparableName(objectEntity));
+			if (context.hasConcept(getConceptName(objectEntity))) {
+				AbstractConcept concept = context.getConcept(getConceptName(objectEntity));
 
 				if (concept instanceof ObjectConcept) {
 					objectConcept = (ObjectConcept) concept;
@@ -762,11 +762,11 @@ public class KnowledgeConnector implements IContextAnalyzer {
 						}
 					}
 				} else {
-					objectConcept = new ObjectConcept(getComparableName(objectEntity));
+					objectConcept = new ObjectConcept(getConceptName(objectEntity));
 					context.addConcept(objectConcept);
 				}
 			} else {
-				objectConcept = new ObjectConcept(getComparableName(objectEntity));
+				objectConcept = new ObjectConcept(getConceptName(objectEntity));
 				context.addConcept(objectConcept);
 			}
 			if (!objectConcept.hasIndexWordLemma()) {
@@ -892,6 +892,34 @@ public class KnowledgeConnector implements IContextAnalyzer {
 		String comparableName = objectEntity.getName();
 		comparableName = comparableName.replaceAll(" ", "").toLowerCase();
 		return comparableName;
+	}
+
+	private String getConceptName(Entity entity) {
+		String conceptName = "";
+		String[] split = entity.getName().split(" ");
+		for (String string : split) {
+			if (string.length() > 1) {
+				conceptName += string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+			} else if (string.length() == 1) {
+				conceptName += string.substring(0, 1).toUpperCase();
+			}
+
+		}
+		return conceptName;
+	}
+
+	private String getConceptName(String name) {
+		String conceptName = "";
+		String[] split = name.split(" ");
+		for (String string : split) {
+			if (string.length() > 1) {
+				conceptName += string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+			} else if (string.length() == 1) {
+				conceptName += string.substring(0, 1).toUpperCase();
+			}
+
+		}
+		return conceptName;
 	}
 
 	/**
@@ -1088,17 +1116,18 @@ public class KnowledgeConnector implements IContextAnalyzer {
 						if (linSim > LIN_SIMILARITY_THRESHOLD || result.getLeastCommonSubsumer().equals(result.getSynsetOne())
 								|| result.getLeastCommonSubsumer().equals(result.getSynsetTwo())) {
 							ObjectConcept newSubsumer = null;
-							if (!context.hasConcept(result.getName()) || !(context.getConcept(result.getName()) instanceof ObjectConcept)) {
+							if (!context.hasConcept(getConceptName(result.getName()))
+									|| !(context.getConcept(getConceptName(result.getName())) instanceof ObjectConcept)) {
 								if (!(result.getLeastCommonSubsumer().equals(result.getSynsetOne())
 										&& result.getLeastCommonSubsumer().equals(result.getSynsetTwo()))) {
-									newSubsumer = new ObjectConcept(result.getName());
+									newSubsumer = new ObjectConcept(getConceptName(result.getName()));
 									newSubsumer.setIndexWordLemma(result.getName());
 									for (String synonym : WordNetUtils.getSynonyms(result.getName(), POS.NOUN, dictionary)) {
 										newSubsumer.addSynonym(synonym);
 									}
 								}
 							} else {
-								AbstractConcept existingConcept = context.getConcept(result.getName());
+								AbstractConcept existingConcept = context.getConcept(getConceptName(result.getName()));
 								if (existingConcept instanceof ObjectConcept) {
 									ObjectConcept subsumerConcept = (ObjectConcept) existingConcept;
 									if (!ContextUtils.isSubsumed(concept, subsumerConcept)) {
