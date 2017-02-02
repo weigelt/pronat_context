@@ -4,6 +4,7 @@
 package edu.kit.ipd.parse.contextanalyzer.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -88,6 +89,85 @@ public final class WordNetUtils {
 
 		}
 		return result;
+	}
+
+	public static final Set<LeastCommonSubsumer> getLeastCommonSubsumers(IndexWord current, IndexWord candidate, Set<String> wnSynsets,
+			Set<String> wnSynsetsCandidate, Dictionary dictionary) {
+		HashSet<LeastCommonSubsumer> result = new HashSet<>();
+
+		List<Synset> currSynsets = new ArrayList<>();
+		List<Synset> candSynsets = new ArrayList<>();
+		if (!wnSynsets.isEmpty()) {
+			for (String synset : wnSynsets) {
+				Synset syn = getSynsetForID(synset, dictionary);
+				if (syn != null) {
+					currSynsets.add(syn);
+				}
+			}
+		} else {
+			currSynsets.addAll(current.getSenses());
+		}
+
+		if (!wnSynsetsCandidate.isEmpty()) {
+			for (String synset : wnSynsetsCandidate) {
+				Synset syn = getSynsetForID(synset, dictionary);
+				if (syn != null) {
+					candSynsets.add(syn);
+				}
+			}
+		} else {
+			candSynsets.addAll(candidate.getSenses());
+		}
+		for (Synset currSynset : currSynsets) {
+			for (Synset candSynset : candSynsets) {
+
+				RelationshipList list;
+				try {
+					list = RelationshipFinder.findRelationships(currSynset, candSynset, PointerType.HYPERNYM);
+					for (Relationship relationship : list) {
+						if (relationship instanceof AsymmetricRelationship) {
+							AsymmetricRelationship asym = (AsymmetricRelationship) relationship;
+
+							result.add(new LeastCommonSubsumer(currSynset, candSynset,
+									asym.getNodeList().get(asym.getCommonParentIndex()).getSynset()));
+
+						}
+					}
+				} catch (CloneNotSupportedException | JWNLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+
+		}
+		return result;
+
+	}
+
+	public static final Double calculateWUPSimilarity(Synset start, Synset end, Synset lcs, Dictionary dictionary) {
+		int startDepth = getDepth(start, dictionary);
+		int endDepth = getDepth(end, dictionary);
+		int lcsDepth = getDepth(lcs, dictionary);
+		if (startDepth == -1 || endDepth == -1 || lcsDepth == -1) {
+			return 0.0;
+		} else {
+			return (double) 2 * lcsDepth / (double) (startDepth + endDepth);
+		}
+	}
+
+	private static final int getDepth(Synset source, Dictionary dictionary) {
+		Synset target;
+		try {
+			target = dictionary.getWordBySenseKey("entity%1:03:00::").getSynset();
+			RelationshipList rl = RelationshipFinder.findRelationships(source, target, PointerType.HYPERNYM);
+			return rl.getDeepest().getDepth();
+		} catch (JWNLException | CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+
 	}
 
 	public static final Double calculateLinSimilarity(Synset start, Synset end, Synset lcs) {
