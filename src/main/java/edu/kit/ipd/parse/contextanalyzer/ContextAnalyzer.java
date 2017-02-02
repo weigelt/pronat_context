@@ -15,6 +15,7 @@ import edu.kit.ipd.parse.contextanalyzer.data.Context;
 import edu.kit.ipd.parse.luna.agent.AbstractAgent;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
+import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.kit.ipd.parse.ontology_connection.Domain;
 import edu.stanford.nlp.dcoref.Constants;
 import edu.stanford.nlp.dcoref.Dictionaries;
@@ -38,6 +39,8 @@ public class ContextAnalyzer extends AbstractAgent {
 	private Domain domain;
 	private List<IContextAnalyzer> analyzer;
 	private Context context;
+	private Properties props;
+	private String similarityMetric;
 
 	private static final Logger logger = LoggerFactory.getLogger(ContextAnalyzer.class);
 
@@ -49,6 +52,8 @@ public class ContextAnalyzer extends AbstractAgent {
 	@Override
 	public void init() {
 		setId(ID);
+		props = ConfigManager.getConfiguration(getClass());
+		similarityMetric = props.getProperty("SIMILARITY");
 		try {
 			// init extjwnl
 			dictionary = Dictionary.getDefaultResourceInstance();
@@ -67,7 +72,7 @@ public class ContextAnalyzer extends AbstractAgent {
 		analyzer.add(new EntityRecognizer(dictionary, stanfordDict, domain));
 		analyzer.add(new ActionRecognizer(dictionary, domain));
 		analyzer.add(new LocativeRelationAnalyzer());
-		analyzer.add(new KnowledgeConnector(dictionary, domain));
+		analyzer.add(new KnowledgeConnector(dictionary, domain, similarityMetric));
 		analyzer.add(new EntityStateDeterminer(dictionary));
 
 	}

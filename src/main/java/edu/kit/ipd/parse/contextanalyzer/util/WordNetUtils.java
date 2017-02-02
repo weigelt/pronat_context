@@ -170,6 +170,28 @@ public final class WordNetUtils {
 
 	}
 
+	public static final boolean isNotSpecificEnough(Synset leastCommonSubsumer, Dictionary dictionary) {
+		if (getDepth(leastCommonSubsumer, dictionary) < 3) {
+			return true;
+
+		} else {
+			Synset artifact;
+			try {
+				artifact = dictionary.getWordBySenseKey("artifact%1:03:00::").getSynset();
+				if (PointerUtils.getHypernymTree(leastCommonSubsumer).findFirst(artifact) == null) {
+					return true;
+				} else if (leastCommonSubsumer.getKey().equals(artifact.getKey())) {
+					return true;
+				}
+			} catch (JWNLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		return false;
+	}
+
 	public static final Double calculateLinSimilarity(Synset start, Synset end, Synset lcs) {
 		Double startIC = WordNetInformationContent.getInformationContent(start);
 		Double endIC = WordNetInformationContent.getInformationContent(end);

@@ -65,6 +65,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	private Dictionary dictionary;
 	private Domain domain;
 	private Context context;
+	private String similarityMetric;
 	private JaroWinkler jaroWinkler = new JaroWinkler();
 	private static final Logger logger = LoggerFactory.getLogger(KnowledgeConnector.class);
 
@@ -76,9 +77,10 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	 * @param domain
 	 *            The domainknowledge {@link Domain}
 	 */
-	public KnowledgeConnector(Dictionary dictionary, Domain domain) {
+	public KnowledgeConnector(Dictionary dictionary, Domain domain, String similarityMetric) {
 		this.dictionary = dictionary;
 		this.domain = domain;
+		this.similarityMetric = similarityMetric;
 	}
 
 	/*
@@ -1108,76 +1110,98 @@ public class KnowledgeConnector implements IContextAnalyzer {
 					Set<String> wnSynsets = getObjectConceptWNSynsets(concept);
 					Set<String> wnSynsetsCandidate = getObjectConceptWNSynsets(objectConcept);
 					IndexWord candidate = WordNetUtils.getIndexWord(objectConcept.getIndexWordLemma(), POS.NOUN, dictionary);
-					LeastCommonSubsumer result = WordNetUtils.getLeastCommonSubsumer(current, candidate, wnSynsets, wnSynsetsCandidate,
-							dictionary);
+					LeastCommonSubsumer result = null;
+					if (similarityMetric.equalsIgnoreCase("WUP")) {
+						Set<LeastCommonSubsumer> lcses = WordNetUtils.getLeastCommonSubsumers(current, candidate, wnSynsets,
+								wnSynsetsCandidate, dictionary);
+						Double max = 0.0;
+
+						for (LeastCommonSubsumer leastCommonSubsumer : lcses) {
+							Double wupSim = WordNetUtils.calculateWUPSimilarity(leastCommonSubsumer.getSynsetOne(),
+									leastCommonSubsumer.getSynsetTwo(), leastCommonSubsumer.getLeastCommonSubsumer(), dictionary);
+							if ((wupSim > 0.5 && wupSim > max
+									&& !WordNetUtils.isNotSpecificEnough(leastCommonSubsumer.getLeastCommonSubsumer(), dictionary))
+									|| leastCommonSubsumer.getLeastCommonSubsumer().equals(leastCommonSubsumer.getSynsetOne())
+									|| leastCommonSubsumer.getLeastCommonSubsumer().equals(leastCommonSubsumer.getSynsetTwo())) {
+								if (wupSim >= max) {
+									max = wupSim;
+									result = leastCommonSubsumer;
+								}
+							}
+						}
+					} else {
+						LeastCommonSubsumer possResult = WordNetUtils.getLeastCommonSubsumer(current, candidate, wnSynsets,
+								wnSynsetsCandidate, dictionary);
+						Double linSim = WordNetUtils.calculateLinSimilarity(possResult.getSynsetOne(), possResult.getSynsetTwo(),
+								possResult.getLeastCommonSubsumer());
+						if (linSim > LIN_SIMILARITY_THRESHOLD || possResult.getLeastCommonSubsumer().equals(possResult.getSynsetOne())
+								|| possResult.getLeastCommonSubsumer().equals(possResult.getSynsetTwo())) {
+							result = possResult;
+						}
+					}
+
 					if (result != null) {
-						Double linSim = WordNetUtils.calculateLinSimilarity(result.getSynsetOne(), result.getSynsetTwo(),
-								result.getLeastCommonSubsumer());
-						if (linSim > LIN_SIMILARITY_THRESHOLD || result.getLeastCommonSubsumer().equals(result.getSynsetOne())
-								|| result.getLeastCommonSubsumer().equals(result.getSynsetTwo())) {
-							ObjectConcept newSubsumer = null;
-							if (!context.hasConcept(getConceptName(result.getName()))
-									|| !(context.getConcept(getConceptName(result.getName())) instanceof ObjectConcept)) {
-								if (!(result.getLeastCommonSubsumer().equals(result.getSynsetOne())
-										&& result.getLeastCommonSubsumer().equals(result.getSynsetTwo()))) {
-									newSubsumer = new ObjectConcept(getConceptName(result.getName()));
-									newSubsumer.setIndexWordLemma(result.getName());
-									for (String synonym : WordNetUtils.getSynonyms(result.getName(), POS.NOUN, dictionary)) {
-										newSubsumer.addSynonym(synonym);
-									}
-								}
-							} else {
-								AbstractConcept existingConcept = context.getConcept(getConceptName(result.getName()));
-								if (existingConcept instanceof ObjectConcept) {
-									ObjectConcept subsumerConcept = (ObjectConcept) existingConcept;
-									if (!ContextUtils.isSubsumed(concept, subsumerConcept)) {
-										concept.addSuperConcept(subsumerConcept);
-										subsumerConcept.addSubConcept(concept);
-										removeRedundantEdges(concept, subsumerConcept);
-									} else if (!concept.getSuperConcepts().contains(subsumerConcept)) {
-										subsumerConcept.getSubConcepts().remove(concept);
-									}
-									if (!ContextUtils.isSubsumed(objectConcept, subsumerConcept)) {
-										objectConcept.addSuperConcept(subsumerConcept);
-										subsumerConcept.addSubConcept(objectConcept);
-										removeRedundantEdges(objectConcept, subsumerConcept);
-									} else if (!objectConcept.getSuperConcepts().contains(subsumerConcept)) {
-										subsumerConcept.getSubConcepts().remove(objectConcept);
-									}
+						ObjectConcept newSubsumer = null;
+						if (!context.hasConcept(getConceptName(result.getName()))
+								|| !(context.getConcept(getConceptName(result.getName())) instanceof ObjectConcept)) {
+							if (!(result.getLeastCommonSubsumer().equals(result.getSynsetOne())
+									&& result.getLeastCommonSubsumer().equals(result.getSynsetTwo()))) {
+								newSubsumer = new ObjectConcept(getConceptName(result.getName()));
+								newSubsumer.setIndexWordLemma(result.getName());
+								for (String synonym : WordNetUtils.getSynonyms(result.getName(), POS.NOUN, dictionary)) {
+									newSubsumer.addSynonym(synonym);
 								}
 							}
-							if (newSubsumer != null) {
-								List<String> synonyms = WordNetUtils.getSynonyms(newSubsumer.getName(), POS.NOUN, dictionary);
-								List<Pair<IIndividual, Double>> directCandidates = getDirectCandidates(newSubsumer.getName(),
+						} else {
+							AbstractConcept existingConcept = context.getConcept(getConceptName(result.getName()));
+							if (existingConcept instanceof ObjectConcept) {
+								ObjectConcept subsumerConcept = (ObjectConcept) existingConcept;
+								if (!ContextUtils.isSubsumed(concept, subsumerConcept)) {
+									concept.addSuperConcept(subsumerConcept);
+									subsumerConcept.addSubConcept(concept);
+									removeRedundantEdges(concept, subsumerConcept);
+								} else if (!concept.getSuperConcepts().contains(subsumerConcept)) {
+									subsumerConcept.getSubConcepts().remove(concept);
+								}
+								if (!ContextUtils.isSubsumed(objectConcept, subsumerConcept)) {
+									objectConcept.addSuperConcept(subsumerConcept);
+									subsumerConcept.addSubConcept(objectConcept);
+									removeRedundantEdges(objectConcept, subsumerConcept);
+								} else if (!objectConcept.getSuperConcepts().contains(subsumerConcept)) {
+									subsumerConcept.getSubConcepts().remove(objectConcept);
+								}
+							}
+						}
+						if (newSubsumer != null) {
+							List<String> synonyms = WordNetUtils.getSynonyms(newSubsumer.getName(), POS.NOUN, dictionary);
+							List<Pair<IIndividual, Double>> directCandidates = getDirectCandidates(newSubsumer.getName(),
+									domain.getObjects().asSet());
+							if (directCandidates.size() == 1) {
+								newSubsumer = extractObjectConcept((IObject) directCandidates.get(0).getLeft());
+
+							} else if (directCandidates.size() > 1) {
+								context.addConcept(newSubsumer);
+							} else if (directCandidates.isEmpty()) {
+								List<Pair<IIndividual, Double>> synonymCandidates = getSynonymCandidates(synonyms,
 										domain.getObjects().asSet());
-								if (directCandidates.size() == 1) {
-									newSubsumer = extractObjectConcept((IObject) directCandidates.get(0).getLeft());
-
-								} else if (directCandidates.size() > 1) {
+								if (synonymCandidates.size() == 1) {
+									newSubsumer = extractObjectConcept((IObject) synonymCandidates.get(0).getLeft());
+								} else {
 									context.addConcept(newSubsumer);
-								} else if (directCandidates.isEmpty()) {
-									List<Pair<IIndividual, Double>> synonymCandidates = getSynonymCandidates(synonyms,
-											domain.getObjects().asSet());
-									if (synonymCandidates.size() == 1) {
-										newSubsumer = extractObjectConcept((IObject) synonymCandidates.get(0).getLeft());
-									} else {
-										context.addConcept(newSubsumer);
 
-									}
 								}
-								if (!newSubsumer.hasIndexWordLemma()) {
-									newSubsumer.setIndexWordLemma(result.getName());
-								}
-								concept.addSuperConcept(newSubsumer);
-								objectConcept.addSuperConcept(newSubsumer);
-								newSubsumer.addSubConcept(concept);
-								newSubsumer.addSubConcept(objectConcept);
 							}
+							if (!newSubsumer.hasIndexWordLemma()) {
+								newSubsumer.setIndexWordLemma(result.getName());
+							}
+							concept.addSuperConcept(newSubsumer);
+							objectConcept.addSuperConcept(newSubsumer);
+							newSubsumer.addSubConcept(concept);
+							newSubsumer.addSubConcept(objectConcept);
 						}
 					}
 				}
 			}
-
 		}
 
 	}
