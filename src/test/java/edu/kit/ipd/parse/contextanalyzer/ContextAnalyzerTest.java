@@ -335,7 +335,7 @@ public class ContextAnalyzerTest {
 	@Test
 	public void multiple() {
 		ppd = new PrePipelineData();
-		List<Pair<String, String>> text = evalTexts.get("s6p07");
+		List<Pair<String, String>> text = evalTexts.get("s6p01");
 		String input = prepareInputString(text);
 		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
 		executePreviousStages(ppd);
@@ -556,9 +556,9 @@ public class ContextAnalyzerTest {
 											String failure = "Concept: " + concept.getName() + " has no SuperConcept " + name;
 											failures.add(failure);
 
-											fn++;
+											fn += annotationContent.length - j;
 										} else {
-											alreadyChecked.add(concept);
+											alreadyChecked.add(last);
 											last = concept;
 										}
 									}
@@ -579,6 +579,14 @@ public class ContextAnalyzerTest {
 
 									fn++;
 									fp++;
+								} else if (concept.hasSuperConcepts()) {
+									for (AbstractConcept superConcept : concept.getSuperConcepts()) {
+										String failure = "Concept:" + concept.getName() + " has SuperConcept " + superConcept.getName()
+												+ " but no SuperConcept was expected";
+										failures.add(failure);
+
+										fp++;
+									}
 								}
 							}
 
