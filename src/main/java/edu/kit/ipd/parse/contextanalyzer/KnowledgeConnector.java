@@ -58,6 +58,8 @@ import net.sf.extjwnl.dictionary.Dictionary;
  */
 public class KnowledgeConnector implements IContextAnalyzer {
 
+	private static final double WUP_THRESHOLD = 0.7;
+
 	private static final Double LIN_SIMILARITY_THRESHOLD = 0.75;
 
 	private static final Double jwSimilarityThreshold = 0.92;
@@ -1119,7 +1121,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 						for (LeastCommonSubsumer leastCommonSubsumer : lcses) {
 							Double wupSim = WordNetUtils.calculateWUPSimilarity(leastCommonSubsumer.getSynsetOne(),
 									leastCommonSubsumer.getSynsetTwo(), leastCommonSubsumer.getLeastCommonSubsumer(), dictionary);
-							if ((wupSim > 0.5 && wupSim > max
+							if ((wupSim >= WUP_THRESHOLD && wupSim > max
 									&& !WordNetUtils.isNotSpecificEnough(leastCommonSubsumer.getLeastCommonSubsumer(), dictionary))
 									|| leastCommonSubsumer.getLeastCommonSubsumer().equals(leastCommonSubsumer.getSynsetOne())
 									|| leastCommonSubsumer.getLeastCommonSubsumer().equals(leastCommonSubsumer.getSynsetTwo())) {
@@ -1132,11 +1134,13 @@ public class KnowledgeConnector implements IContextAnalyzer {
 					} else {
 						LeastCommonSubsumer possResult = WordNetUtils.getLeastCommonSubsumer(current, candidate, wnSynsets,
 								wnSynsetsCandidate, dictionary);
-						Double linSim = WordNetUtils.calculateLinSimilarity(possResult.getSynsetOne(), possResult.getSynsetTwo(),
-								possResult.getLeastCommonSubsumer());
-						if (linSim > LIN_SIMILARITY_THRESHOLD || possResult.getLeastCommonSubsumer().equals(possResult.getSynsetOne())
-								|| possResult.getLeastCommonSubsumer().equals(possResult.getSynsetTwo())) {
-							result = possResult;
+						if (possResult != null) {
+							Double linSim = WordNetUtils.calculateLinSimilarity(possResult.getSynsetOne(), possResult.getSynsetTwo(),
+									possResult.getLeastCommonSubsumer());
+							if (linSim > LIN_SIMILARITY_THRESHOLD || possResult.getLeastCommonSubsumer().equals(possResult.getSynsetOne())
+									|| possResult.getLeastCommonSubsumer().equals(possResult.getSynsetTwo())) {
+								result = possResult;
+							}
 						}
 					}
 
@@ -1223,7 +1227,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 
 	private void removeRedundantEdges(AbstractConcept concept, AbstractConcept subsumerConcept) {
 		if (concept.hasSubConcepts()) {
-			for (AbstractConcept sub : concept.getSubConcepts()) {
+			for (int i = 0; i < concept.getSubConcepts().size(); i++) {
+				AbstractConcept sub = concept.getSubConcepts().toArray(new AbstractConcept[concept.getSubConcepts().size()])[i];
 				if (sub.getSuperConcepts().contains(subsumerConcept)) {
 					sub.getSuperConcepts().remove(subsumerConcept);
 					subsumerConcept.getSubConcepts().remove(sub);
@@ -1231,6 +1236,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 					removeRedundantEdges(sub, subsumerConcept);
 				}
 			}
+
 		}
 	}
 
