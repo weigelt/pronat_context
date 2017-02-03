@@ -297,6 +297,7 @@ public class ContextAnalyzerTest {
 				wsd.setGraph(ppd.getGraph());
 				wsd.exec();
 				graph = wsd.getGraph();
+				System.out.println(id);
 				do {
 					prev = result;
 					contextAnalyzer.setGraph(graph);
@@ -335,7 +336,7 @@ public class ContextAnalyzerTest {
 	@Test
 	public void multiple() {
 		ppd = new PrePipelineData();
-		List<Pair<String, String>> text = evalTexts.get("s6p01");
+		List<Pair<String, String>> text = evalTexts.get("s6p02");
 		String input = prepareInputString(text);
 		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
 		executePreviousStages(ppd);
@@ -404,69 +405,71 @@ public class ContextAnalyzerTest {
 		for (int i = 0; i < text.size(); i++) {
 			Pair<String, String> pair = text.get(i);
 			String word = pair.getLeft();
-			String annotation = pair.getRight();
-			if (annotation != null && indexMap.containsKey(i)) {
-				total++;
-				int position = indexMap.get(i);
-				ContextIndividual ci = getContainingContextIndividual(position, result);
-				if (ci instanceof Entity) {
-					EntityConcept concept = ContextUtils.getMostLikelyEntityConcept(ci.getRelations());
-					if (concept != null) {
-						String conceptName = annotation.substring(1, annotation.length() - 1).trim();
-						if (annotation.contains(",")) {
-							conceptName = conceptName.split(",")[0];
-						}
+			if (word != null) {
+				String annotation = pair.getRight();
+				if (annotation != null && indexMap.containsKey(i)) {
+					total++;
+					int position = indexMap.get(i);
+					ContextIndividual ci = getContainingContextIndividual(position, result);
+					if (ci instanceof Entity) {
+						EntityConcept concept = ContextUtils.getMostLikelyEntityConcept(ci.getRelations());
+						if (concept != null) {
+							String conceptName = annotation.substring(1, annotation.length() - 1).trim();
+							if (annotation.contains(",")) {
+								conceptName = conceptName.split(",")[0];
+							}
 
-						if (concept.getName().toLowerCase().equals(conceptName.toLowerCase())) {
-							tp++;
+							if (concept.getName().toLowerCase().equals(conceptName.toLowerCase())) {
+								tp++;
+							} else {
+								String failure = "Word:" + word + " at position " + position + " has related Concept: " + concept.getName()
+										+ " but Concept " + conceptName + " was expected";
+								failures.add(failure);
+
+								fn++;
+								fp++;
+							}
+							alreadyChecked.addAll(ci.getRelationsOfType(EntityConceptRelation.class));
 						} else {
-							String failure = "Word:" + word + " at position " + position + " has related Concept: " + concept.getName()
-									+ " but Concept " + conceptName + " was expected";
+
+							String failure = "Word:" + word + " at position " + position + " has no related Concept!";
 							failures.add(failure);
 
 							fn++;
-							fp++;
 						}
-						alreadyChecked.addAll(ci.getRelationsOfType(EntityConceptRelation.class));
-					} else {
+					} else if (ci instanceof Action) {
+						ActionConcept concept = ContextUtils.getMostLikelyActionConcept(ci.getRelations());
+						if (concept != null) {
+							String conceptName = annotation.substring(1, annotation.length() - 1).trim();
+							String[] split = conceptName.split(",");
+							conceptName = split[0];
+							String synonym = "";
+							if (split.length > 1) {
+								synonym = split[1];
+							}
+							if (concept.getName().toLowerCase().equals(conceptName)
+									|| concept.getName().toLowerCase().equals(synonym.toLowerCase())) {
+								tp++;
+							} else {
+								String failure = "Word:" + word + " at position " + position + " has related Concept: " + concept.getName()
+										+ " but Concept " + conceptName + " was expected";
+								failures.add(failure);
 
-						String failure = "Word:" + word + " at position " + position + " has no related Concept!";
-						failures.add(failure);
-
-						fn++;
-					}
-				} else if (ci instanceof Action) {
-					ActionConcept concept = ContextUtils.getMostLikelyActionConcept(ci.getRelations());
-					if (concept != null) {
-						String conceptName = annotation.substring(1, annotation.length() - 1).trim();
-						String[] split = conceptName.split(",");
-						conceptName = split[0];
-						String synonym = "";
-						if (split.length > 1) {
-							synonym = split[1];
-						}
-						if (concept.getName().toLowerCase().equals(conceptName)
-								|| concept.getName().toLowerCase().equals(synonym.toLowerCase())) {
-							tp++;
+								fn++;
+								fp++;
+							}
+							alreadyChecked.addAll(ci.getRelationsOfType(ActionConceptRelation.class));
 						} else {
-							String failure = "Word:" + word + " at position " + position + " has related Concept: " + concept.getName()
-									+ " but Concept " + conceptName + " was expected";
+							String failure = "Word:" + word + " at position " + position + " has no related Concept!";
 							failures.add(failure);
 
 							fn++;
-							fp++;
 						}
-						alreadyChecked.addAll(ci.getRelationsOfType(ActionConceptRelation.class));
 					} else {
-						String failure = "Word:" + word + " at position " + position + " has no related Concept!";
+						String failure = "Word:" + word + " at position " + position + " is not connected with any Entity or Action!";
 						failures.add(failure);
-
 						fn++;
 					}
-				} else {
-					String failure = "Word:" + word + " at position " + position + " is not connected with any Entity or Action!";
-					failures.add(failure);
-					fn++;
 				}
 			}
 		}
@@ -515,95 +518,143 @@ public class ContextAnalyzerTest {
 		int fn = 0;
 		int total = 0;
 		List<String> failures = new ArrayList<>();
+		HashSet<String> annotationsToCheck = new HashSet<>();
 		HashSet<AbstractConcept> alreadyChecked = new HashSet<>();
 		for (int i = 0; i < text.size(); i++) {
 			Pair<String, String> pair = text.get(i);
-			String word = pair.getLeft();
-			String annotation = pair.getRight();
-			if (annotation != null && indexMap.containsKey(i)) {
+			if (pair.getLeft() != null) {
+				String word = pair.getLeft();
+				String annotation = pair.getRight();
+				if (annotation != null && indexMap.containsKey(i)) {
 
-				int position = indexMap.get(i);
-				ContextIndividual ci = getContainingContextIndividual(position, result);
-				if (ci instanceof Entity) {
-					AbstractConcept concept = ContextUtils.getMostLikelyEntityConcept(ci.getRelations());
-					AbstractConcept last = concept;
-					AbstractConcept start = concept;
+					int position = indexMap.get(i);
+					ContextIndividual ci = getContainingContextIndividual(position, result);
+					if (ci instanceof Entity) {
+						AbstractConcept concept = ContextUtils.getMostLikelyEntityConcept(ci.getRelations());
+						AbstractConcept last = concept;
+						AbstractConcept start = concept;
 
-					if (concept != null) {
-						if (!alreadyChecked.contains(concept)) {
-							String content = annotation.substring(1, annotation.length() - 1).trim();
+						if (concept != null) {
+							if (!alreadyChecked.contains(concept)) {
+								String content = annotation.substring(1, annotation.length() - 1).trim();
 
-							String[] annotationContent = content.split(",");
-							if (annotationContent.length > 1) {
-								total += annotationContent.length - 1;
-								if (concept.getName().toLowerCase().equals(annotationContent[0].toLowerCase())) {
-									//TODO: Be able to check mutiple super concepts
-									for (int j = 1; j < annotationContent.length; j++) {
-										String name = annotationContent[j];
-										for (AbstractConcept superConcept : concept.getSuperConcepts()) {
-											if (superConcept.getName().equalsIgnoreCase(name)) {
-												tp++;
-												concept = superConcept;
+								String[] annotationContent = content.split(",");
+								if (annotationContent.length > 1) {
+									total += annotationContent.length - 1;
+									if (concept.getName().toLowerCase().equals(annotationContent[0].toLowerCase())) {
+										//TODO: Be able to check mutiple super concepts
+										for (int j = 1; j < annotationContent.length; j++) {
+											String name = annotationContent[j];
+											for (AbstractConcept superConcept : concept.getSuperConcepts()) {
+												if (superConcept.getName().equalsIgnoreCase(name)) {
+													tp++;
+													concept = superConcept;
 
-											} else {
-												String failure = "Concept: " + concept.getName() + " has SuperConcept " + superConcept
-														+ " which was not expected";
+												} else {
+													String failure = "Concept: " + last.getName() + " has SuperConcept "
+															+ superConcept.getName() + " which was not expected";
+													failures.add(failure);
+													fp++;
+												}
+											}
+											if (concept.equals(last)) {
+												String failure = "Concept: " + concept.getName() + " has no SuperConcept " + name;
 												failures.add(failure);
-												fp++;
+
+												fn += annotationContent.length - j;
+											} else {
+												alreadyChecked.add(last);
+												last = concept;
 											}
 										}
-										if (concept.equals(last)) {
-											String failure = "Concept: " + concept.getName() + " has no SuperConcept " + name;
-											failures.add(failure);
-
-											fn += annotationContent.length - j;
-										} else {
-											alreadyChecked.add(last);
-											last = concept;
-										}
-									}
-								} else {
-									String failure = "Word:" + word + " at position " + position + " has related Concept: "
-											+ concept.getName() + " but Concept " + annotationContent[0] + " was expected";
-									failures.add(failure);
-
-									fn += annotationContent.length - 1;
-								}
-
-							} else {
-								if (!concept.getName().toLowerCase().equals(annotationContent[0].toLowerCase())) {
-
-									String failure = "Word:" + word + " at position " + position + " has related Concept: "
-											+ concept.getName() + " but Concept " + annotationContent[0] + " was expected";
-									failures.add(failure);
-
-									fn++;
-									fp++;
-								} else if (concept.hasSuperConcepts()) {
-									for (AbstractConcept superConcept : concept.getSuperConcepts()) {
-										String failure = "Concept:" + concept.getName() + " has SuperConcept " + superConcept.getName()
-												+ " but no SuperConcept was expected";
+									} else {
+										String failure = "Word:" + word + " at position " + position + " has related Concept: "
+												+ concept.getName() + " but Concept " + annotationContent[0] + " was expected";
 										failures.add(failure);
 
+										fn += annotationContent.length - 1;
+									}
+
+								} else {
+									if (!concept.getName().toLowerCase().equals(annotationContent[0].toLowerCase())) {
+
+										String failure = "Word:" + word + " at position " + position + " has related Concept: "
+												+ concept.getName() + " but Concept " + annotationContent[0] + " was expected";
+										failures.add(failure);
+
+										fn++;
 										fp++;
+									} else if (concept.hasSuperConcepts()) {
+										for (AbstractConcept superConcept : concept.getSuperConcepts()) {
+											String failure = "Concept:" + concept.getName() + " has SuperConcept " + superConcept.getName()
+													+ " but no SuperConcept was expected";
+											failures.add(failure);
+
+											fp++;
+										}
 									}
 								}
+
 							}
+						} else {
 
+							String failure = "Word:" + word + " at position " + position + " has no related Concept!";
+							failures.add(failure);
+
+							fn++;
 						}
-					} else {
+						alreadyChecked.add(start);
+					} else if (ci instanceof Action) {
 
-						String failure = "Word:" + word + " at position " + position + " has no related Concept!";
-						failures.add(failure);
-
-						fn++;
 					}
-					alreadyChecked.add(start);
-				} else if (ci instanceof Action) {
-
 				}
+			} else {
+				annotationsToCheck.add(pair.getRight());
 			}
 		}
+		for (String annotation : annotationsToCheck) {
+			String content = annotation.substring(1, annotation.length() - 1).trim();
+			total++;
+			String[] annotationContent = content.split(",");
+			AbstractConcept concept = result.getConcept(annotationContent[0]);
+			AbstractConcept last = concept;
+			if (concept != null) {
+
+				for (int j = 1; j < annotationContent.length; j++) {
+					if (!alreadyChecked.contains(concept)) {
+						String name = annotationContent[j];
+						for (AbstractConcept superConcept : concept.getSuperConcepts()) {
+							if (superConcept.getName().equalsIgnoreCase(name)) {
+								tp++;
+								concept = superConcept;
+
+							} else {
+
+								String failure = "Concept: " + last.getName() + " has SuperConcept " + superConcept.getName()
+										+ " which was not expected";
+								failures.add(failure);
+								fp++;
+							}
+						}
+						if (concept.equals(last)) {
+							String failure = "Concept: " + concept.getName() + " has no SuperConcept " + name;
+							failures.add(failure);
+
+							fn += annotationContent.length - j;
+						} else {
+							alreadyChecked.add(last);
+							last = concept;
+						}
+					}
+				}
+				alreadyChecked.add(concept);
+			} else {
+				String failure = "Concept " + annotationContent[0] + " was expected but was not present";
+				failures.add(failure);
+				fn += annotationContent.length - 1;
+			}
+		}
+
 		for (AbstractConcept abstractConcept : result.getConcepts()) {
 			if (!alreadyChecked.contains(abstractConcept) && abstractConcept.hasSuperConcepts()) {
 				for (AbstractConcept concept : abstractConcept.getSuperConcepts()) {
@@ -645,7 +696,9 @@ public class ContextAnalyzerTest {
 	private String prepareInputString(List<Pair<String, String>> text) {
 		String input = "";
 		for (Pair<String, String> pair : text) {
-			input += " " + pair.getLeft();
+			if (pair.getLeft() != null) {
+				input += " " + pair.getLeft();
+			}
 		}
 		input = input.trim();
 		return input;

@@ -71,6 +71,13 @@ public final class CorpusTexts {
 
 					last = tokens[j];
 				}
+				NodeList otherConceptsList = node.getElementsByTagName("otherConcepts");
+				for (int j = 0; j < otherConceptsList.getLength(); j++) {
+					Element otherConcepts = (Element) otherConceptsList.item(j);
+					String string = otherConcepts.getAttribute("annotation");
+					textList.add(new Pair<String, String>(null, string));
+				}
+
 				evalTexts.put(name, textList);
 			}
 		} catch (URISyntaxException e) {
