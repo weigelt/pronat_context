@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer.data;
 
@@ -211,7 +211,7 @@ public class Context {
 		List<AbstractConcept> concepts = new ArrayList<AbstractConcept>();
 
 		if (graph.hasNodeType(Entity.ENTITY_NODE_TYPE)) {
-			Set<INode> entityNodes = graph.getNodesOfType(graph.getNodeType(Entity.ENTITY_NODE_TYPE));
+			List<INode> entityNodes = graph.getNodesOfType(graph.getNodeType(Entity.ENTITY_NODE_TYPE));
 			for (INode entityNode : entityNodes) {
 
 				Entity entity = Entity.readFromNode(entityNode, graph);
@@ -222,7 +222,7 @@ public class Context {
 			}
 		}
 		if (graph.hasNodeType(Action.ACTION_NODE_TYPE)) {
-			Set<INode> actionNodes = graph.getNodesOfType(graph.getNodeType(Action.ACTION_NODE_TYPE));
+			List<INode> actionNodes = graph.getNodesOfType(graph.getNodeType(Action.ACTION_NODE_TYPE));
 			for (INode actionNode : actionNodes) {
 				Action action = Action.readFromNode(actionNode, graph);
 				graphMap.put(actionNode, action);
@@ -231,7 +231,7 @@ public class Context {
 			}
 		}
 		if (graph.hasNodeType(AbstractConcept.CONCEPT_NODE_TYPE)) {
-			Set<INode> conceptNodes = graph.getNodesOfType(graph.getNodeType(AbstractConcept.CONCEPT_NODE_TYPE));
+			List<INode> conceptNodes = graph.getNodesOfType(graph.getNodeType(AbstractConcept.CONCEPT_NODE_TYPE));
 			for (INode node : conceptNodes) {
 				AbstractConcept concept = AbstractConcept.readFromNode(node, graph);
 				graphMap.put(node, concept);
@@ -243,7 +243,7 @@ public class Context {
 			concept.readConceptRelationsOfNode(graphNodeMap.get(concept), graphMap, graph);
 		}
 		if (graph.hasArcType(Relation.RELATION_ARC_TYPE)) {
-			Set<IArc> relationArcs = graph.getArcsOfType(graph.getArcType(Relation.RELATION_ARC_TYPE));
+			List<IArc> relationArcs = graph.getArcsOfType(graph.getArcType(Relation.RELATION_ARC_TYPE));
 			for (IArc relationArc : relationArcs) {
 				Relation.readFromArc(relationArc, graphMap, graph);
 			}
@@ -356,7 +356,7 @@ public class Context {
 	/**
 	 * Returns if the current context has an {@link AbstractConcept} with the
 	 * specified ontologyIndividualName
-	 * 
+	 *
 	 * @param ontologyIndividual
 	 * @return
 	 */
@@ -372,7 +372,7 @@ public class Context {
 	/**
 	 * Returns the {@link AbstractConcept} with the specified
 	 * ontologyIndividualName
-	 * 
+	 *
 	 * @param ontologyIndividual
 	 *            the ontologyIndividualName to search for
 	 * @return the {@link AbstractConcept} with the specified
@@ -390,7 +390,7 @@ public class Context {
 	/**
 	 * Returns if the current context has an {@link AbstractConcept} with the
 	 * specified name
-	 * 
+	 *
 	 * @param name
 	 * @return
 	 */
@@ -405,7 +405,7 @@ public class Context {
 
 	/**
 	 * Returns the {@link AbstractConcept} with the specified name
-	 * 
+	 *
 	 * @param name
 	 *            The name to search for
 	 * @return the {@link AbstractConcept} with the specified name
@@ -421,7 +421,7 @@ public class Context {
 
 	/**
 	 * Returns if the Context was read in from the graph or newly created
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isReadFromGraph() {

@@ -20,7 +20,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.INodeType;
 
 /**
- * 
+ *
  * @author Tobias Hey
  *
  */
@@ -354,6 +354,7 @@ public class Action extends ContextIndividual {
 		return alreadyUpdated;
 	}
 
+	@Override
 	public INode printToGraph(IGraph graph) {
 		INodeType nodeType;
 		if (graph.hasNodeType(ACTION_NODE_TYPE)) {
@@ -383,7 +384,7 @@ public class Action extends ContextIndividual {
 		List<String> directHypernyms = GraphUtils.getListFromArrayToString((String) node.getAttributeValue(DIRECT_HYPERNYMS));
 		List<String> directHyponyms = GraphUtils.getListFromArrayToString((String) node.getAttributeValue(DIRECT_HYPONYMS));
 
-		Set<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
+		List<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
 		List<List<INode>> refs = new ArrayList<List<INode>>();
 		for (IArc arc : references) {
 			List<INode> reference = GraphUtils.getNodesOfArcChain(arc, graph);
@@ -587,7 +588,7 @@ public class Action extends ContextIndividual {
 		double confidenceMax = 0.0;
 		for (Relation relation : getRelationsOfType(ActionConceptRelation.class)) {
 			ActionConceptRelation acRel = (ActionConceptRelation) relation;
-			if ((acRel.getEnd() instanceof ActionConcept)) {
+			if (acRel.getEnd() instanceof ActionConcept) {
 				if (acRel.getConfidence() > confidenceMax) {
 					result = (ActionConcept) acRel.getEnd();
 					confidenceMax = acRel.getConfidence();

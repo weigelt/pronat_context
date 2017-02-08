@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer.data.entities;
 
@@ -115,7 +115,7 @@ public class SubjectEntity extends Entity {
 		int statement = (int) node.getAttributeValue(STATEMENT);
 		Gender gender = (Gender) node.getAttributeValue(GENDER);
 		boolean isSystem = (Boolean) node.getAttributeValue(IS_SYSTEM);
-		Set<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
+		List<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
 		List<List<INode>> refs = new ArrayList<List<INode>>();
 		for (IArc arc : references) {
 			List<INode> reference = GraphUtils.getNodesOfArcChain(arc, graph);
