@@ -197,12 +197,12 @@ public class ObjectConcept extends EntityConcept {
 	 * @param graph
 	 */
 	@Override
-	public void readConceptRelationsOfNode(INode node, HashMap<INode, ContextIndividual> graphNodes, IGraph graph) {
+	public void readConceptRelationsOfNode(INode node, ContextIndividual[] graphNodes, IGraph graph) {
 		super.readConceptRelationsOfNode(node, graphNodes, graph);
 		for (IArc arc : node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE))) {
 			String type = (String) arc.getAttributeValue(TYPE_OF_RELATION);
 			if (type.equals(STATE_RELATION_TYPE)) {
-				State state = (State) graphNodes.get(arc.getTargetNode());
+				State state = (State) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE)).indexOf(arc.getTargetNode())];
 				this.states.add(state);
 			}
 		}

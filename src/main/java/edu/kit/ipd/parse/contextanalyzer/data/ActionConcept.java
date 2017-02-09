@@ -246,15 +246,18 @@ public class ActionConcept extends AbstractConcept {
 	 * @param graphNodes
 	 * @param graph
 	 */
-	public void readConceptRelationsOfNode(INode node, HashMap<INode, ContextIndividual> graphNodes, IGraph graph) {
+	public void readConceptRelationsOfNode(INode node, ContextIndividual[] graphNodes, IGraph graph) {
 		super.readConceptRelationsOfNode(node, graphNodes, graph);
 		for (IArc arc : node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE))) {
 			String type = (String) arc.getAttributeValue(TYPE_OF_RELATION);
 			if (type.equals(STATES_CHANGED_RELATION_TYPE)) {
-				this.statesChangedTo.add((State) graphNodes.get(arc.getTargetNode()));
+				this.statesChangedTo
+						.add((State) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE)).indexOf(arc.getTargetNode())]);
 			} else if (type.equals(ANTONYM_ACTION_TYPE)) {
-				this.antonymActions.add((ActionConcept) graphNodes.get(arc.getTargetNode()));
-				((ActionConcept) graphNodes.get(arc.getTargetNode())).addAntonymAction(this);
+				this.antonymActions.add((ActionConcept) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE))
+						.indexOf(arc.getTargetNode())]);
+				((ActionConcept) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE)).indexOf(arc.getTargetNode())])
+						.addAntonymAction(this);
 			}
 		}
 	}

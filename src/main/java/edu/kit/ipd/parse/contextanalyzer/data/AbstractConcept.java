@@ -311,31 +311,36 @@ public abstract class AbstractConcept extends ContextIndividual {
 	 * @param graphNodes
 	 * @param graph
 	 */
-	public void readConceptRelationsOfNode(INode node, HashMap<INode, ContextIndividual> graphNodes, IGraph graph) {
+	public void readConceptRelationsOfNode(INode node, ContextIndividual[] graphNodes, IGraph graph) {
 		for (IArc arc : node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE))) {
 			String type = (String) arc.getAttributeValue(TYPE_OF_RELATION);
 			AbstractConcept target;
 			switch (type) {
 			case EQUAL_RELATION_TYPE:
-				this.equalConcepts.add((AbstractConcept) graphNodes.get(arc.getTargetNode()));
+				this.equalConcepts.add((AbstractConcept) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE))
+						.indexOf(arc.getTargetNode())]);
 				break;
 			case PART_OF_RELATION_TYPE:
-				target = (AbstractConcept) graphNodes.get(arc.getTargetNode());
+				target = (AbstractConcept) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE))
+						.indexOf(arc.getTargetNode())];
 				this.partOfConcepts.add(target);
 				target.addPartConcept(this);
 				break;
 			case PART_RELATION_TYPE:
-				target = (AbstractConcept) graphNodes.get(arc.getTargetNode());
+				target = (AbstractConcept) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE))
+						.indexOf(arc.getTargetNode())];
 				this.partConcepts.add(target);
 				target.addPartOfConcept(this);
 				break;
 			case SUB_RELATION_TYPE:
-				target = (AbstractConcept) graphNodes.get(arc.getTargetNode());
+				target = (AbstractConcept) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE))
+						.indexOf(arc.getTargetNode())];
 				this.subConcepts.add(target);
 				target.addSuperConcept(this);
 				break;
 			case SUPER_RELATION_TYPE:
-				target = (AbstractConcept) graphNodes.get(arc.getTargetNode());
+				target = (AbstractConcept) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE))
+						.indexOf(arc.getTargetNode())];
 				this.superConcepts.add(target);
 				target.addSubConcept(this);
 				break;

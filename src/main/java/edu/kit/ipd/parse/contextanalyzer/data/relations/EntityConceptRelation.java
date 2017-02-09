@@ -136,11 +136,12 @@ public class EntityConceptRelation extends Relation {
 		return super.hashCode() ^ start.hashCode() ^ end.hashCode();
 	}
 
-	public static Relation readFromArc(IArc arc, HashMap<INode, ContextIndividual> graphMap, IGraph graph) {
+	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {
 		Relation relation;
 		double confidence = (double) arc.getAttributeValue(CONFIDENCE);
-		Entity start = (Entity) graphMap.get(arc.getSourceNode());
-		AbstractConcept end = (AbstractConcept) graphMap.get(arc.getTargetNode());
+		Entity start = (Entity) graphMap[graph.getNodesOfType(graph.getNodeType(Entity.ENTITY_NODE_TYPE)).indexOf(arc.getSourceNode())];
+		AbstractConcept end = (AbstractConcept) graphMap[graph.getNodesOfType(graph.getNodeType(AbstractConcept.CONCEPT_NODE_TYPE))
+				.indexOf(arc.getTargetNode())];
 		relation = new EntityConceptRelation(start, end, confidence);
 		start.addRelation(relation);
 		end.addRelation(relation);

@@ -77,7 +77,7 @@ public abstract class Relation {
 		return name.hashCode();
 	}
 
-	public static Relation readFromArc(IArc arc, HashMap<INode, ContextIndividual> graphMap, IGraph graph) {
+	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {
 		switch ((String) arc.getAttributeValue(RELATION_TYPE)) {
 		case ActionEntityRelation.TYPE:
 			return ActionEntityRelation.readFromArc(arc, graphMap, graph);
