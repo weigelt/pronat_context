@@ -1,5 +1,5 @@
 /**
- *
+ * 
  */
 package edu.kit.ipd.parse.contextanalyzer.data.entities;
 
@@ -95,7 +95,7 @@ public class PronounEntity extends Entity implements IStateOwner {
 		GrammaticalNumber gNumber = (GrammaticalNumber) node.getAttributeValue(GRAMMATICAL_NUMBER);
 		CommandType cmdType = (CommandType) node.getAttributeValue(COMMAND_TYPE);
 		int statement = (int) node.getAttributeValue(STATEMENT);
-		List<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
+		Set<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
 		List<List<INode>> refs = new ArrayList<List<INode>>();
 		for (IArc arc : references) {
 			List<INode> reference = GraphUtils.getNodesOfArcChain(arc, graph);
@@ -125,12 +125,10 @@ public class PronounEntity extends Entity implements IStateOwner {
 
 	}
 
-	@Override
 	public boolean hasState() {
 		return hasRelationsOfType(EntityStateRelation.class);
 	}
 
-	@Override
 	public Set<State> getStates() {
 		Set<State> states = new HashSet<>();
 		for (Relation rel : getRelationsOfType(EntityStateRelation.class)) {

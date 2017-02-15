@@ -1,5 +1,5 @@
 /**
- *
+ * 
  */
 package edu.kit.ipd.parse.contextanalyzer;
 
@@ -33,7 +33,7 @@ import net.sf.extjwnl.dictionary.Dictionary;
 /**
  * This {@link IContextAnalyzer} analyzes the current {@link IGraph} and
  * {@link Context} for occurring {@link Action}s
- *
+ * 
  * @author Tobias Hey
  *
  */
@@ -62,7 +62,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Constructs new {@link ActionRecognizer}
-	 *
+	 * 
 	 * @param dictionary
 	 *            The WordNet {@link Dictionary}
 	 * @param domain
@@ -75,7 +75,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * edu.kit.ipd.parse.contextanalyzer.IContextAnalyzer#analyze(edu.kit.ipd.
 	 * parse.luna.graph.IGraph, edu.kit.ipd.parse.contextanalyzer.data.Context)
@@ -94,7 +94,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 	 * Returns all {@link Action} ocurring in the specified utterance
 	 * {@link INode}s and integrates new Information into possibly already
 	 * detected {@link Action} in the specified {@link Context}
-	 *
+	 * 
 	 * @param utteranceNodes
 	 * @param context
 	 * @return
@@ -152,7 +152,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 						action.setCommandType(cmdType);
 					}
 
-					List<? extends IArc> srlArcs = verb.getOutgoingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME));
+					Set<? extends IArc> srlArcs = verb.getOutgoingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME));
 
 					for (IArc arc : srlArcs) {
 						if (arc.getTargetNode() != verb) {
@@ -215,7 +215,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 	/**
 	 * REturns an {@link Action} build from the semantic role label Information
 	 * included in the specified {@link IArc}
-	 *
+	 * 
 	 * @param srlVerbArc
 	 * @param actionSequence
 	 * @return
@@ -258,7 +258,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 
 	/**
 	 * REtruns the {@link INode}s belonging to the specified role {@link IArc}
-	 *
+	 * 
 	 * @param arc
 	 * @return
 	 */
@@ -271,7 +271,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 			roleNodes.add(current);
 
 			while (GraphUtils.hasOutgoingArcOfType(current, SRL_ARCTYPE_NAME, graph)) {
-				List<? extends IArc> arcs = current.getOutgoingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME));
+				Set<? extends IArc> arcs = current.getOutgoingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME));
 				INode last = current;
 				for (IArc iArc : arcs) {
 					if (iArc.getAttributeValue(CORRESPONDING_VERB).equals(correspondingVerb)
@@ -310,7 +310,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 	/**
 	 * Returns all {@link INode}s belonging to all verb phrases of the specified
 	 * utterance {@link INode}s
-	 *
+	 * 
 	 * @param utteranceNodes
 	 * @return
 	 */
