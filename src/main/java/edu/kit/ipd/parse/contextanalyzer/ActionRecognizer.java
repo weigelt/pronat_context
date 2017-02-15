@@ -131,7 +131,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 
 					if (verb.getAttributeNames().contains(COMMAND_TYPE)) {
 						if (verb.getAttributeValue(COMMAND_TYPE) != null) {
-							cmdType = (CommandType) verb.getAttributeValue(COMMAND_TYPE);
+							cmdType = CommandType.toCommandType((verb.getAttributeValue(COMMAND_TYPE).toString()));
 
 						}
 					}
