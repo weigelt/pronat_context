@@ -33,10 +33,8 @@ public enum CommandType {
 			return CommandType.THEN_STATEMENT;
 		} else if (tag.equals("ELSE")) {
 			return CommandType.ELSE_STATEMENT;
-		} else if (tag.equals("INDP")) {
+		} else  {
 			return CommandType.INDEPENDENT_STATEMENT;
-		} else {
-			return null;
 		}
 			
 	}
