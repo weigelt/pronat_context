@@ -73,11 +73,22 @@ public class EntityStateRelation extends EntityConceptRelation {
 		return super.hashCode();
 	}
 
-	public static Relation readFromArc(IArc arc, HashMap<INode, ContextIndividual> graphMap, IGraph graph) {
+	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {
 		Relation relation;
 		double confidence = (double) arc.getAttributeValue(CONFIDENCE);
-		Entity start = (Entity) graphMap.get(arc.getSourceNode());
-		State end = (State) graphMap.get(arc.getTargetNode());
+		Entity start;
+		State end;
+		if (graphMap[graph.getNodes().indexOf(arc.getSourceNode())] instanceof Entity) {
+			start = (Entity) graphMap[graph.getNodes().indexOf(arc.getSourceNode())];
+		} else {
+			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
+		}
+		if (graphMap[graph.getNodes().indexOf(arc.getTargetNode())] instanceof State) {
+			end = (State) graphMap[graph.getNodes().indexOf(arc.getTargetNode())];
+		} else {
+			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
+		}
+
 		relation = new EntityStateRelation(start, end, confidence);
 		start.addRelation(relation);
 		end.addRelation(relation);

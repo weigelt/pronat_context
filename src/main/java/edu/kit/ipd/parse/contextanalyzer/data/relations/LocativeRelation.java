@@ -82,12 +82,22 @@ public class LocativeRelation extends EntityEntityRelation {
 		return super.hashCode() ^ location.hashCode();
 	}
 
-	public static Relation readFromArc(IArc arc, HashMap<INode, ContextIndividual> graphMap, IGraph graph) {
+	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {
 		Relation relation;
 		String name = (String) arc.getAttributeValue(RELATION_NAME);
 		PositionType location = (PositionType) arc.getAttributeValue(LOCATION);
-		Entity start = (Entity) graphMap.get(arc.getSourceNode());
-		Entity end = (Entity) graphMap.get(arc.getTargetNode());
+		Entity start;
+		Entity end;
+		if (graphMap[graph.getNodes().indexOf(arc.getSourceNode())] instanceof Entity) {
+			start = (Entity) graphMap[graph.getNodes().indexOf(arc.getSourceNode())];
+		} else {
+			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
+		}
+		if (graphMap[graph.getNodes().indexOf(arc.getTargetNode())] instanceof Entity) {
+			end = (Entity) graphMap[graph.getNodes().indexOf(arc.getTargetNode())];
+		} else {
+			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
+		}
 		relation = new LocativeRelation(name, location, start, end);
 		start.addRelation(relation);
 		end.addRelation(relation);

@@ -113,11 +113,22 @@ public class ConceptConceptRelation extends Relation {
 		return super.hashCode() ^ start.hashCode() ^ end.hashCode();
 	}
 
-	public static Relation readFromArc(IArc arc, HashMap<INode, ContextIndividual> graphMap, IGraph graph) {
+	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {
 		Relation relation;
 		String name = (String) arc.getAttributeValue(RELATION_NAME);
-		AbstractConcept start = (AbstractConcept) graphMap.get(arc.getSourceNode());
-		AbstractConcept end = (AbstractConcept) graphMap.get(arc.getTargetNode());
+		AbstractConcept start;
+		AbstractConcept end;
+		if (graphMap[graph.getNodes().indexOf(arc.getSourceNode())] instanceof AbstractConcept) {
+			start = (AbstractConcept) graphMap[graph.getNodes().indexOf(arc.getSourceNode())];
+		} else {
+			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
+		}
+		if (graphMap[graph.getNodes().indexOf(arc.getTargetNode())] instanceof AbstractConcept) {
+			end = (AbstractConcept) graphMap[graph.getNodes().indexOf(arc.getTargetNode())];
+		} else {
+			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
+		}
+
 		relation = new ConceptConceptRelation(name, start, end);
 		start.addRelation(relation);
 		end.addRelation(relation);

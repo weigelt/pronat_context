@@ -139,9 +139,18 @@ public class EntityConceptRelation extends Relation {
 	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {
 		Relation relation;
 		double confidence = (double) arc.getAttributeValue(CONFIDENCE);
-		Entity start = (Entity) graphMap[graph.getNodesOfType(graph.getNodeType(Entity.ENTITY_NODE_TYPE)).indexOf(arc.getSourceNode())];
-		AbstractConcept end = (AbstractConcept) graphMap[graph.getNodesOfType(graph.getNodeType(AbstractConcept.CONCEPT_NODE_TYPE))
-				.indexOf(arc.getTargetNode())];
+		Entity start;
+		AbstractConcept end;
+		if (graphMap[graph.getNodes().indexOf(arc.getSourceNode())] instanceof Entity) {
+			start = (Entity) graphMap[graph.getNodes().indexOf(arc.getSourceNode())];
+		} else {
+			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
+		}
+		if (graphMap[graph.getNodes().indexOf(arc.getTargetNode())] instanceof AbstractConcept) {
+			end = (AbstractConcept) graphMap[graph.getNodes().indexOf(arc.getTargetNode())];
+		} else {
+			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
+		}
 		relation = new EntityConceptRelation(start, end, confidence);
 		start.addRelation(relation);
 		end.addRelation(relation);

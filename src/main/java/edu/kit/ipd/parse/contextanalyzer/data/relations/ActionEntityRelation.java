@@ -112,11 +112,21 @@ public class ActionEntityRelation extends Relation {
 		return super.hashCode() ^ action.hashCode() ^ entity.hashCode();
 	}
 
-	public static Relation readFromArc(IArc arc, HashMap<INode, ContextIndividual> graphMap, IGraph graph) {
+	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {
 		Relation relation;
 		String name = (String) arc.getAttributeValue(RELATION_NAME);
-		Action action = (Action) graphMap.get(arc.getSourceNode());
-		Entity entity = (Entity) graphMap.get(arc.getTargetNode());
+		Action action;
+		Entity entity;
+		if (graphMap[graph.getNodes().indexOf(arc.getSourceNode())] instanceof Action) {
+			action = (Action) graphMap[graph.getNodes().indexOf(arc.getSourceNode())];
+		} else {
+			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
+		}
+		if (graphMap[graph.getNodes().indexOf(arc.getTargetNode())] instanceof Entity) {
+			entity = (Entity) graphMap[graph.getNodes().indexOf(arc.getTargetNode())];
+		} else {
+			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
+		}
 		relation = new ActionEntityRelation(name, action, entity);
 		action.addRelation(relation);
 		entity.addRelation(relation);
