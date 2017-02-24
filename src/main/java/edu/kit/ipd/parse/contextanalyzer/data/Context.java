@@ -4,6 +4,7 @@
 package edu.kit.ipd.parse.contextanalyzer.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -203,18 +204,8 @@ public class Context {
 	}
 
 	public static final Context readFromGraph(IGraph graph) {
-		int nodesSize = 0;
-		if (graph.hasNodeType(Entity.ENTITY_NODE_TYPE)) {
-			nodesSize += graph.getNodesOfType(graph.getNodeType(Entity.ENTITY_NODE_TYPE)).size();
-		}
-		if (graph.hasNodeType(Action.ACTION_NODE_TYPE)) {
-			nodesSize += graph.getNodesOfType(graph.getNodeType(Action.ACTION_NODE_TYPE)).size();
-		}
-		if (graph.hasNodeType(AbstractConcept.CONCEPT_NODE_TYPE)) {
-			nodesSize += graph.getNodesOfType(graph.getNodeType(AbstractConcept.CONCEPT_NODE_TYPE)).size();
-		}
-
-		ContextIndividual[] graphNodesToIndividuals = new ContextIndividual[nodesSize];
+		List<INode> graphNodes = graph.getNodes();
+		ContextIndividual[] graphNodesToIndividuals = new ContextIndividual[graphNodes.size()];
 		HashMap<ContextIndividual, INode> graphNodeMap = new HashMap<>();
 		List<Action> actions = new ArrayList<Action>();
 		List<Entity> entities = new ArrayList<Entity>();
@@ -225,7 +216,7 @@ public class Context {
 			for (INode entityNode : entityNodes) {
 
 				Entity entity = Entity.readFromNode(entityNode, graph);
-				graphNodesToIndividuals[entityNodes.indexOf(entityNode)] = entity;
+				graphNodesToIndividuals[graphNodes.indexOf(entityNode)] = entity;
 				//graphMap.put(entityNode, entity);
 				graphNodeMap.put(entity, entityNode);
 				entities.add(entity);
@@ -236,7 +227,7 @@ public class Context {
 			List<INode> actionNodes = graph.getNodesOfType(graph.getNodeType(Action.ACTION_NODE_TYPE));
 			for (INode actionNode : actionNodes) {
 				Action action = Action.readFromNode(actionNode, graph);
-				graphNodesToIndividuals[actionNodes.indexOf(actionNode)] = action;
+				graphNodesToIndividuals[graphNodes.indexOf(actionNode)] = action;
 				//graphMap.put(actionNode, action);
 				graphNodeMap.put(action, actionNode);
 				actions.add(action);
@@ -246,14 +237,15 @@ public class Context {
 			List<INode> conceptNodes = graph.getNodesOfType(graph.getNodeType(AbstractConcept.CONCEPT_NODE_TYPE));
 			for (INode node : conceptNodes) {
 				AbstractConcept concept = AbstractConcept.readFromNode(node, graph);
-				graphNodesToIndividuals[conceptNodes.indexOf(node)] = concept;
+				graphNodesToIndividuals[graphNodes.indexOf(node)] = concept;
 				//graphMap.put(node, concept);
 				graphNodeMap.put(concept, node);
 				concepts.add(concept);
 			}
 		}
 		for (AbstractConcept concept : concepts) {
-			concept.readConceptRelationsOfNode(graphNodeMap.get(concept), graphNodesToIndividuals, graph);
+			concept.readConceptRelationsOfNode(graphNodes.get(Arrays.asList(graphNodesToIndividuals).indexOf(concept)),
+					graphNodesToIndividuals, graph);
 		}
 		if (graph.hasArcType(Relation.RELATION_ARC_TYPE)) {
 			List<IArc> relationArcs = graph.getArcsOfType(graph.getArcType(Relation.RELATION_ARC_TYPE));
