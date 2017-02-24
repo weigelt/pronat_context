@@ -80,7 +80,9 @@ public class ReferentRelation extends EntityEntityRelation {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode() ^ Double.hashCode(confidence);
+		int hash = super.hashCode();
+		hash = 31 * hash + Double.hashCode(confidence);
+		return hash;
 	}
 
 	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {

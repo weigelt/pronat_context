@@ -109,7 +109,10 @@ public class ActionEntityRelation extends Relation {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode() ^ action.hashCode() ^ entity.hashCode();
+		int hash = super.hashCode();
+		hash = this.action == null ? hash : 31 * hash + this.action.hashCode();
+		hash = this.entity == null ? hash : 31 * hash + this.entity.hashCode();
+		return hash;
 	}
 
 	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {

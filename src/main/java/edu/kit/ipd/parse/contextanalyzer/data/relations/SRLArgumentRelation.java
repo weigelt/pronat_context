@@ -114,18 +114,19 @@ public class SRLArgumentRelation extends ActionEntityRelation {
 	public boolean equals(Object obj) {
 		if (obj instanceof SRLArgumentRelation) {
 			SRLArgumentRelation other = (SRLArgumentRelation) obj;
-			return Objects.equals(propBankRoleDescr, other.propBankRoleDescr) && verbNetRoles.equals(other.verbNetRoles)
-					&& frameNetRoles.equals(other.frameNetRoles) && super.equals(obj);
+			return Objects.equals(propBankRoleDescr, other.propBankRoleDescr) && Objects.equals(verbNetRoles, other.verbNetRoles)
+					&& Objects.equals(frameNetRoles, other.frameNetRoles) && super.equals(obj);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		if (propBankRoleDescr != null) {
-			return super.hashCode() ^ propBankRoleDescr.hashCode();
-		}
-		return super.hashCode();
+		int hash = super.hashCode();
+		hash = this.propBankRoleDescr == null ? hash : 31 * hash + this.propBankRoleDescr.hashCode();
+		hash = this.verbNetRoles == null ? hash : 31 * hash + this.verbNetRoles.hashCode();
+		hash = this.frameNetRoles == null ? hash : 31 * hash + this.frameNetRoles.hashCode();
+		return hash;
 	}
 
 	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {

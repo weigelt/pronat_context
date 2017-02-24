@@ -110,7 +110,10 @@ public class ConceptConceptRelation extends Relation {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode() ^ start.hashCode() ^ end.hashCode();
+		int hash = super.hashCode();
+		hash = this.start == null ? hash : 31 * hash + this.start.hashCode();
+		hash = this.end == null ? hash : 31 * hash + this.end.hashCode();
+		return hash;
 	}
 
 	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {

@@ -79,7 +79,9 @@ public class LocativeRelation extends EntityEntityRelation {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode() ^ location.hashCode();
+		int hash = super.hashCode();
+		hash = this.location == null ? hash : 31 * hash + this.location.hashCode();
+		return hash;
 	}
 
 	public static Relation readFromArc(IArc arc, ContextIndividual[] graphMap, IGraph graph) {
