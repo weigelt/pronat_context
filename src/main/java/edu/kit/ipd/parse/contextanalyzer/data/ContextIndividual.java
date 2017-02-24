@@ -20,7 +20,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
  */
 public abstract class ContextIndividual {
 
-	private boolean changed = false;
+	protected boolean changed = false;
 	private Set<Relation> relations;
 
 	public ContextIndividual() {

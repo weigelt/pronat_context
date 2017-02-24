@@ -160,8 +160,7 @@ public class ObjectConcept extends EntityConcept {
 	public boolean equals(Object obj) {
 		if (obj instanceof ObjectConcept) {
 			ObjectConcept other = (ObjectConcept) obj;
-			return super.equals(obj) && states.containsAll(other.states) && other.states.containsAll(states)
-					&& this.indexWordLemma.equals(other.indexWordLemma);
+			return super.equals(obj) && Objects.equals(states, other.states) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
 
 		}
 		return false;
@@ -169,8 +168,10 @@ public class ObjectConcept extends EntityConcept {
 
 	@Override
 	public int hashCode() {
-
-		return super.hashCode() ^ this.indexWordLemma.hashCode();
+		int hash = super.hashCode();
+		hash = this.states == null ? hash : 31 * hash + this.states.hashCode();
+		hash = this.indexWordLemma == null ? hash : 31 * hash + this.indexWordLemma.hashCode();
+		return hash;
 	}
 
 	public static AbstractConcept readFromNode(INode node, IGraph graph) {

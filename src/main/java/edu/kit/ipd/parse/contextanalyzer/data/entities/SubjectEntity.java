@@ -101,10 +101,10 @@ public class SubjectEntity extends Entity {
 
 	@Override
 	public int hashCode() {
-		if (gender != null) {
-			return super.hashCode() ^ gender.hashCode();
-		}
-		return super.hashCode();
+		int hash = super.hashCode();
+		hash = this.gender == null ? hash : 31 * hash + this.gender.hashCode();
+		hash = 31 * hash + Boolean.hashCode(isSystem);
+		return hash;
 	}
 
 	public static Entity readFromNode(INode node, IGraph graph) {

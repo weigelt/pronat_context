@@ -322,7 +322,19 @@ public class ObjectEntity extends Entity implements IStateOwner {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode() ^ determiner.hashCode() ^ quantity.hashCode() ^ possessivePronouns.hashCode();
+		int hash = super.hashCode();
+		hash = this.determiner == null ? hash : 31 * hash + this.determiner.hashCode();
+		hash = this.quantity == null ? hash : 31 * hash + this.quantity.hashCode();
+		hash = this.possessivePronouns == null ? hash : 31 * hash + this.possessivePronouns.hashCode();
+		hash = this.describingAdjectives == null ? hash : 31 * hash + this.describingAdjectives.hashCode();
+		hash = this.synonyms == null ? hash : 31 * hash + this.synonyms.hashCode();
+		hash = this.directHypernyms == null ? hash : 31 * hash + this.directHypernyms.hashCode();
+		hash = this.directHyponyms == null ? hash : 31 * hash + this.directHyponyms.hashCode();
+		hash = this.meronyms == null ? hash : 31 * hash + this.meronyms.hashCode();
+		hash = this.holonyms == null ? hash : 31 * hash + this.holonyms.hashCode();
+		hash = this.wnSense == null ? hash : 31 * hash + this.wnSense.hashCode();
+
+		return hash;
 	}
 
 	public static Entity readFromNode(INode node, IGraph graph) {

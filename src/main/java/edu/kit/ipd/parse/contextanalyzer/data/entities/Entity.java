@@ -57,8 +57,6 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 
 	private List<INode> reference = null;
 
-	protected boolean changed = false;
-
 	protected Entity(String name, GrammaticalNumber grammaticalNumber, List<INode> reference) {
 		super();
 		this.name = name;
@@ -197,13 +195,9 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 		if (obj instanceof Entity) {
 			Entity other = (Entity) obj;
 			boolean result = Objects.equals(name, other.name) && Objects.equals(grammaticalNumber, other.grammaticalNumber)
-					&& Objects.equals(commandType, other.commandType) && Objects.equals(statement, other.statement);
-			result = result && reference.equals(other.reference);
-			for (Relation rel : this.getRelations()) {
-				if (!other.getRelations().contains(rel)) {
-					return false;
-				}
-			}
+					&& Objects.equals(commandType, other.commandType) && Objects.equals(statement, other.statement)
+					&& Objects.equals(reference, other.reference) && Objects.equals(this.getRelations(), other.getRelations());
+
 			return result;
 		}
 		return false;
@@ -212,12 +206,9 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	public boolean equalsWithoutRelation(Object obj) {
 		if (obj instanceof Entity) {
 			Entity other = (Entity) obj;
-			boolean result = name.equals(other.name) && grammaticalNumber.equals(other.grammaticalNumber)
-					&& Objects.equals(commandType, other.commandType) && Objects.equals(statement, other.statement);
-			result = result && reference.equals(other.reference);
-			if (this.getRelations().size() != other.getRelations().size()) {
-				return false;
-			}
+			boolean result = Objects.equals(name, other.name) && Objects.equals(grammaticalNumber, other.grammaticalNumber)
+					&& Objects.equals(commandType, other.commandType) && statement == other.statement
+					&& Objects.equals(reference, other.reference);
 			return result;
 		}
 		return false;
@@ -225,7 +216,13 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 
 	@Override
 	public int hashCode() {
-		return name.hashCode() ^ grammaticalNumber.hashCode();
+		int hash = name.hashCode();
+		hash = this.commandType == null ? hash : 31 * hash + this.commandType.hashCode();
+		hash = Integer.hashCode(statement) + 31 * hash;
+		hash = this.grammaticalNumber == null ? hash : 31 * hash + this.grammaticalNumber.hashCode();
+		hash = this.reference == null ? hash : 31 * hash + this.reference.hashCode();
+
+		return hash;
 	}
 
 	public static Entity readFromNode(INode entityNode, IGraph graph) {

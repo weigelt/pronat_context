@@ -124,7 +124,7 @@ public class State extends AbstractConcept {
 	public boolean equals(Object obj) {
 		if (obj instanceof State) {
 			State other = (State) obj;
-			return super.equals(obj) && associatedStates.size() == other.associatedStates.size();
+			return super.equals(obj) && Objects.equals(associatedStates, other.associatedStates);
 
 		}
 		return false;
@@ -132,7 +132,9 @@ public class State extends AbstractConcept {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode();
+		int hash = super.hashCode();
+		hash = this.associatedStates == null ? hash : 31 * hash + this.associatedStates.hashCode();
+		return hash;
 	}
 
 	public static AbstractConcept readFromNode(INode node, IGraph graph) {

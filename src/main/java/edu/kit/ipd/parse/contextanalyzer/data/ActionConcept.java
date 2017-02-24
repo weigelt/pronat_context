@@ -211,8 +211,8 @@ public class ActionConcept extends AbstractConcept {
 	public boolean equals(Object obj) {
 		if (obj instanceof ActionConcept) {
 			ActionConcept other = (ActionConcept) obj;
-			return super.equals(obj) && statesChangedTo.size() == other.statesChangedTo.size()
-					&& antonymActions.size() == (other.antonymActions.size()) && this.indexWordLemma.equals(other.indexWordLemma);
+			return super.equals(obj) && Objects.equals(statesChangedTo, other.statesChangedTo)
+					&& Objects.equals(antonymActions, other.antonymActions) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
 
 		}
 		return false;
@@ -220,7 +220,11 @@ public class ActionConcept extends AbstractConcept {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode() ^ this.indexWordLemma.hashCode();
+		int hash = super.hashCode();
+		hash = this.statesChangedTo == null ? hash : 31 * hash + this.statesChangedTo.hashCode();
+		hash = this.antonymActions == null ? hash : 31 * hash + this.antonymActions.hashCode();
+		hash = this.indexWordLemma == null ? hash : 31 * hash + this.indexWordLemma.hashCode();
+		return hash;
 	}
 
 	public static AbstractConcept readFromNode(INode node, IGraph graph) {

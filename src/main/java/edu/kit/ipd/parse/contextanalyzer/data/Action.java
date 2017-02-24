@@ -63,8 +63,6 @@ public class Action extends ContextIndividual {
 
 	private List<INode> reference;
 
-	private boolean hasChanged = false;
-
 	/**
 	 * @param name
 	 * @param srlConfidence
@@ -100,7 +98,7 @@ public class Action extends ContextIndividual {
 		this.directHypernyms.addAll(directHypernyms);
 		this.reference = reference;
 		this.commandType = CommandType.INDEPENDENT_STATEMENT;
-		this.hasChanged = false;
+		this.changed = false;
 	}
 
 	public Action(String name, List<String> antonyms, List<String> synonyms, List<String> directHyponyms, List<String> directHypernyms,
@@ -121,7 +119,7 @@ public class Action extends ContextIndividual {
 		this.reference = reference;
 		this.commandType = CommandType.INDEPENDENT_STATEMENT;
 		this.srlConfidence = -1.0;
-		this.hasChanged = false;
+		this.changed = false;
 	}
 
 	/**
@@ -136,7 +134,7 @@ public class Action extends ContextIndividual {
 	 *            the name to set
 	 */
 	public void setName(String name) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.name = name;
 	}
 
@@ -152,7 +150,7 @@ public class Action extends ContextIndividual {
 	 *            the commandType to set
 	 */
 	public void setCommandType(CommandType commandType) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.commandType = commandType;
 	}
 
@@ -168,7 +166,7 @@ public class Action extends ContextIndividual {
 	 *            the reference to set
 	 */
 	public void setReference(List<INode> reference) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.reference = reference;
 	}
 
@@ -184,7 +182,7 @@ public class Action extends ContextIndividual {
 	 *            the srlConfidence to set
 	 */
 	public void setSrlConfidence(double confidence) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.srlConfidence = confidence;
 	}
 
@@ -200,7 +198,7 @@ public class Action extends ContextIndividual {
 	 *            the propBankRolesetID to set
 	 */
 	public void setPropBankRolesetID(String propBankRolesetID) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.propBankRolesetID = propBankRolesetID;
 	}
 
@@ -216,7 +214,7 @@ public class Action extends ContextIndividual {
 	 *            the propBankRoleSetDescription to set
 	 */
 	public void setPropBankRoleSetDescription(String propBankRoleSetDescription) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.propBankRoleSetDescription = propBankRoleSetDescription;
 	}
 
@@ -232,7 +230,7 @@ public class Action extends ContextIndividual {
 	 *            the verbNetFrames to set
 	 */
 	public void setVerbNetFrames(List<String> verbNetFrames) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.verbNetFrames = verbNetFrames;
 	}
 
@@ -248,7 +246,7 @@ public class Action extends ContextIndividual {
 	 *            the frameNetFrames to set
 	 */
 	public void setFrameNetFrames(List<String> frameNetFrames) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.frameNetFrames = frameNetFrames;
 	}
 
@@ -264,7 +262,7 @@ public class Action extends ContextIndividual {
 	 *            the eventTypes to set
 	 */
 	public void setEventTypes(List<String> eventTypes) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.eventTypes = eventTypes;
 	}
 
@@ -280,7 +278,7 @@ public class Action extends ContextIndividual {
 	 *            the antonyms to set
 	 */
 	public void setAntonyms(Set<String> antonyms) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.antonyms = antonyms;
 	}
 
@@ -296,7 +294,7 @@ public class Action extends ContextIndividual {
 	 *            the synonyms to set
 	 */
 	public void setSynonyms(Set<String> synonyms) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.synonyms = synonyms;
 	}
 
@@ -312,7 +310,7 @@ public class Action extends ContextIndividual {
 	 *            the direct Hyponyms to set
 	 */
 	public void setDirectHyponyms(Set<String> directHyponyms) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.directHyponyms = directHyponyms;
 	}
 
@@ -328,7 +326,7 @@ public class Action extends ContextIndividual {
 	 *            the directHypernyms to set
 	 */
 	public void setDirectHypernyms(Set<String> directHypernyms) {
-		this.hasChanged = true;
+		this.changed = true;
 		this.directHypernyms = directHypernyms;
 	}
 
@@ -459,15 +457,24 @@ public class Action extends ContextIndividual {
 	public boolean equals(Object obj) {
 		if (obj instanceof Action) {
 			Action other = (Action) obj;
-			if (name.equals(other.name) && commandType.equals(other.commandType) && srlConfidence == other.srlConfidence
-					&& propBankRolesetID.equals(other.propBankRolesetID)
-					&& propBankRoleSetDescription.equals(other.propBankRoleSetDescription) && verbNetFrames.equals(other.verbNetFrames)
-					&& frameNetFrames.equals(other.frameNetFrames) && eventTypes.equals(other.eventTypes) && antonyms.equals(other.antonyms)
-					&& synonyms.equals(other.synonyms) && directHypernyms.equals(other.directHypernyms)
-					&& directHyponyms.equals(other.directHyponyms)) {
+			if (Objects.equals(name, other.name) && Objects.equals(commandType, other.commandType) && srlConfidence == other.srlConfidence
+					&& Objects.equals(propBankRolesetID, other.propBankRolesetID)
+					&& Objects.equals(propBankRoleSetDescription, other.propBankRoleSetDescription)
+					&& Objects.equals(verbNetFrames, other.verbNetFrames) && Objects.equals(frameNetFrames, other.frameNetFrames)
+					&& Objects.equals(eventTypes, other.eventTypes) && Objects.equals(antonyms, other.antonyms)
+					&& Objects.equals(synonyms, other.synonyms) && Objects.equals(directHypernyms, other.directHypernyms)
+					&& Objects.equals(directHyponyms, other.directHyponyms)) {
 				boolean result = reference.equals(other.reference);
+				if (other.getRelations().size() != this.getRelations().size()) {
+					return false;
+				}
 				for (Relation rel : getRelations()) {
 					if (!other.getRelations().contains(rel)) {
+						return false;
+					}
+				}
+				for (Relation rel : other.getRelations()) {
+					if (!getRelations().contains(rel)) {
 						return false;
 					}
 				}
@@ -488,9 +495,6 @@ public class Action extends ContextIndividual {
 					&& Objects.equals(synonyms, other.synonyms) && Objects.equals(directHypernyms, other.directHypernyms)
 					&& Objects.equals(directHyponyms, other.directHyponyms)) {
 				boolean result = reference.equals(other.reference);
-				if (getRelations().size() != other.getRelations().size()) {
-					return false;
-				}
 				return result;
 			}
 		}
@@ -499,7 +503,21 @@ public class Action extends ContextIndividual {
 
 	@Override
 	public int hashCode() {
-		return name.hashCode();
+		int hash = name.hashCode();
+		hash = this.commandType == null ? hash : 31 * hash + this.commandType.hashCode();
+		hash = Double.hashCode(srlConfidence) + 31 * hash;
+		hash = this.propBankRolesetID == null ? hash : 31 * hash + this.propBankRolesetID.hashCode();
+		hash = this.propBankRoleSetDescription == null ? hash : 31 * hash + this.propBankRoleSetDescription.hashCode();
+		hash = this.verbNetFrames == null ? hash : 31 * hash + this.verbNetFrames.hashCode();
+		hash = this.frameNetFrames == null ? hash : 31 * hash + this.frameNetFrames.hashCode();
+		hash = this.eventTypes == null ? hash : 31 * hash + this.eventTypes.hashCode();
+		hash = this.antonyms == null ? hash : 31 * hash + this.antonyms.hashCode();
+		hash = this.synonyms == null ? hash : 31 * hash + this.synonyms.hashCode();
+		hash = this.directHypernyms == null ? hash : 31 * hash + this.directHypernyms.hashCode();
+		hash = this.directHyponyms == null ? hash : 31 * hash + this.directHyponyms.hashCode();
+		hash = this.reference == null ? hash : 31 * hash + this.reference.hashCode();
+
+		return hash;
 	}
 
 	public boolean integrateActionInformation(Action other) {
@@ -574,7 +592,7 @@ public class Action extends ContextIndividual {
 			}
 		}
 		changed = changed || this.getRelations().addAll(other.getRelations());
-		this.hasChanged = changed;
+		this.changed = changed;
 		return changed;
 
 	}

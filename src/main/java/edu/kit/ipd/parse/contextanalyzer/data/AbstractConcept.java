@@ -53,8 +53,6 @@ public abstract class AbstractConcept extends ContextIndividual {
 
 	private Set<AbstractConcept> partConcepts = new HashSet<AbstractConcept>();
 
-	protected boolean changed = false;
-
 	protected AbstractConcept(String name) {
 		super();
 		this.name = name;
@@ -258,12 +256,13 @@ public abstract class AbstractConcept extends ContextIndividual {
 	public boolean equals(Object obj) {
 		if (obj instanceof AbstractConcept) {
 			AbstractConcept concept = (AbstractConcept) obj;
-			boolean result = Objects.equals(name, concept.name) && this.synonyms.containsAll(concept.synonyms)
-					&& this.ontologyIndividual.equals(concept.ontologyIndividual)
-					&& this.equalConcepts.size() == concept.equalConcepts.size() && this.subConcepts.size() == concept.subConcepts.size()
-					&& this.superConcepts.size() == concept.superConcepts.size() && this.partConcepts.size() == concept.partConcepts.size()
-					&& this.partOfConcepts.size() == concept.partOfConcepts.size()
-					&& this.getRelations().containsAll(concept.getRelations());
+			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual)
+					&& Objects.equals(this.synonyms, concept.synonyms) && Objects.equals(equalConcepts, equalConcepts)
+					&& Objects.equals(this.subConcepts, concept.subConcepts)
+					&& Objects.equals(this.superConcepts.size(), concept.superConcepts)
+					&& Objects.equals(this.partConcepts.size(), concept.partConcepts)
+					&& Objects.equals(this.partOfConcepts.size(), concept.partOfConcepts)
+					&& Objects.equals(this.getRelations(), concept.getRelations());
 
 			return result;
 		}
@@ -273,10 +272,12 @@ public abstract class AbstractConcept extends ContextIndividual {
 	public boolean equalsWithoutRelation(Object obj) {
 		if (obj instanceof AbstractConcept) {
 			AbstractConcept concept = (AbstractConcept) obj;
-			boolean result = Objects.equals(name, concept.name) && this.synonyms.containsAll(concept.synonyms)
-					&& this.equalConcepts.size() == concept.equalConcepts.size() && this.subConcepts.size() == concept.subConcepts.size()
-					&& this.superConcepts.size() == concept.superConcepts.size() && this.partConcepts.size() == concept.partConcepts.size()
-					&& this.partOfConcepts.size() == concept.partOfConcepts.size();
+			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual)
+					&& Objects.equals(this.synonyms, concept.synonyms) && Objects.equals(equalConcepts, equalConcepts)
+					&& Objects.equals(this.subConcepts, concept.subConcepts)
+					&& Objects.equals(this.superConcepts.size(), concept.superConcepts)
+					&& Objects.equals(this.partConcepts.size(), concept.partConcepts)
+					&& Objects.equals(this.partOfConcepts.size(), concept.partOfConcepts);
 
 			return result;
 		}
@@ -285,8 +286,16 @@ public abstract class AbstractConcept extends ContextIndividual {
 
 	@Override
 	public int hashCode() {
+		int hash = this.name.hashCode();
 
-		return this.name.hashCode();
+		hash = this.ontologyIndividual == null ? hash : 31 * hash + this.ontologyIndividual.hashCode();
+		hash = this.equalConcepts == null ? hash : 31 * hash + this.equalConcepts.hashCode();
+		hash = this.subConcepts == null ? hash : 31 * hash + this.subConcepts.hashCode();
+		hash = this.superConcepts == null ? hash : 31 * hash + this.superConcepts.hashCode();
+		hash = this.partConcepts == null ? hash : 31 * hash + this.partConcepts.hashCode();
+		hash = this.partOfConcepts == null ? hash : 31 * hash + this.partOfConcepts.hashCode();
+		hash = this.synonyms == null ? hash : 31 * hash + this.synonyms.hashCode();
+		return hash;
 	}
 
 	public static AbstractConcept readFromNode(INode conceptNode, IGraph graph) {
