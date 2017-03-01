@@ -133,7 +133,9 @@ public class State extends AbstractConcept {
 	@Override
 	public int hashCode() {
 		int hash = super.hashCode();
-		hash = this.associatedStates == null ? hash : 31 * hash + this.associatedStates.hashCode();
+		for (State state : associatedStates) {
+			hash = hash * 31 + state.getName().hashCode();
+		}
 		return hash;
 	}
 

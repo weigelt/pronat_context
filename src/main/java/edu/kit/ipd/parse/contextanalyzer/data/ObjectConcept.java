@@ -169,7 +169,9 @@ public class ObjectConcept extends EntityConcept {
 	@Override
 	public int hashCode() {
 		int hash = super.hashCode();
-		hash = this.states == null ? hash : 31 * hash + this.states.hashCode();
+		for (AbstractConcept abstractConcept : states) {
+			hash = 31 * hash + abstractConcept.getName().hashCode();
+		}
 		hash = this.indexWordLemma == null ? hash : 31 * hash + this.indexWordLemma.hashCode();
 		return hash;
 	}

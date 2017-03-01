@@ -289,11 +289,26 @@ public abstract class AbstractConcept extends ContextIndividual {
 		int hash = this.name.hashCode();
 
 		hash = this.ontologyIndividual == null ? hash : 31 * hash + this.ontologyIndividual.hashCode();
-		hash = this.equalConcepts == null ? hash : 31 * hash + this.equalConcepts.hashCode();
-		hash = this.subConcepts == null ? hash : 31 * hash + this.subConcepts.hashCode();
-		hash = this.superConcepts == null ? hash : 31 * hash + this.superConcepts.hashCode();
-		hash = this.partConcepts == null ? hash : 31 * hash + this.partConcepts.hashCode();
-		hash = this.partOfConcepts == null ? hash : 31 * hash + this.partOfConcepts.hashCode();
+
+		for (AbstractConcept abstractConcept : equalConcepts) {
+			hash = 31 * hash + abstractConcept.getName().hashCode();
+		}
+
+		for (AbstractConcept abstractConcept : subConcepts) {
+			hash = 31 * hash + abstractConcept.getName().hashCode();
+		}
+
+		for (AbstractConcept abstractConcept : superConcepts) {
+			hash = 31 * hash + abstractConcept.getName().hashCode();
+		}
+
+		for (AbstractConcept abstractConcept : partConcepts) {
+			hash = 31 * hash + abstractConcept.getName().hashCode();
+		}
+
+		for (AbstractConcept abstractConcept : partOfConcepts) {
+			hash = 31 * hash + abstractConcept.getName().hashCode();
+		}
 		hash = this.synonyms == null ? hash : 31 * hash + this.synonyms.hashCode();
 		return hash;
 	}

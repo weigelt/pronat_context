@@ -221,8 +221,13 @@ public class ActionConcept extends AbstractConcept {
 	@Override
 	public int hashCode() {
 		int hash = super.hashCode();
-		hash = this.statesChangedTo == null ? hash : 31 * hash + this.statesChangedTo.hashCode();
-		hash = this.antonymActions == null ? hash : 31 * hash + this.antonymActions.hashCode();
+		for (AbstractConcept abstractConcept : statesChangedTo) {
+			hash = 31 * hash + abstractConcept.getName().hashCode();
+		}
+
+		for (AbstractConcept abstractConcept : antonymActions) {
+			hash = 31 * hash + abstractConcept.getName().hashCode();
+		}
 		hash = this.indexWordLemma == null ? hash : 31 * hash + this.indexWordLemma.hashCode();
 		return hash;
 	}

@@ -1152,6 +1152,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 									&& result.getLeastCommonSubsumer().equals(result.getSynsetTwo()))) {
 								newSubsumer = new ObjectConcept(getConceptName(result.getName()));
 								newSubsumer.setIndexWordLemma(result.getName());
+								//TODO add further WordNet infos
 								for (String synonym : WordNetUtils.getSynonyms(result.getName(), POS.NOUN, dictionary)) {
 									newSubsumer.addSynonym(synonym);
 								}
