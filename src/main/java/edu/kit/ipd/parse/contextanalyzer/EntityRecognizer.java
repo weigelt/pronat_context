@@ -264,13 +264,13 @@ public class EntityRecognizer implements IContextAnalyzer {
 	}
 
 	private Pair<String, Double> getWnSense(List<INode> phrase) {
-		if (phrase.get(0).getType().containsAttribute("wsdSenses", new ArrayList<Pair<String, Double>>().getClass().getName())) {
+		if (phrase.get(0).getType().containsAttribute("wnSynsetID", "String")) {
 			List<Pair<String, Double>> wnsenses = new ArrayList<>();
 			for (INode node : phrase) {
 
-				if (node.getAttributeValue("wsdSenses") != null
-						&& !((List<Pair<String, Double>>) node.getAttributeValue("wsdSenses")).isEmpty()) {
-					wnsenses.add(((List<Pair<String, Double>>) node.getAttributeValue("wsdSenses")).get(0));
+				if (node.getAttributeValue("wnSynsetID") != null) {
+					wnsenses.add(new Pair<String, Double>((String) node.getAttributeValue("wnSynsetID"),
+							(Double) node.getAttributeValue("bnScore")));
 				}
 			}
 			if (wnsenses.size() == 1) {
