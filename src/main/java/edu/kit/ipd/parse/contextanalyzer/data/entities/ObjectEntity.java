@@ -310,12 +310,19 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	public boolean equals(Object obj) {
 		if (obj instanceof ObjectEntity) {
 			ObjectEntity other = (ObjectEntity) obj;
-			return super.equals(obj) && Objects.equals(determiner, other.getDeterminer()) && Objects.equals(quantity, other.getQuantity())
-					&& Objects.equals(possessivePronouns, other.getPossessivePronouns())
+			boolean result = super.equals(obj) && Objects.equals(determiner, other.getDeterminer())
+					&& Objects.equals(quantity, other.getQuantity()) && Objects.equals(possessivePronouns, other.getPossessivePronouns())
 					&& Objects.equals(describingAdjectives, other.getDescribingAdjectives()) && Objects.equals(synonyms, other.synonyms)
 					&& Objects.equals(directHypernyms, other.getDirectHypernyms())
 					&& Objects.equals(directHyponyms, other.getDirectHyponyms()) && Objects.equals(meronyms, other.getMeronyms())
-					&& Objects.equals(holonyms, other.getHolonyms()) && Objects.equals(wnSense, other.getWNSense());
+					&& Objects.equals(holonyms, other.getHolonyms());
+			if (wnSense != null && other.getWNSense() != null) {
+				result &= Objects.equals(wnSense.getLeft(), other.getWNSense().getLeft())
+						&& Objects.equals(wnSense.getRight(), other.getWNSense().getRight());
+			} else if (wnSense == null && other.getWNSense() == null) {
+				return result;
+			}
+			return false;
 		}
 		return false;
 	}

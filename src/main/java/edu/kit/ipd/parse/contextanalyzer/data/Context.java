@@ -279,6 +279,7 @@ public class Context {
 				for (ContextIndividual otherIndividual : other) {
 					if (currentIndividual.equals(otherIndividual)) {
 						individualResult = true;
+						break;
 					}
 				}
 				if (individualResult != true) {
