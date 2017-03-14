@@ -92,6 +92,9 @@ public class ReferentRelation extends EntityEntityRelation {
 		relation = new ReferentRelation(name, confidence, start, end);
 		start.addRelation(relation);
 		end.addRelation(relation);
+		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
+			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
+		}
 		return relation;
 	}
 

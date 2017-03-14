@@ -17,6 +17,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
  */
 public abstract class Relation {
 
+	protected static final String VERIFIED_BY_DIALOG_AGENT = "verifiedByDialogAgent";
 	public static final String RELATION_ARC_TYPE = "contextRelation";
 	protected static final String RELATION_NAME = "name";
 	protected static final String RELATION_TYPE = "typeOfRelation";
@@ -26,12 +27,14 @@ public abstract class Relation {
 	protected static final String CONFIDENCE = "confidence";
 	protected static final String LOCATION = "location";
 	private String name;
+	private boolean verifiedByDialogAgent;
 
 	/**
 	 * 
 	 */
 	public Relation(String name) {
 		this.setName(name);
+		this.setVerifiedByDialogAgent(false);
 	}
 
 	/**
@@ -60,6 +63,7 @@ public abstract class Relation {
 		arcType.addAttributeToType("String", FN_ROLES);
 		arcType.addAttributeToType("double", CONFIDENCE);
 		arcType.addAttributeToType("String", LOCATION);
+		arcType.addAttributeToType("boolean", VERIFIED_BY_DIALOG_AGENT);
 		return arcType;
 	}
 
@@ -114,7 +118,8 @@ public abstract class Relation {
 
 	public boolean isRepresentedByArc(IArc arc, HashMap<ContextIndividual, INode> graphNodes) {
 		if (arc.getType().getName().equals(RELATION_ARC_TYPE)) {
-			if (arc.getAttributeValue(RELATION_NAME).equals(this.getName())) {
+			if (arc.getAttributeValue(RELATION_NAME).equals(this.getName()) && ((Boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT))
+					.equals(Boolean.valueOf(this.isVerifiedByDialogAgent()))) {
 				return true;
 			}
 		}
@@ -124,5 +129,20 @@ public abstract class Relation {
 	public abstract IArc updateArc(IArc arc);
 
 	protected abstract String getCompareType();
+
+	/**
+	 * @return the verifiedByDialogAgent
+	 */
+	public boolean isVerifiedByDialogAgent() {
+		return verifiedByDialogAgent;
+	}
+
+	/**
+	 * @param verifiedByDialogAgent
+	 *            the verifiedByDialogAgent to set
+	 */
+	public void setVerifiedByDialogAgent(boolean verifiedByDialogAgent) {
+		this.verifiedByDialogAgent = verifiedByDialogAgent;
+	}
 
 }

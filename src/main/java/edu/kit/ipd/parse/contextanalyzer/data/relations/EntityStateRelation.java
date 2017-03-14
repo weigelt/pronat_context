@@ -37,6 +37,8 @@ public class EntityStateRelation extends EntityConceptRelation {
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 		arc.setAttributeValue(CONFIDENCE, getConfidence());
+
+		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
 		return arc;
 	}
 
@@ -45,6 +47,8 @@ public class EntityStateRelation extends EntityConceptRelation {
 		super.updateArc(arc);
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 		arc.setAttributeValue(CONFIDENCE, getConfidence());
+
+		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
 		return arc;
 	}
 
@@ -81,6 +85,9 @@ public class EntityStateRelation extends EntityConceptRelation {
 		relation = new EntityStateRelation(start, end, confidence);
 		start.addRelation(relation);
 		end.addRelation(relation);
+		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
+			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
+		}
 		return relation;
 	}
 
