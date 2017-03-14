@@ -20,7 +20,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
  */
 public abstract class ContextIndividual {
 
-	private boolean changed = false;
+	protected boolean changed = false;
 	private Set<Relation> relations;
 
 	public ContextIndividual() {
@@ -104,6 +104,12 @@ public abstract class ContextIndividual {
 	 */
 	public Set<Relation> getRelations() {
 		return relations;
+	}
+
+	public boolean removeRelation(Relation relation) {
+		boolean hasChanged = getRelations().remove(relation);
+		changed = changed || hasChanged;
+		return hasChanged;
 	}
 
 	/**

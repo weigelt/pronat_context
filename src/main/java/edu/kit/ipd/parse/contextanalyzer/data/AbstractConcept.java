@@ -53,8 +53,6 @@ public abstract class AbstractConcept extends ContextIndividual {
 
 	private Set<AbstractConcept> partConcepts = new HashSet<AbstractConcept>();
 
-	protected boolean changed = false;
-
 	protected AbstractConcept(String name) {
 		super();
 		this.name = name;

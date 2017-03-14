@@ -57,8 +57,6 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 
 	private List<INode> reference = null;
 
-	protected boolean changed = false;
-
 	protected Entity(String name, GrammaticalNumber grammaticalNumber, List<INode> reference) {
 		super();
 		this.name = name;
