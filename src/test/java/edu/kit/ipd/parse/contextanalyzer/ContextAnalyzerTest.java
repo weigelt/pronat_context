@@ -468,8 +468,8 @@ public class ContextAnalyzerTest {
 			Context prev = new Context();
 			Context result = new Context();
 			IGraph graph = ppd.getGraph();
-			//wsd.setGraph(ppd.getGraph());
-			//wsd.exec();
+			wsd.setGraph(ppd.getGraph());
+			wsd.exec();
 			graph = ppd.getGraph();
 			do {
 				prev = result;
