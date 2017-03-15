@@ -25,6 +25,7 @@ public abstract class ContextIndividual {
 
 	public ContextIndividual() {
 		relations = new HashSet<Relation>();
+		this.changed = false;
 	}
 
 	public abstract INode printToGraph(IGraph graph);
@@ -34,6 +35,7 @@ public abstract class ContextIndividual {
 		Set<IArc> arcs = new HashSet<>();
 		for (Relation relation : relations) {
 			boolean found = false;
+			//TODO check whether fields have changed in updateARC
 			for (IArc arc : node.getOutgoingArcs()) {
 				if (arc.getType().getName().equals("contextRelation")) {
 					if (relation.isRepresentedByArc(arc, graphNodes)) {

@@ -76,6 +76,7 @@ public class SpeakerEntity extends Entity {
 		for (List<INode> list : refs.subList(1, refs.size())) {
 			entity.setReference(list);
 		}
+		entity.changed = false;
 		return entity;
 
 	}

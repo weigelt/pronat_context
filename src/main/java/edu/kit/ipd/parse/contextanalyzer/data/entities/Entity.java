@@ -20,6 +20,7 @@ import edu.kit.ipd.parse.luna.graph.IArcType;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.INodeType;
+import edu.kit.ipd.parse.luna.graph.Pair;
 
 /**
  * @author Tobias Hey
@@ -163,7 +164,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 		nodeType.addAttributeToType("String", MERONYMS);
 		nodeType.addAttributeToType("String", HOLONYMS);
 		nodeType.addAttributeToType("String", IS_SYSTEM);
-		nodeType.addAttributeToType("Pair<String,Double>", WN_SENSE);
+		nodeType.addAttributeToType(new Pair<String, Double>("", 0.0d).getClass().getName(), WN_SENSE);
 		return nodeType;
 	}
 

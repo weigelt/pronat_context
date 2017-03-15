@@ -188,6 +188,7 @@ public class ObjectConcept extends EntityConcept {
 		for (String string : synonyms) {
 			result.addSynonym(string);
 		}
+		result.changed = false;
 		return result;
 
 	}

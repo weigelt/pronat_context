@@ -393,6 +393,7 @@ public class Action extends ContextIndividual {
 		for (List<INode> list : refs.subList(1, refs.size())) {
 			action.setReference(list);
 		}
+		action.changed = false;
 		return action;
 	}
 

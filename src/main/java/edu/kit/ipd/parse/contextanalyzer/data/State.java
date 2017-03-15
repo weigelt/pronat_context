@@ -149,6 +149,7 @@ public class State extends AbstractConcept {
 		for (String string : synonyms) {
 			result.addSynonym(string);
 		}
+		result.changed = false;
 		return result;
 
 	}

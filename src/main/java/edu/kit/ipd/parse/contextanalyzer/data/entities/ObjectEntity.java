@@ -388,6 +388,7 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		for (List<INode> list : refs.subList(1, refs.size())) {
 			entity.setReference(list);
 		}
+		entity.changed = false;
 		return entity;
 
 	}

@@ -95,6 +95,7 @@ public class SubjectConcept extends EntityConcept {
 			result.addSynonym(string);
 		}
 		result.setGender(gender);
+		result.changed = false;
 		return result;
 
 	}
