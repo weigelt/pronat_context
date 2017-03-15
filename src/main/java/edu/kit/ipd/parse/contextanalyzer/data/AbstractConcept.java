@@ -258,10 +258,9 @@ public abstract class AbstractConcept extends ContextIndividual {
 			AbstractConcept concept = (AbstractConcept) obj;
 			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual)
 					&& Objects.equals(this.synonyms, concept.synonyms) && Objects.equals(equalConcepts, equalConcepts)
-					&& Objects.equals(this.subConcepts, concept.subConcepts)
-					&& Objects.equals(this.superConcepts.size(), concept.superConcepts)
-					&& Objects.equals(this.partConcepts.size(), concept.partConcepts)
-					&& Objects.equals(this.partOfConcepts.size(), concept.partOfConcepts)
+					&& Objects.equals(this.subConcepts, concept.subConcepts) && Objects.equals(this.superConcepts, concept.superConcepts)
+					&& Objects.equals(this.partConcepts, concept.partConcepts)
+					&& Objects.equals(this.partOfConcepts, concept.partOfConcepts)
 					&& Objects.equals(this.getRelations(), concept.getRelations());
 
 			return result;
@@ -274,10 +273,9 @@ public abstract class AbstractConcept extends ContextIndividual {
 			AbstractConcept concept = (AbstractConcept) obj;
 			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual)
 					&& Objects.equals(this.synonyms, concept.synonyms) && Objects.equals(equalConcepts, equalConcepts)
-					&& Objects.equals(this.subConcepts, concept.subConcepts)
-					&& Objects.equals(this.superConcepts.size(), concept.superConcepts)
-					&& Objects.equals(this.partConcepts.size(), concept.partConcepts)
-					&& Objects.equals(this.partOfConcepts.size(), concept.partOfConcepts);
+					&& Objects.equals(this.subConcepts, concept.subConcepts) && Objects.equals(this.superConcepts, concept.superConcepts)
+					&& Objects.equals(this.partConcepts, concept.partConcepts)
+					&& Objects.equals(this.partOfConcepts, concept.partOfConcepts);
 
 			return result;
 		}
