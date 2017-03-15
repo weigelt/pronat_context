@@ -165,10 +165,8 @@ public class State extends AbstractConcept {
 		for (IArc arc : node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE))) {
 			String type = (String) arc.getAttributeValue(TYPE_OF_RELATION);
 			if (type.equals(ASSOCIATED_STATE_RELATION_TYPE)) {
-				this.associatedStates
-						.add((State) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE)).indexOf(arc.getTargetNode())]);
-				((State) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE)).indexOf(arc.getTargetNode())])
-						.addAssociatedState(this);
+				this.associatedStates.add((State) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]);
+				((State) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]).addAssociatedState(this);
 			}
 		}
 	}

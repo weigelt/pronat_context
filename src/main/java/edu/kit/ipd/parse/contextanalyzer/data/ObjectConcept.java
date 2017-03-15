@@ -205,7 +205,7 @@ public class ObjectConcept extends EntityConcept {
 		for (IArc arc : node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE))) {
 			String type = (String) arc.getAttributeValue(TYPE_OF_RELATION);
 			if (type.equals(STATE_RELATION_TYPE)) {
-				State state = (State) graphNodes[graph.getNodesOfType(graph.getNodeType(CONCEPT_NODE_TYPE)).indexOf(arc.getTargetNode())];
+				State state = (State) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())];
 				this.states.add(state);
 			}
 		}
