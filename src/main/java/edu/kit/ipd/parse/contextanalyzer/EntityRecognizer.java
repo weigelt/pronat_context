@@ -277,6 +277,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 				return wnsenses.get(0);
 			} else {
 				if (!wnsenses.isEmpty()) {
+					// return sense of head
 					return wnsenses.get(wnsenses.size() - 1);
 				}
 			}

@@ -317,14 +317,24 @@ public class ObjectEntity extends Entity implements IStateOwner {
 					&& Objects.equals(directHyponyms, other.getDirectHyponyms()) && Objects.equals(meronyms, other.getMeronyms())
 					&& Objects.equals(holonyms, other.getHolonyms());
 			if (wnSense != null && other.getWNSense() != null) {
-				result &= Objects.equals(wnSense.getLeft(), other.getWNSense().getLeft())
-						&& Objects.equals(wnSense.getRight(), other.getWNSense().getRight());
+				result &= Objects.equals(wnSense.getLeft(), other.getWNSense().getLeft());
+				if (wnSense.getRight() != null) {
+					if (other.getWNSense() == null) {
+						return false;
+					} else {
+						result &= Math.abs(wnSense.getRight() - other.getWNSense().getRight()) < 0.0000001d;
+					}
+				} else {
+					result &= other.getWNSense().getRight() == null;
+				}
+				return result;
 			} else if (wnSense == null && other.getWNSense() == null) {
 				return result;
 			}
 			return false;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	@Override
