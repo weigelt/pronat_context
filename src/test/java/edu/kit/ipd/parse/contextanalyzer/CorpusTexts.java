@@ -31,9 +31,12 @@ public final class CorpusTexts {
 
 	public static HashMap<String, List<Pair<String, String>>> evalTexts;
 
+	public static HashMap<String, List<Pair<String, String>>> stateTexts;
+
 	static {
 		texts = new HashMap<String, String>();
 		evalTexts = new HashMap<>();
+		stateTexts = new HashMap<>();
 		try {
 			File file = new File(CorpusTexts.class.getResource("/korpus.xml").toURI());
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -79,6 +82,39 @@ public final class CorpusTexts {
 				}
 
 				evalTexts.put(name, textList);
+			}
+			file = new File(CorpusTexts.class.getResource("/korpusStateEval.xml").toURI());
+			doc = dBuilder.parse(file);
+			nl = doc.getElementsByTagName("text");
+			for (int i = 0; i < nl.getLength(); i++) {
+				Element node = (Element) nl.item(i);
+				String name = node.getAttribute("name");
+				String text = node.getTextContent();
+				text = text.trim();
+				List<Pair<String, String>> textList = new ArrayList<>();
+				String[] tokens = text.split(" ");
+				String last = "";
+				for (int j = 0; j < tokens.length; j++) {
+					if (tokens[j].startsWith("[")) {
+						textList.add(new Pair<String, String>(last, tokens[j]));
+					} else if (j + 1 < tokens.length) {
+						if (!tokens[j + 1].startsWith("[")) {
+							textList.add(new Pair<String, String>(tokens[j], null));
+						}
+					} else {
+						textList.add(new Pair<String, String>(tokens[j], null));
+					}
+
+					last = tokens[j];
+				}
+				NodeList otherConceptsList = node.getElementsByTagName("otherConcepts");
+				for (int j = 0; j < otherConceptsList.getLength(); j++) {
+					Element otherConcepts = (Element) otherConceptsList.item(j);
+					String string = otherConcepts.getAttribute("annotation");
+					textList.add(new Pair<String, String>(null, string));
+				}
+
+				stateTexts.put(name, textList);
 			}
 		} catch (URISyntaxException e) {
 

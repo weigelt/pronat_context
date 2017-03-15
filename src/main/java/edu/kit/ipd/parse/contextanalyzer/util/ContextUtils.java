@@ -339,7 +339,7 @@ public final class ContextUtils {
 		List<CommandType> cmdTypes = new ArrayList<>();
 		for (INode node : phrase) {
 			if (node.getAttributeNames().contains(COMMAND_TYPE) && node.getAttributeValue(COMMAND_TYPE) != null) {
-				CommandType cmdType = (CommandType) node.getAttributeValue(COMMAND_TYPE);
+				CommandType cmdType = CommandType.toCommandType((node.getAttributeValue(COMMAND_TYPE).toString()));
 				if (!cmdTypes.contains(cmdType)) {
 					cmdTypes.add(cmdType);
 				}
@@ -352,7 +352,7 @@ public final class ContextUtils {
 
 			for (INode node : phrase) {
 				if (node.getAttributeNames().contains(COMMAND_TYPE) && node.getAttributeValue(COMMAND_TYPE) != null) {
-					CommandType cmdType = (CommandType) node.getAttributeValue(COMMAND_TYPE);
+					CommandType cmdType = CommandType.toCommandType((node.getAttributeValue(COMMAND_TYPE).toString()));
 					Integer value = map.get(cmdType);
 					if (value != null) {
 						map.replace(cmdType, value + 1);

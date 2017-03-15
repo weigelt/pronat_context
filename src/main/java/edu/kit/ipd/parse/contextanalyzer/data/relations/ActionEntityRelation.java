@@ -86,6 +86,8 @@ public class ActionEntityRelation extends Relation {
 		IArc arc = graph.createArc(graphNodes.get(getAction()), graphNodes.get(getEntity()), arcType);
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
+
+		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
 		return arc;
 
 	}
@@ -94,6 +96,8 @@ public class ActionEntityRelation extends Relation {
 	public IArc updateArc(IArc arc) {
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
+
+		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
 		return arc;
 	}
 
@@ -133,6 +137,9 @@ public class ActionEntityRelation extends Relation {
 		relation = new ActionEntityRelation(name, action, entity);
 		action.addRelation(relation);
 		entity.addRelation(relation);
+		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
+			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
+		}
 		return relation;
 	}
 

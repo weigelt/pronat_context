@@ -15,6 +15,8 @@ import edu.kit.ipd.parse.contextanalyzer.data.ActionConcept;
 import edu.kit.ipd.parse.contextanalyzer.data.Context;
 import edu.kit.ipd.parse.contextanalyzer.data.ContextIndividual;
 import edu.kit.ipd.parse.contextanalyzer.data.EntityConcept;
+import edu.kit.ipd.parse.contextanalyzer.data.ObjectConcept;
+import edu.kit.ipd.parse.contextanalyzer.data.State;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.Entity;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.ObjectEntity;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.PronounEntity;
@@ -49,6 +51,7 @@ public class ContextAnalyzerTest {
 	PrePipelineData ppd;
 	HashMap<String, String> texts;
 	HashMap<String, List<Pair<String, String>>> evalTexts;
+	HashMap<String, List<Pair<String, String>>> stateTexts;
 	private static Properties props;
 
 	@Before
@@ -86,6 +89,7 @@ public class ContextAnalyzerTest {
 		snlp.init();
 		texts = CorpusTexts.texts;
 		evalTexts = CorpusTexts.evalTexts;
+		stateTexts = CorpusTexts.stateTexts;
 		contextAnalyzer = new ContextAnalyzer();
 		contextAnalyzer.init();
 	}
@@ -221,6 +225,70 @@ public class ContextAnalyzerTest {
 	}
 
 	@Test
+	public void countInstr() {
+		int instructionsS6 = 0;
+		int phrasesS6 = 0;
+		int instructionsS7 = 0;
+		int phrasesS7 = 0;
+		for (String id : evalTexts.keySet()) {
+			ppd = new PrePipelineData();
+			List<Pair<String, String>> text = evalTexts.get(id);
+			String input = prepareInputString(text);
+			ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
+			System.out.println(id);
+			executePreviousStages(ppd);
+			if (id.startsWith("s6")) {
+
+				try {
+					int last = 0;
+					List<INode> utterance = GraphUtils.getNodesOfUtterance(ppd.getGraph());
+					if (!utterance.isEmpty()) {
+						instructionsS6++;
+					}
+					for (INode iNode : utterance) {
+						if ((int) iNode.getAttributeValue("instructionNumber") != last) {
+							instructionsS6++;
+							last = (int) iNode.getAttributeValue("instructionNumber");
+						}
+						if (((String) iNode.getAttributeValue("chunkIOB")).startsWith("B")) {
+							phrasesS6++;
+						}
+					}
+
+				} catch (MissingDataException e) {
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					int last = 0;
+					List<INode> utterance = GraphUtils.getNodesOfUtterance(ppd.getGraph());
+					if (!utterance.isEmpty()) {
+						instructionsS7++;
+					}
+					for (INode iNode : utterance) {
+						if ((int) iNode.getAttributeValue("instructionNumber") != last) {
+							instructionsS7++;
+							last = (int) iNode.getAttributeValue("instructionNumber");
+						}
+						if (((String) iNode.getAttributeValue("chunkIOB")).startsWith("B")) {
+							phrasesS7++;
+						}
+					}
+
+				} catch (MissingDataException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		System.out.println("----------------------------------------------------");
+		System.out.println("| S6: instructions: " + instructionsS6 + " | phrases: " + phrasesS6 + "|");
+		System.out.println("| S7: instructions: " + instructionsS7 + " | phrases: " + phrasesS7 + "|");
+		System.out.println("| Total: instructions: " + (instructionsS7 + instructionsS6) + " | phrases: " + (phrasesS7 + phrasesS6) + "|");
+		System.out.println("----------------------------------------------------");
+	}
+
+	@Test
 	public void conceptBuildingEval() {
 		int total = 0;
 		int tp = 0;
@@ -334,6 +402,62 @@ public class ContextAnalyzerTest {
 	}
 
 	@Test
+	public void conceptStateEval() {
+		int total = 0;
+		int tp = 0;
+		int fp = 0;
+		int fn = 0;
+		List<String> failures = new ArrayList<>();
+		for (String id : stateTexts.keySet()) {
+			ppd = new PrePipelineData();
+			List<Pair<String, String>> text = stateTexts.get(id);
+			String input = prepareInputString(text);
+			ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis(input));
+			executePreviousStages(ppd);
+			try {
+				Context prev = new Context();
+				Context result = new Context();
+				IGraph graph = ppd.getGraph();
+				wsd.setGraph(ppd.getGraph());
+				wsd.exec();
+				graph = wsd.getGraph();
+				System.out.println(id);
+				do {
+					prev = result;
+					contextAnalyzer.setGraph(graph);
+					contextAnalyzer.exec();
+					result = contextAnalyzer.getContext();
+					graph = contextAnalyzer.getGraph();
+					System.out.println(result.getEntities());
+					System.out.println(result.getActions());
+					System.out.println(result.getConcepts());
+				} while (!prev.equals(result));
+				HashMap<Integer, Integer> indexMap = produceIndexMappings(text, graph);
+				Pair<List<String>, int[]> checkResult = evaluateStateBuilding(text, result, indexMap);
+				total += checkResult.getRight()[0];
+				tp += checkResult.getRight()[1];
+				fp += checkResult.getRight()[2];
+				fn += checkResult.getRight()[3];
+				for (String failure : checkResult.getLeft()) {
+					failures.add(id + ": " + failure);
+				}
+			} catch (MissingDataException e) {
+				e.printStackTrace();
+			}
+		}
+		double precision = (double) tp / (double) (tp + fp);
+		double recall = (double) tp / (double) (tp + fn);
+		double f1 = (2 * precision * recall) / (precision + recall);
+		System.out.println("----------------------------------------------------");
+		System.out.println("| Correct Relations: " + tp + "/" + total + " | Additionally Detected: " + fp + "|");
+		System.out.println("| Precision = " + precision + "   Recall = " + recall + "  F1 = " + f1 + "|");
+		System.out.println("----------------------------------------------------");
+		for (String string : failures) {
+			System.out.println(string);
+		}
+	}
+
+	@Test
 	public void multiple() {
 		ppd = new PrePipelineData();
 		List<Pair<String, String>> text = evalTexts.get("s6p02");
@@ -346,7 +470,7 @@ public class ContextAnalyzerTest {
 			IGraph graph = ppd.getGraph();
 			wsd.setGraph(ppd.getGraph());
 			wsd.exec();
-			graph = wsd.getGraph();
+			graph = ppd.getGraph();
 			do {
 				prev = result;
 				contextAnalyzer.setGraph(graph);
@@ -664,6 +788,141 @@ public class ContextAnalyzerTest {
 
 					fp++;
 					alreadyChecked.add(concept);
+				}
+			}
+
+		}
+		return new Pair<List<String>, int[]>(failures, new int[] { total, tp, fp, fn });
+
+	}
+
+	private Pair<List<String>, int[]> evaluateStateBuilding(List<Pair<String, String>> text, Context result,
+			HashMap<Integer, Integer> indexMap) {
+		int tp = 0;
+		int fp = 0;
+		int fn = 0;
+		int total = 0;
+		List<String> failures = new ArrayList<>();
+		HashSet<String> annotationsToCheck = new HashSet<>();
+		HashSet<AbstractConcept> alreadyChecked = new HashSet<>();
+		for (int i = 0; i < text.size(); i++) {
+			Pair<String, String> pair = text.get(i);
+			if (pair.getLeft() != null) {
+				String word = pair.getLeft();
+				String annotation = pair.getRight();
+				if (annotation != null && indexMap.containsKey(i)) {
+
+					int position = indexMap.get(i);
+					ContextIndividual ci = getContainingContextIndividual(position, result);
+					if (ci instanceof Entity) {
+						AbstractConcept concept = ContextUtils.getMostLikelyEntityConcept(ci.getRelations());
+						AbstractConcept last = concept;
+						AbstractConcept start = concept;
+
+						if (concept != null) {
+							if (!alreadyChecked.contains(concept)) {
+								String content = annotation.substring(1, annotation.length() - 1).trim();
+
+								String[] annotationContent = content.split(",");
+								if (annotationContent.length > 1) {
+									total += annotationContent.length - 1;
+									if (concept.getName().toLowerCase().equals(annotationContent[0].toLowerCase())
+											&& concept instanceof ObjectConcept) {
+
+										ObjectConcept objConcept = (ObjectConcept) concept;
+										for (int j = 1; j < annotationContent.length; j++) {
+											String stateName = annotationContent[j];
+											boolean match = false;
+											for (State state : objConcept.getStates()) {
+												if (state.getName().equalsIgnoreCase(stateName)) {
+													tp++;
+													match = true;
+
+												}
+											}
+											if (!match) {
+												String failure = "Concept: " + concept.getName() + " has no State " + stateName;
+												failures.add(failure);
+												fn++;
+											}
+										}
+
+									} else {
+										String failure = "Word:" + word + " at position " + position + " has related Concept: "
+												+ concept.getName() + " but Concept " + annotationContent[0] + " was expected";
+										failures.add(failure);
+
+										fn += annotationContent.length - 1;
+									}
+
+								}
+
+							}
+						} else {
+
+							String failure = "Word:" + word + " at position " + position + " has no related Concept!";
+							failures.add(failure);
+
+							fn++;
+						}
+						alreadyChecked.add(start);
+					}
+				}
+			} else {
+				annotationsToCheck.add(pair.getRight());
+			}
+		}
+		for (String annotation : annotationsToCheck) {
+			String content = annotation.substring(1, annotation.length() - 1).trim();
+
+			String[] annotationContent = content.split(",");
+			total += annotationContent.length - 1;
+			AbstractConcept concept = result.getConcept(annotationContent[0]);
+
+			if (concept != null) {
+				if (concept instanceof ObjectConcept) {
+
+					ObjectConcept objConcept = (ObjectConcept) concept;
+					for (int j = 1; j < annotationContent.length; j++) {
+						String stateName = annotationContent[j];
+						boolean match = false;
+						for (State state : objConcept.getStates()) {
+							if (state.getName().equalsIgnoreCase(stateName)) {
+								tp++;
+								match = true;
+
+							}
+						}
+						if (!match) {
+							String failure = "Concept: " + concept.getName() + " has no State " + stateName;
+							failures.add(failure);
+							fn++;
+						}
+					}
+
+				} else {
+					String failure = "No ObjectConcept: " + annotationContent[0] + " was present";
+					failures.add(failure);
+
+					fn += annotationContent.length - 1;
+				}
+				alreadyChecked.add(concept);
+			} else {
+				String failure = "Concept " + annotationContent[0] + " was expected but was not present";
+				failures.add(failure);
+				fn += annotationContent.length - 1;
+			}
+		}
+
+		for (AbstractConcept abstractConcept : result.getConcepts()) {
+			if (!alreadyChecked.contains(abstractConcept) && abstractConcept instanceof ObjectConcept) {
+				for (State state : ((ObjectConcept) abstractConcept).getStates()) {
+					String failure = "Concept:" + abstractConcept.getName() + " has State " + state.getName()
+							+ " but no State was expected";
+					failures.add(failure);
+
+					fp++;
+					alreadyChecked.add(abstractConcept);
 				}
 			}
 

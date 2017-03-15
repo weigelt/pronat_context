@@ -91,6 +91,8 @@ public class ActionConceptRelation extends Relation {
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 		arc.setAttributeValue(CONFIDENCE, getConfidence());
+
+		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
 		return arc;
 	}
 
@@ -99,6 +101,8 @@ public class ActionConceptRelation extends Relation {
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 		arc.setAttributeValue(CONFIDENCE, getConfidence());
+
+		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
 		return arc;
 	}
 
@@ -153,6 +157,9 @@ public class ActionConceptRelation extends Relation {
 		relation = new ActionConceptRelation(start, end, confidence);
 		start.addRelation(relation);
 		end.addRelation(relation);
+		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
+			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
+		}
 		return relation;
 	}
 

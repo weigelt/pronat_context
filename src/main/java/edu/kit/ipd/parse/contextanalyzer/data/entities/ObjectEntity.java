@@ -1,5 +1,5 @@
 /**
- *
+ * 
  */
 package edu.kit.ipd.parse.contextanalyzer.data.entities;
 
@@ -310,14 +310,31 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	public boolean equals(Object obj) {
 		if (obj instanceof ObjectEntity) {
 			ObjectEntity other = (ObjectEntity) obj;
-			return super.equals(obj) && Objects.equals(determiner, other.getDeterminer()) && Objects.equals(quantity, other.getQuantity())
-					&& Objects.equals(possessivePronouns, other.getPossessivePronouns())
+			boolean result = super.equals(obj) && Objects.equals(determiner, other.getDeterminer())
+					&& Objects.equals(quantity, other.getQuantity()) && Objects.equals(possessivePronouns, other.getPossessivePronouns())
 					&& Objects.equals(describingAdjectives, other.getDescribingAdjectives()) && Objects.equals(synonyms, other.synonyms)
 					&& Objects.equals(directHypernyms, other.getDirectHypernyms())
 					&& Objects.equals(directHyponyms, other.getDirectHyponyms()) && Objects.equals(meronyms, other.getMeronyms())
-					&& Objects.equals(holonyms, other.getHolonyms()) && Objects.equals(wnSense, other.getWNSense());
+					&& Objects.equals(holonyms, other.getHolonyms());
+			if (wnSense != null && other.getWNSense() != null) {
+				result &= Objects.equals(wnSense.getLeft(), other.getWNSense().getLeft());
+				if (wnSense.getRight() != null) {
+					if (other.getWNSense() == null) {
+						return false;
+					} else {
+						result &= Math.abs(wnSense.getRight() - other.getWNSense().getRight()) < 0.0000001d;
+					}
+				} else {
+					result &= other.getWNSense().getRight() == null;
+				}
+				return result;
+			} else if (wnSense == null && other.getWNSense() == null) {
+				return result;
+			}
+			return false;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	@Override
@@ -353,7 +370,7 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		List<String> meronyms = GraphUtils.getListFromArrayToString((String) node.getAttributeValue(MERONYMS));
 		List<String> holonyms = GraphUtils.getListFromArrayToString((String) node.getAttributeValue(HOLONYMS));
 
-		List<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
+		Set<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
 		List<List<INode>> refs = new ArrayList<List<INode>>();
 		for (IArc arc : references) {
 			List<INode> reference = GraphUtils.getNodesOfArcChain(arc, graph);
@@ -459,12 +476,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		this.possessivePronouns = possessivePronouns;
 	}
 
-	@Override
 	public boolean hasState() {
 		return hasRelationsOfType(EntityStateRelation.class);
 	}
 
-	@Override
 	public Set<State> getStates() {
 		Set<State> states = new HashSet<>();
 		for (Relation rel : getRelationsOfType(EntityStateRelation.class)) {

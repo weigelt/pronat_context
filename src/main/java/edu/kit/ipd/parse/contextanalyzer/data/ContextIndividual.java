@@ -106,6 +106,12 @@ public abstract class ContextIndividual {
 		return relations;
 	}
 
+	public boolean removeRelation(Relation relation) {
+		boolean hasChanged = getRelations().remove(relation);
+		changed = changed || hasChanged;
+		return hasChanged;
+	}
+
 	/**
 	 * @param relations
 	 *            the relations to set

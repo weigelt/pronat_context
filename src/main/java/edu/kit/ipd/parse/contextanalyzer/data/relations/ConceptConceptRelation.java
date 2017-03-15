@@ -48,6 +48,8 @@ public class ConceptConceptRelation extends Relation {
 		IArc arc = graph.createArc(graphNodes.get(getStart()), graphNodes.get(getEnd()), arcType);
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
+
+		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
 		return arc;
 	}
 
@@ -55,7 +57,10 @@ public class ConceptConceptRelation extends Relation {
 	public IArc updateArc(IArc arc) {
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
+
+		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
 		return arc;
+
 	}
 
 	@Override
@@ -135,6 +140,9 @@ public class ConceptConceptRelation extends Relation {
 		relation = new ConceptConceptRelation(name, start, end);
 		start.addRelation(relation);
 		end.addRelation(relation);
+		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
+			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
+		}
 		return relation;
 	}
 
