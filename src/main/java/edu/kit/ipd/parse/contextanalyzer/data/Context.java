@@ -212,7 +212,7 @@ public class Context {
 		List<AbstractConcept> concepts = new ArrayList<AbstractConcept>();
 
 		if (graph.hasNodeType(Entity.ENTITY_NODE_TYPE)) {
-			Set<INode> entityNodes = graph.getNodesOfType(graph.getNodeType(Entity.ENTITY_NODE_TYPE));
+			List<INode> entityNodes = graph.getNodesOfType(graph.getNodeType(Entity.ENTITY_NODE_TYPE));
 			for (INode entityNode : entityNodes) {
 
 				Entity entity = Entity.readFromNode(entityNode, graph);
@@ -224,7 +224,7 @@ public class Context {
 			}
 		}
 		if (graph.hasNodeType(Action.ACTION_NODE_TYPE)) {
-			Set<INode> actionNodes = graph.getNodesOfType(graph.getNodeType(Action.ACTION_NODE_TYPE));
+			List<INode> actionNodes = graph.getNodesOfType(graph.getNodeType(Action.ACTION_NODE_TYPE));
 			for (INode actionNode : actionNodes) {
 				Action action = Action.readFromNode(actionNode, graph);
 				graphNodesToIndividuals[graphNodes.indexOf(actionNode)] = action;
@@ -234,7 +234,7 @@ public class Context {
 			}
 		}
 		if (graph.hasNodeType(AbstractConcept.CONCEPT_NODE_TYPE)) {
-			Set<INode> conceptNodes = graph.getNodesOfType(graph.getNodeType(AbstractConcept.CONCEPT_NODE_TYPE));
+			List<INode> conceptNodes = graph.getNodesOfType(graph.getNodeType(AbstractConcept.CONCEPT_NODE_TYPE));
 			for (INode node : conceptNodes) {
 				AbstractConcept concept = AbstractConcept.readFromNode(node, graph);
 				graphNodesToIndividuals[graphNodes.indexOf(node)] = concept;
@@ -248,7 +248,7 @@ public class Context {
 					graphNodesToIndividuals, graph);
 		}
 		if (graph.hasArcType(Relation.RELATION_ARC_TYPE)) {
-			Set<IArc> relationArcs = graph.getArcsOfType(graph.getArcType(Relation.RELATION_ARC_TYPE));
+			List<IArc> relationArcs = graph.getArcsOfType(graph.getArcType(Relation.RELATION_ARC_TYPE));
 			for (IArc relationArc : relationArcs) {
 				Relation.readFromArc(relationArc, graphNodesToIndividuals, graph);
 			}

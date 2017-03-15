@@ -152,7 +152,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 						action.setCommandType(cmdType);
 					}
 
-					Set<? extends IArc> srlArcs = verb.getOutgoingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME));
+					List<? extends IArc> srlArcs = verb.getOutgoingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME));
 
 					for (IArc arc : srlArcs) {
 						if (arc.getTargetNode() != verb) {
@@ -271,7 +271,7 @@ public class ActionRecognizer implements IContextAnalyzer {
 			roleNodes.add(current);
 
 			while (GraphUtils.hasOutgoingArcOfType(current, SRL_ARCTYPE_NAME, graph)) {
-				Set<? extends IArc> arcs = current.getOutgoingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME));
+				List<? extends IArc> arcs = current.getOutgoingArcsOfType(graph.getArcType(SRL_ARCTYPE_NAME));
 				INode last = current;
 				for (IArc iArc : arcs) {
 					if (iArc.getAttributeValue(CORRESPONDING_VERB).equals(correspondingVerb)

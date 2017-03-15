@@ -95,7 +95,7 @@ public class PronounEntity extends Entity implements IStateOwner {
 		GrammaticalNumber gNumber = (GrammaticalNumber) node.getAttributeValue(GRAMMATICAL_NUMBER);
 		CommandType cmdType = (CommandType) node.getAttributeValue(COMMAND_TYPE);
 		int statement = (int) node.getAttributeValue(STATEMENT);
-		Set<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
+		List<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
 		List<List<INode>> refs = new ArrayList<List<INode>>();
 		for (IArc arc : references) {
 			List<INode> reference = GraphUtils.getNodesOfArcChain(arc, graph);

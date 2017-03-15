@@ -370,7 +370,7 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		List<String> meronyms = GraphUtils.getListFromArrayToString((String) node.getAttributeValue(MERONYMS));
 		List<String> holonyms = GraphUtils.getListFromArrayToString((String) node.getAttributeValue(HOLONYMS));
 
-		Set<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
+		List<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
 		List<List<INode>> refs = new ArrayList<List<INode>>();
 		for (IArc arc : references) {
 			List<INode> reference = GraphUtils.getNodesOfArcChain(arc, graph);

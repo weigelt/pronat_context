@@ -381,7 +381,7 @@ public class Action extends ContextIndividual {
 		List<String> directHypernyms = GraphUtils.getListFromArrayToString((String) node.getAttributeValue(DIRECT_HYPERNYMS));
 		List<String> directHyponyms = GraphUtils.getListFromArrayToString((String) node.getAttributeValue(DIRECT_HYPONYMS));
 
-		Set<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
+		List<? extends IArc> references = node.getOutgoingArcsOfType(graph.getArcType(REFERENCE));
 		List<List<INode>> refs = new ArrayList<List<INode>>();
 		for (IArc arc : references) {
 			List<INode> reference = GraphUtils.getNodesOfArcChain(arc, graph);
