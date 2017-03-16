@@ -537,52 +537,48 @@ public abstract class AbstractConcept extends ContextIndividual {
 				}
 			}
 		}
-		//		for (AbstractConcept abstractConcept : equalConcepts) {
-		//			if (!alreadyConsidered.contains(abstractConcept)) {
-		//				INode current = graphNodes.get(this);
-		//				INode related = graphNodes.get(abstractConcept);
-		//				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
-		//				arc.setAttributeValue(TYPE_OF_RELATION, EQUAL_RELATION_TYPE);
-		//			}
-		//
-		//		}
-		//		for (AbstractConcept abstractConcept : partOfConcepts) {
-		//			if (!alreadyConsidered.contains(abstractConcept)) {
-		//				INode current = graphNodes.get(this);
-		//				INode related = graphNodes.get(abstractConcept);
-		//				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
-		//				arc.setAttributeValue(TYPE_OF_RELATION, PART_OF_RELATION_TYPE);
-		//			}
-		//		}
-		//		for (AbstractConcept abstractConcept : partConcepts) {
-		//			if (!alreadyConsidered.contains(abstractConcept)) {
-		//				INode current = graphNodes.get(this);
-		//				INode related = graphNodes.get(abstractConcept);
-		//				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
-		//				arc.setAttributeValue(TYPE_OF_RELATION, PART_RELATION_TYPE);
-		//			}
-		//		}
-		//		for (AbstractConcept abstractConcept : subConcepts) {
-		//			if (!alreadyConsidered.contains(abstractConcept)) {
-		//				INode current = graphNodes.get(this);
-		//				INode related = graphNodes.get(abstractConcept);
-		//				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
-		//				arc.setAttributeValue(TYPE_OF_RELATION, SUB_RELATION_TYPE);
-		//			}
-		//		}
-		//		for (AbstractConcept abstractConcept : superConcepts) {
-		//			if (!alreadyConsidered.contains(abstractConcept)) {
-		//				INode current = graphNodes.get(this);
-		//				INode related = graphNodes.get(abstractConcept);
-		//				if (current != null && related != null) {
-		//					IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
-		//					arc.setAttributeValue(TYPE_OF_RELATION, SUPER_RELATION_TYPE);
-		//				} else {
-		//					System.out.println("Error");
-		//				}
-		//
-		//			}
-		//		}
+		for (AbstractConcept abstractConcept : equalConcepts) {
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept)) {
+				INode current = graphNodes.get(this);
+				INode related = graphNodes.get(abstractConcept);
+				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
+				arc.setAttributeValue(TYPE_OF_RELATION, EQUAL_RELATION_TYPE);
+			}
+
+		}
+		for (AbstractConcept abstractConcept : partOfConcepts) {
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept)) {
+				INode current = graphNodes.get(this);
+				INode related = graphNodes.get(abstractConcept);
+				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
+				arc.setAttributeValue(TYPE_OF_RELATION, PART_OF_RELATION_TYPE);
+			}
+		}
+		for (AbstractConcept abstractConcept : partConcepts) {
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept)) {
+				INode current = graphNodes.get(this);
+				INode related = graphNodes.get(abstractConcept);
+				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
+				arc.setAttributeValue(TYPE_OF_RELATION, PART_RELATION_TYPE);
+			}
+		}
+		for (AbstractConcept abstractConcept : subConcepts) {
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept)) {
+				INode current = graphNodes.get(this);
+				INode related = graphNodes.get(abstractConcept);
+				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
+				arc.setAttributeValue(TYPE_OF_RELATION, SUB_RELATION_TYPE);
+			}
+		}
+		for (AbstractConcept abstractConcept : superConcepts) {
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept)) {
+				INode current = graphNodes.get(this);
+				INode related = graphNodes.get(abstractConcept);
+				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
+				arc.setAttributeValue(TYPE_OF_RELATION, SUPER_RELATION_TYPE);
+
+			}
+		}
 
 	}
 
