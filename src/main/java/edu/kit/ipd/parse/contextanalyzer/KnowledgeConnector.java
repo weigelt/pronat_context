@@ -661,6 +661,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 			context.addConcept(objectConcept);
 
 			if (indexWord != null) {
+				//TODO take WSD info
 				List<String> synonyms = WordNetUtils.getSynonyms(indexWord);
 				for (String synonym : synonyms) {
 					List<Pair<IIndividual, Double>> synonymCandidates = getDirectCandidates(synonym.toLowerCase(),

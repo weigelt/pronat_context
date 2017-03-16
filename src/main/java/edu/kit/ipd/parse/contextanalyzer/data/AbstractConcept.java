@@ -340,28 +340,29 @@ public abstract class AbstractConcept extends ContextIndividual {
 	@Override
 	public int hashCode() {
 		int hash = this.name.hashCode();
+		hash = 31 * hash + this.getClass().hashCode();
 
-		hash = this.ontologyIndividual == null ? hash : 31 * hash + this.ontologyIndividual.hashCode();
-
-		for (AbstractConcept abstractConcept : equalConcepts) {
-			hash = 31 * hash + abstractConcept.getName().hashCode();
-		}
-
-		for (AbstractConcept abstractConcept : subConcepts) {
-			hash = 31 * hash + abstractConcept.getName().hashCode();
-		}
-
-		for (AbstractConcept abstractConcept : superConcepts) {
-			hash = 31 * hash + abstractConcept.getName().hashCode();
-		}
-
-		for (AbstractConcept abstractConcept : partConcepts) {
-			hash = 31 * hash + abstractConcept.getName().hashCode();
-		}
-
-		for (AbstractConcept abstractConcept : partOfConcepts) {
-			hash = 31 * hash + abstractConcept.getName().hashCode();
-		}
+		//		hash = this.ontologyIndividual == null ? hash : 31 * hash + this.ontologyIndividual.hashCode();
+		//
+		//		for (AbstractConcept abstractConcept : equalConcepts) {
+		//			hash = 31 * hash + abstractConcept.getName().hashCode();
+		//		}
+		//
+		//		for (AbstractConcept abstractConcept : subConcepts) {
+		//			hash = 31 * hash + abstractConcept.getName().hashCode();
+		//		}
+		//
+		//		for (AbstractConcept abstractConcept : superConcepts) {
+		//			hash = 31 * hash + abstractConcept.getName().hashCode();
+		//		}
+		//
+		//		for (AbstractConcept abstractConcept : partConcepts) {
+		//			hash = 31 * hash + abstractConcept.getName().hashCode();
+		//		}
+		//
+		//		for (AbstractConcept abstractConcept : partOfConcepts) {
+		//			hash = 31 * hash + abstractConcept.getName().hashCode();
+		//		}
 		hash = this.synonyms == null ? hash : 31 * hash + this.synonyms.hashCode();
 		return hash;
 	}
