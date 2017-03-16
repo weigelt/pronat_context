@@ -78,6 +78,17 @@ public class SubjectConcept extends EntityConcept {
 	}
 
 	@Override
+	public boolean equalsWithoutRelation(Object obj) {
+		if (obj instanceof SubjectConcept) {
+			SubjectConcept other = (SubjectConcept) obj;
+			boolean result = super.equalsWithoutRelation(obj) && Objects.equals(gender, other.gender);
+
+			return result;
+		}
+		return false;
+	}
+
+	@Override
 	public int hashCode() {
 		int hash = super.hashCode();
 		hash = this.gender == null ? hash : 31 * hash + this.gender.hashCode();

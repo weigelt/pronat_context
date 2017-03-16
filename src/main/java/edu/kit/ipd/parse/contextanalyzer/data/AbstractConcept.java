@@ -312,13 +312,43 @@ public abstract class AbstractConcept extends ContextIndividual {
 		if (obj instanceof AbstractConcept) {
 			AbstractConcept concept = (AbstractConcept) obj;
 			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual)
-					&& Objects.equals(this.synonyms, concept.synonyms) && Objects.equals(equalConcepts, equalConcepts)
-					&& Objects.equals(this.subConcepts, concept.subConcepts) && Objects.equals(this.superConcepts, concept.superConcepts)
-					&& Objects.equals(this.partConcepts, concept.partConcepts)
-					&& Objects.equals(this.partOfConcepts, concept.partOfConcepts)
+					&& Objects.equals(this.synonyms, concept.synonyms) && matchesConcepts(this.equalConcepts, concept.equalConcepts)
+					&& matchesConcepts(this.subConcepts, concept.subConcepts) && matchesConcepts(this.superConcepts, concept.superConcepts)
+					&& matchesConcepts(this.partConcepts, concept.partConcepts)
+					&& matchesConcepts(this.partOfConcepts, concept.partOfConcepts)
 					&& Objects.equals(this.getRelations(), concept.getRelations());
 
 			return result;
+		}
+		return false;
+	}
+
+	protected boolean matchesConcepts(Set<? extends AbstractConcept> current, Set<? extends AbstractConcept> other) {
+		if (current != null) {
+			if (other == null) {
+				return false;
+			}
+			if (current.size() == other.size()) {
+				for (AbstractConcept abstractConcept : current) {
+					boolean match = false;
+					for (AbstractConcept otherConcept : other) {
+						if (abstractConcept.getName().equals(otherConcept.getName())
+								&& abstractConcept.getClass().isInstance(otherConcept)) {
+							match = true;
+							break;
+						}
+					}
+					if (!match) {
+						return false;
+					}
+				}
+				return true;
+
+			} else {
+				return false;
+			}
+		} else if (other == null) {
+			return true;
 		}
 		return false;
 	}
@@ -327,10 +357,10 @@ public abstract class AbstractConcept extends ContextIndividual {
 		if (obj instanceof AbstractConcept) {
 			AbstractConcept concept = (AbstractConcept) obj;
 			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual)
-					&& Objects.equals(this.synonyms, concept.synonyms) && Objects.equals(equalConcepts, equalConcepts)
-					&& Objects.equals(this.subConcepts, concept.subConcepts) && Objects.equals(this.superConcepts, concept.superConcepts)
-					&& Objects.equals(this.partConcepts, concept.partConcepts)
-					&& Objects.equals(this.partOfConcepts, concept.partOfConcepts);
+					&& Objects.equals(this.synonyms, concept.synonyms) && matchesConcepts(this.equalConcepts, concept.equalConcepts)
+					&& matchesConcepts(this.subConcepts, concept.subConcepts) && matchesConcepts(this.superConcepts, concept.superConcepts)
+					&& matchesConcepts(this.partConcepts, concept.partConcepts)
+					&& matchesConcepts(this.partOfConcepts, concept.partOfConcepts);
 
 			return result;
 		}

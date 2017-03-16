@@ -162,8 +162,20 @@ public class ObjectConcept extends EntityConcept {
 	public boolean equals(Object obj) {
 		if (obj instanceof ObjectConcept) {
 			ObjectConcept other = (ObjectConcept) obj;
-			return super.equals(obj) && Objects.equals(states, other.states) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
+			return super.equals(obj) && matchesConcepts(states, other.states) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
 
+		}
+		return false;
+	}
+
+	@Override
+	public boolean equalsWithoutRelation(Object obj) {
+		if (obj instanceof ObjectConcept) {
+			ObjectConcept other = (ObjectConcept) obj;
+			boolean result = super.equalsWithoutRelation(obj) && matchesConcepts(states, other.states)
+					&& Objects.equals(this.indexWordLemma, other.indexWordLemma);
+
+			return result;
 		}
 		return false;
 	}

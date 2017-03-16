@@ -229,9 +229,21 @@ public class ActionConcept extends AbstractConcept {
 	public boolean equals(Object obj) {
 		if (obj instanceof ActionConcept) {
 			ActionConcept other = (ActionConcept) obj;
-			return super.equals(obj) && Objects.equals(statesChangedTo, other.statesChangedTo)
-					&& Objects.equals(antonymActions, other.antonymActions) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
+			return super.equals(obj) && matchesConcepts(statesChangedTo, other.statesChangedTo)
+					&& matchesConcepts(antonymActions, other.antonymActions) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
 
+		}
+		return false;
+	}
+
+	@Override
+	public boolean equalsWithoutRelation(Object obj) {
+		if (obj instanceof ActionConcept) {
+			ActionConcept other = (ActionConcept) obj;
+			boolean result = super.equalsWithoutRelation(obj) && matchesConcepts(statesChangedTo, other.statesChangedTo)
+					&& matchesConcepts(antonymActions, other.antonymActions) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
+
+			return result;
 		}
 		return false;
 	}

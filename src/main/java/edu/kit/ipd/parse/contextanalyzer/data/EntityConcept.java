@@ -26,6 +26,14 @@ public abstract class EntityConcept extends AbstractConcept {
 	}
 
 	@Override
+	public boolean equalsWithoutRelation(Object obj) {
+		if (obj instanceof EntityConcept) {
+			return super.equalsWithoutRelation(obj);
+		}
+		return false;
+	}
+
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
