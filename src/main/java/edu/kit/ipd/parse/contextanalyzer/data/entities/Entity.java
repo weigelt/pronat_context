@@ -65,6 +65,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 		this.reference = reference;
 		this.commandType = CommandType.INDEPENDENT_STATEMENT;
 		this.statement = -1;
+		this.changed = false;
 	}
 
 	/**
@@ -79,8 +80,10 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	 *            the grammaticalNumber to set
 	 */
 	public void setGrammaticalNumber(GrammaticalNumber grammaticalNumber) {
-		this.changed = true;
-		this.grammaticalNumber = grammaticalNumber;
+		if (!Objects.equals(this.grammaticalNumber, grammaticalNumber)) {
+			this.changed = true;
+			this.grammaticalNumber = grammaticalNumber;
+		}
 	}
 
 	/**
@@ -95,8 +98,10 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	 *            the name to set
 	 */
 	public void setName(String name) {
-		this.name = name;
-		this.changed = true;
+		if (!Objects.equals(this.name, name)) {
+			this.name = name;
+			this.changed = true;
+		}
 	}
 
 	/**
@@ -111,8 +116,10 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	 *            the reference to set
 	 */
 	public void setReference(List<INode> reference) {
-		this.reference = reference;
-		this.changed = true;
+		if (!Objects.equals(this.reference, reference)) {
+			this.reference = reference;
+			this.changed = true;
+		}
 	}
 
 	@Override
@@ -303,8 +310,10 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	 *            the commandType to set
 	 */
 	public void setCommandType(CommandType commandType) {
-		this.changed = true;
-		this.commandType = commandType;
+		if (!Objects.equals(this.commandType, commandType)) {
+			this.changed = true;
+			this.commandType = commandType;
+		}
 	}
 
 	/**
@@ -319,8 +328,10 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	 *            the statement to set
 	 */
 	public void setStatement(int statement) {
-		this.changed = true;
-		this.statement = statement;
+		if (this.statement != statement) {
+			this.changed = true;
+			this.statement = statement;
+		}
 	}
 
 	public boolean hasAssociatedConcept() {

@@ -119,6 +119,8 @@ public class Context {
 
 					relations.addAll(entity.getRelations());
 
+				} else {
+					graphNodesMap.put(entity, this.nodesMap.get(entity));
 				}
 			}
 

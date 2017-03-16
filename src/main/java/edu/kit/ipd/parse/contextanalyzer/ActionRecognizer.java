@@ -192,14 +192,24 @@ public class ActionRecognizer implements IContextAnalyzer {
 							SRLArgumentRelation rel = (SRLArgumentRelation) relation;
 
 							rel.setAction(old);
+							boolean match = false;
 							for (Relation oldSRLRel : oldSrlRels) {
-								if (((SRLArgumentRelation) oldSRLRel).getEntity().equals(rel.getEntity())) {
-									action.getRelations().remove(oldSRLRel);
-									((SRLArgumentRelation) oldSRLRel).getEntity().getRelations().remove(oldSRLRel);
+								if (oldSRLRel.equals(rel)) {
+									match = true;
+									break;
 								}
 							}
-							old.addRelation(rel);
-							rel.getEntity().addRelation(rel);
+							if (!match) {
+								for (Relation oldSRLRel : oldSrlRels) {
+									if (((SRLArgumentRelation) oldSRLRel).getEntity().equals(rel.getEntity())) {
+										action.getRelations().remove(oldSRLRel);
+										((SRLArgumentRelation) oldSRLRel).getEntity().getRelations().remove(oldSRLRel);
+									}
+								}
+								old.addRelation(rel);
+								rel.getEntity().addRelation(rel);
+							}
+
 						}
 					}
 				}

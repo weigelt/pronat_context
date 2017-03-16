@@ -77,8 +77,8 @@ public class ConjunctionRelation extends EntityEntityRelation {
 		}
 
 		relation = new ConjunctionRelation(name, start, end);
-		start.addRelation(relation);
-		end.addRelation(relation);
+		start.addRelationWithoutChange(relation);
+		end.addRelationWithoutChange(relation);
 		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
 			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
 		}

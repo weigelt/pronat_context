@@ -94,8 +94,8 @@ public class EntityStateRelation extends EntityConceptRelation {
 		}
 
 		relation = new EntityStateRelation(start, end, confidence);
-		start.addRelation(relation);
-		end.addRelation(relation);
+		start.addRelationWithoutChange(relation);
+		end.addRelationWithoutChange(relation);
 		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
 			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
 		}

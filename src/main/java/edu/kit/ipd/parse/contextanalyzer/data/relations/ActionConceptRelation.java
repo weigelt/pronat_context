@@ -155,8 +155,8 @@ public class ActionConceptRelation extends Relation {
 			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
 		}
 		relation = new ActionConceptRelation(start, end, confidence);
-		start.addRelation(relation);
-		end.addRelation(relation);
+		start.addRelationWithoutChange(relation);
+		end.addRelationWithoutChange(relation);
 		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
 			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
 		}

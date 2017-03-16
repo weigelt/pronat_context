@@ -42,6 +42,7 @@ public class SubjectEntity extends Entity {
 		super(name, grammaticalNumber, reference);
 		this.gender = gender;
 		this.setSystem(isSystem);
+		this.changed = false;
 	}
 
 	/**
@@ -52,6 +53,7 @@ public class SubjectEntity extends Entity {
 	public SubjectEntity(String name, GrammaticalNumber grammaticalNumber, List<INode> reference) {
 		super(name, grammaticalNumber, reference);
 		this.gender = Gender.UNKNOWN;
+		this.changed = false;
 	}
 
 	/**
@@ -66,8 +68,10 @@ public class SubjectEntity extends Entity {
 	 *            the gender to set
 	 */
 	public void setGender(Gender gender) {
-		this.changed = true;
-		this.gender = gender;
+		if (!Objects.equals(this.gender, gender)) {
+			this.changed = true;
+			this.gender = gender;
+		}
 	}
 
 	@Override
@@ -155,6 +159,10 @@ public class SubjectEntity extends Entity {
 	}
 
 	public void setSystem(boolean isSystem) {
-		this.isSystem = isSystem;
+		if (this.isSystem != isSystem) {
+			this.changed = true;
+			this.isSystem = isSystem;
+		}
+
 	}
 }

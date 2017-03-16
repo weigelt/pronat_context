@@ -79,6 +79,7 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		this.meronyms = new HashSet<>();
 		this.meronyms.addAll(meronyms);
 		this.setDescribingAdjectives(describingAdjectives);
+		this.changed = false;
 	}
 
 	public ObjectEntity(String name, GrammaticalNumber gNumber, DeterminerType det, String quantity, List<String> possessivePronouns,
@@ -97,7 +98,7 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		this.holonyms = new HashSet<>();
 
 		this.meronyms = new HashSet<>();
-
+		this.changed = false;
 	}
 
 	/**
@@ -112,8 +113,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	 *            the synonyms to set
 	 */
 	public void setSynonyms(Set<String> synonyms) {
-		this.changed = true;
-		this.synonyms = synonyms;
+		if (!Objects.equals(this.synonyms, synonyms)) {
+			this.changed = true;
+			this.synonyms = synonyms;
+		}
 	}
 
 	/**
@@ -128,8 +131,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	 *            the directHypernyms to set
 	 */
 	public void setDirectHypernyms(Set<String> directHypernyms) {
-		this.changed = true;
-		this.directHypernyms = directHypernyms;
+		if (!Objects.equals(this.directHypernyms, directHypernyms)) {
+			this.changed = true;
+			this.directHypernyms = directHypernyms;
+		}
 	}
 
 	/**
@@ -144,8 +149,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	 *            the directHyponyms to set
 	 */
 	public void setDirectHyponyms(Set<String> directHyponyms) {
-		this.changed = true;
-		this.directHyponyms = directHyponyms;
+		if (!Objects.equals(this.directHyponyms, directHyponyms)) {
+			this.changed = true;
+			this.directHyponyms = directHyponyms;
+		}
 	}
 
 	/**
@@ -160,8 +167,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	 *            the meronyms to set
 	 */
 	public void setMeronyms(Set<String> meronyms) {
-		this.changed = true;
-		this.meronyms = meronyms;
+		if (!Objects.equals(this.meronyms, meronyms)) {
+			this.changed = true;
+			this.meronyms = meronyms;
+		}
 	}
 
 	/**
@@ -176,8 +185,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	 *            the holonyms to set
 	 */
 	public void setHolonyms(Set<String> holonyms) {
-		this.changed = true;
-		this.holonyms = holonyms;
+		if (!Objects.equals(this.holonyms, holonyms)) {
+			this.changed = true;
+			this.holonyms = holonyms;
+		}
 	}
 
 	public String getNameWithAdjectives() {
@@ -235,8 +246,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	 *            the describingAdjectives to set
 	 */
 	public void setDescribingAdjectives(List<String> describingAdjectives) {
-		this.changed = true;
-		this.describingAdjectives = describingAdjectives;
+		if (!Objects.equals(this.describingAdjectives, describingAdjectives)) {
+			this.changed = true;
+			this.describingAdjectives = describingAdjectives;
+		}
 	}
 
 	/**
@@ -251,8 +264,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	 *            the determiner to set
 	 */
 	public void setDeterminer(DeterminerType determiner) {
-		this.changed = true;
-		this.determiner = determiner;
+		if (!Objects.equals(this.determiner, determiner)) {
+			this.changed = true;
+			this.determiner = determiner;
+		}
 	}
 
 	/**
@@ -267,8 +282,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	 *            the quantity to set
 	 */
 	public void setQuantity(String quantity) {
-		this.changed = true;
-		this.quantity = quantity;
+		if (!Objects.equals(this.quantity, quantity)) {
+			this.changed = true;
+			this.quantity = quantity;
+		}
 	}
 
 	@Override
@@ -473,8 +490,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	 *            the possessivePronoun to set
 	 */
 	public void setPossessivePronouns(List<String> possessivePronouns) {
-		this.changed = true;
-		this.possessivePronouns = possessivePronouns;
+		if (!Objects.equals(this.possessivePronouns, possessivePronouns)) {
+			this.changed = true;
+			this.possessivePronouns = possessivePronouns;
+		}
 	}
 
 	public boolean hasState() {
@@ -502,7 +521,10 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	 *            the wnSense to set
 	 */
 	public void setWNSense(Pair<String, Double> wnSense) {
-		this.wnSense = wnSense;
+		if (!Objects.equals(this.wnSense, wnSense)) {
+			this.changed = true;
+			this.wnSense = wnSense;
+		}
 	}
 
 }
