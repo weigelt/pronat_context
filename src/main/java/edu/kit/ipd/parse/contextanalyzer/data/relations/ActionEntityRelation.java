@@ -135,8 +135,8 @@ public class ActionEntityRelation extends Relation {
 			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
 		}
 		relation = new ActionEntityRelation(name, action, entity);
-		action.addRelationWithoutChange(relation);
-		entity.addRelationWithoutChange(relation);
+		action.addRelationWithoutSettingChanged(relation);
+		entity.addRelationWithoutSettingChanged(relation);
 		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
 			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
 		}

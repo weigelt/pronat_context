@@ -160,8 +160,8 @@ public class EntityConceptRelation extends Relation {
 			throw new IllegalArgumentException("the mapping between node and contextIndividual is defect");
 		}
 		relation = new EntityConceptRelation(start, end, confidence);
-		start.addRelationWithoutChange(relation);
-		end.addRelationWithoutChange(relation);
+		start.addRelationWithoutSettingChanged(relation);
+		end.addRelationWithoutSettingChanged(relation);
 		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
 			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
 		}

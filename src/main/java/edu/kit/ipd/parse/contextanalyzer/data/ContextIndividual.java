@@ -128,7 +128,7 @@ public abstract class ContextIndividual {
 	 * @param relations
 	 *            the relations to set
 	 */
-	public boolean addRelationWithoutChange(Relation relation) {
+	public boolean addRelationWithoutSettingChanged(Relation relation) {
 		boolean hasChanged = this.relations.add(relation);
 		return hasChanged;
 	}
