@@ -11,6 +11,7 @@ public abstract class EntityConcept extends AbstractConcept {
 
 	protected EntityConcept(String name) {
 		super(name);
+		changed = false;
 	}
 
 	protected static final String TYPE = "entityConcept";

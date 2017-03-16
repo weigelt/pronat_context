@@ -35,7 +35,7 @@ public class ObjectConcept extends EntityConcept {
 	 */
 	public ObjectConcept(String name) {
 		super(name);
-
+		changed = false;
 	}
 
 	/**
@@ -73,8 +73,10 @@ public class ObjectConcept extends EntityConcept {
 	 * @param
 	 */
 	public void setIndexWordLemma(String indexWordLemma) {
-		changed = true;
-		this.indexWordLemma = indexWordLemma;
+		if (!Objects.equals(this.indexWordLemma, indexWordLemma)) {
+			changed = true;
+			this.indexWordLemma = indexWordLemma;
+		}
 	}
 
 	public boolean hasIndexWordLemma() {

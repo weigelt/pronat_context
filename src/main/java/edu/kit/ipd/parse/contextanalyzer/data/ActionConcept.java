@@ -36,6 +36,7 @@ public class ActionConcept extends AbstractConcept {
 
 	public ActionConcept(String name) {
 		super(name);
+		changed = false;
 	}
 
 	public boolean hasStatesChangedTo() {
@@ -81,9 +82,24 @@ public class ActionConcept extends AbstractConcept {
 	 *            the antonymActions to set
 	 */
 	public boolean addAntonymAction(ActionConcept antonymAction) {
-		boolean hasChanged = this.antonymActions.add(antonymAction);
-		changed = changed || hasChanged;
-		return hasChanged;
+		if (!antonymAction.equals(this)) {
+			boolean hasChanged = this.antonymActions.add(antonymAction);
+			changed = changed || hasChanged;
+			return hasChanged;
+		}
+		return false;
+	}
+
+	/**
+	 * @param antonymActions
+	 *            the antonymActions to set
+	 */
+	public boolean addAntonymActionWithoutSettingChanged(ActionConcept antonymAction) {
+		if (!antonymAction.equals(this)) {
+			return this.antonymActions.add(antonymAction);
+		}
+		return false;
+
 	}
 
 	/**
@@ -97,8 +113,10 @@ public class ActionConcept extends AbstractConcept {
 	 * @param
 	 */
 	public void setIndexWordLemma(String indexWordLemma) {
-		changed = true;
-		this.indexWordLemma = indexWordLemma;
+		if (!Objects.equals(this.indexWordLemma, indexWordLemma)) {
+			changed = true;
+			this.indexWordLemma = indexWordLemma;
+		}
 	}
 
 	public boolean hasIndexWordLemma() {
@@ -264,7 +282,7 @@ public class ActionConcept extends AbstractConcept {
 				this.statesChangedTo.add((State) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]);
 			} else if (type.equals(ANTONYM_ACTION_TYPE)) {
 				this.antonymActions.add((ActionConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]);
-				((ActionConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]).addAntonymAction(this);
+				((ActionConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]).addAntonymActionWithoutSettingChanged(this);
 			}
 		}
 	}

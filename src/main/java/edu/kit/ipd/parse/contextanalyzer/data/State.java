@@ -44,9 +44,23 @@ public class State extends AbstractConcept {
 	 *            the associatedStates to set
 	 */
 	public boolean addAssociatedState(State associatedState) {
-		boolean hasChanged = this.associatedStates.add(associatedState);
-		changed = changed || hasChanged;
-		return hasChanged;
+		if (!Objects.equals(associatedState, this)) {
+			boolean hasChanged = this.associatedStates.add(associatedState);
+			changed = changed || hasChanged;
+			return hasChanged;
+		}
+		return false;
+	}
+
+	/**
+	 * @param associatedStates
+	 *            the associatedStates to set
+	 */
+	public boolean addAssociatedStateWithoutSettingChanged(State associatedState) {
+		if (!Objects.equals(associatedState, this)) {
+			return this.associatedStates.add(associatedState);
+		}
+		return false;
 	}
 
 	@Override
@@ -167,7 +181,7 @@ public class State extends AbstractConcept {
 			String type = (String) arc.getAttributeValue(TYPE_OF_RELATION);
 			if (type.equals(ASSOCIATED_STATE_RELATION_TYPE)) {
 				this.associatedStates.add((State) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]);
-				((State) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]).addAssociatedState(this);
+				((State) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]).addAssociatedStateWithoutSettingChanged(this);
 			}
 		}
 	}

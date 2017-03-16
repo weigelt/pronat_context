@@ -56,7 +56,7 @@ public abstract class AbstractConcept extends ContextIndividual {
 	protected AbstractConcept(String name) {
 		super();
 		this.name = name;
-
+		changed = false;
 	}
 
 	/**
@@ -71,8 +71,10 @@ public abstract class AbstractConcept extends ContextIndividual {
 	 *            the name to set
 	 */
 	public void setName(String name) {
-		changed = true;
-		this.name = name;
+		if (!Objects.equals(this.name, name)) {
+			changed = true;
+			this.name = name;
+		}
 	}
 
 	/**
@@ -162,7 +164,6 @@ public abstract class AbstractConcept extends ContextIndividual {
 	 *            the synonym to add
 	 */
 	public boolean addSynonym(String synonym) {
-
 		boolean hasChanged = this.synonyms.add(synonym);
 		changed = changed || hasChanged;
 		return hasChanged;
@@ -180,8 +181,10 @@ public abstract class AbstractConcept extends ContextIndividual {
 	 *            the ontologyIndividual to set
 	 */
 	public void setOntologyIndividual(String ontologyIndividual) {
-		changed = true;
-		this.ontologyIndividual = ontologyIndividual;
+		if (!Objects.equals(this.ontologyIndividual, ontologyIndividual)) {
+			changed = true;
+			this.ontologyIndividual = ontologyIndividual;
+		}
 	}
 
 	/**
@@ -205,6 +208,17 @@ public abstract class AbstractConcept extends ContextIndividual {
 	}
 
 	/**
+	 * @param equalConcepts
+	 *            the equalConcepts to set
+	 */
+	public boolean addEqualConceptWithoutSettingChanged(AbstractConcept equalConcept) {
+		if (!equalConcept.equals(this)) {
+			return this.equalConcepts.add(equalConcept);
+		}
+		return false;
+	}
+
+	/**
 	 * 
 	 */
 	public boolean addPartOfConcept(AbstractConcept partOfConcept) {
@@ -212,6 +226,16 @@ public abstract class AbstractConcept extends ContextIndividual {
 			boolean hasChanged = this.partOfConcepts.add(partOfConcept);
 			changed = changed || hasChanged;
 			return hasChanged;
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 */
+	public boolean addPartOfConceptWithoutSettingChanged(AbstractConcept partOfConcept) {
+		if (!partOfConcept.equals(this)) {
+			return this.partOfConcepts.add(partOfConcept);
 		}
 		return false;
 	}
@@ -231,6 +255,17 @@ public abstract class AbstractConcept extends ContextIndividual {
 	/**
 	 * 
 	 */
+	public boolean addPartConceptWithoutSettingChanged(AbstractConcept partConcept) {
+		if (!partConcept.equals(this)) {
+			return this.partConcepts.add(partConcept);
+
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 */
 	public boolean addSuperConcept(AbstractConcept superConcept) {
 		if (!superConcept.equals(this)) {
 			boolean hasChanged = this.superConcepts.add(superConcept);
@@ -243,11 +278,31 @@ public abstract class AbstractConcept extends ContextIndividual {
 	/**
 	 * 
 	 */
+	public boolean addSuperConceptWithoutSettingChanged(AbstractConcept superConcept) {
+		if (!superConcept.equals(this)) {
+			return this.superConcepts.add(superConcept);
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 */
 	public boolean addSubConcept(AbstractConcept subConcept) {
 		if (!subConcept.equals(this)) {
 			boolean hasChanged = this.subConcepts.add(subConcept);
 			changed = changed || hasChanged;
 			return hasChanged;
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 */
+	public boolean addSubConceptWithoutSettingChanged(AbstractConcept subConcept) {
+		if (!subConcept.equals(this)) {
+			return this.subConcepts.add(subConcept);
 		}
 		return false;
 	}
@@ -344,22 +399,22 @@ public abstract class AbstractConcept extends ContextIndividual {
 			case PART_OF_RELATION_TYPE:
 				target = (AbstractConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())];
 				this.partOfConcepts.add(target);
-				target.addPartConcept(this);
+				target.addPartConceptWithoutSettingChanged(this);
 				break;
 			case PART_RELATION_TYPE:
 				target = (AbstractConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())];
 				this.partConcepts.add(target);
-				target.addPartOfConcept(this);
+				target.addPartOfConceptWithoutSettingChanged(this);
 				break;
 			case SUB_RELATION_TYPE:
 				target = (AbstractConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())];
 				this.subConcepts.add(target);
-				target.addSuperConcept(this);
+				target.addSuperConceptWithoutSettingChanged(this);
 				break;
 			case SUPER_RELATION_TYPE:
 				target = (AbstractConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())];
 				this.superConcepts.add(target);
-				target.addSubConcept(this);
+				target.addSubConceptWithoutSettingChanged(this);
 				break;
 			default:
 				break;

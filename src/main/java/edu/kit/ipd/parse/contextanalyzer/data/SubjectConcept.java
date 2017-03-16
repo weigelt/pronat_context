@@ -44,8 +44,10 @@ public class SubjectConcept extends EntityConcept {
 	 *            the gender to set
 	 */
 	public void setGender(Gender gender) {
-		changed = true;
-		this.gender = gender;
+		if (!Objects.equals(this.gender, gender)) {
+			changed = true;
+			this.gender = gender;
+		}
 	}
 
 	@Override
