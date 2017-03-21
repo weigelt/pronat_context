@@ -99,7 +99,7 @@ public class EntityConceptRelation extends Relation {
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 		arc.setAttributeValue(CONFIDENCE, getConfidence());
 
-		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
+		arc.setAttributeValue(CONFIDENCE_VERIFIED, confidenceIsVerified());
 		return arc;
 	}
 
@@ -109,7 +109,7 @@ public class EntityConceptRelation extends Relation {
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 		arc.setAttributeValue(CONFIDENCE, getConfidence());
 
-		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
+		arc.setAttributeValue(CONFIDENCE_VERIFIED, confidenceIsVerified());
 		return arc;
 	}
 
@@ -162,8 +162,8 @@ public class EntityConceptRelation extends Relation {
 		relation = new EntityConceptRelation(start, end, confidence);
 		start.addRelationWithoutSettingChanged(relation);
 		end.addRelationWithoutSettingChanged(relation);
-		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
-			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
+		if (arc.getAttributeValue(CONFIDENCE_VERIFIED) != null) {
+			relation.setConfidenceVerified((boolean) arc.getAttributeValue(CONFIDENCE_VERIFIED));
 		}
 		return relation;
 	}

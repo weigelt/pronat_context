@@ -87,7 +87,7 @@ public class ActionEntityRelation extends Relation {
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 
-		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
+		arc.setAttributeValue(CONFIDENCE_VERIFIED, confidenceIsVerified());
 		return arc;
 
 	}
@@ -97,7 +97,7 @@ public class ActionEntityRelation extends Relation {
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 
-		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
+		arc.setAttributeValue(CONFIDENCE_VERIFIED, confidenceIsVerified());
 		return arc;
 	}
 
@@ -137,8 +137,8 @@ public class ActionEntityRelation extends Relation {
 		relation = new ActionEntityRelation(name, action, entity);
 		action.addRelationWithoutSettingChanged(relation);
 		entity.addRelationWithoutSettingChanged(relation);
-		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
-			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
+		if (arc.getAttributeValue(CONFIDENCE_VERIFIED) != null) {
+			relation.setConfidenceVerified((boolean) arc.getAttributeValue(CONFIDENCE_VERIFIED));
 		}
 		return relation;
 	}

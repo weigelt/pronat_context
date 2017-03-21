@@ -49,7 +49,7 @@ public class ConceptConceptRelation extends Relation {
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 
-		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
+		arc.setAttributeValue(CONFIDENCE_VERIFIED, confidenceIsVerified());
 		return arc;
 	}
 
@@ -58,7 +58,7 @@ public class ConceptConceptRelation extends Relation {
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 
-		arc.setAttributeValue(VERIFIED_BY_DIALOG_AGENT, isVerifiedByDialogAgent());
+		arc.setAttributeValue(CONFIDENCE_VERIFIED, confidenceIsVerified());
 		return arc;
 
 	}
@@ -140,8 +140,8 @@ public class ConceptConceptRelation extends Relation {
 		relation = new ConceptConceptRelation(name, start, end);
 		start.addRelationWithoutSettingChanged(relation);
 		end.addRelationWithoutSettingChanged(relation);
-		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
-			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
+		if (arc.getAttributeValue(CONFIDENCE_VERIFIED) != null) {
+			relation.setConfidenceVerified((boolean) arc.getAttributeValue(CONFIDENCE_VERIFIED));
 		}
 		return relation;
 	}

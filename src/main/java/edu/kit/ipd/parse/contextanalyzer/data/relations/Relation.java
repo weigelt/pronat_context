@@ -17,7 +17,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
  */
 public abstract class Relation {
 
-	protected static final String VERIFIED_BY_DIALOG_AGENT = "verifiedByDialogAgent";
+	protected static final String CONFIDENCE_VERIFIED = "confidenceVerified";
 	public static final String RELATION_ARC_TYPE = "contextRelation";
 	protected static final String RELATION_NAME = "name";
 	protected static final String RELATION_TYPE = "typeOfRelation";
@@ -27,14 +27,14 @@ public abstract class Relation {
 	protected static final String CONFIDENCE = "confidence";
 	protected static final String LOCATION = "location";
 	private String name;
-	private boolean verifiedByDialogAgent;
+	private boolean confidenceVerified;
 
 	/**
 	 * 
 	 */
 	public Relation(String name) {
 		this.setName(name);
-		this.setVerifiedByDialogAgent(false);
+		this.setConfidenceVerified(false);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public abstract class Relation {
 		arcType.addAttributeToType("String", FN_ROLES);
 		arcType.addAttributeToType("double", CONFIDENCE);
 		arcType.addAttributeToType("String", LOCATION);
-		arcType.addAttributeToType("boolean", VERIFIED_BY_DIALOG_AGENT);
+		arcType.addAttributeToType("boolean", CONFIDENCE_VERIFIED);
 		return arcType;
 	}
 
@@ -118,8 +118,8 @@ public abstract class Relation {
 
 	public boolean isRepresentedByArc(IArc arc, HashMap<ContextIndividual, INode> graphNodes) {
 		if (arc.getType().getName().equals(RELATION_ARC_TYPE)) {
-			if (arc.getAttributeValue(RELATION_NAME).equals(this.getName()) && ((Boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT))
-					.equals(Boolean.valueOf(this.isVerifiedByDialogAgent()))) {
+			if (arc.getAttributeValue(RELATION_NAME).equals(this.getName())
+					&& ((Boolean) arc.getAttributeValue(CONFIDENCE_VERIFIED)).equals(Boolean.valueOf(this.confidenceIsVerified()))) {
 				return true;
 			}
 		}
@@ -131,18 +131,18 @@ public abstract class Relation {
 	protected abstract String getCompareType();
 
 	/**
-	 * @return the verifiedByDialogAgent
+	 * @return if confidence is verified by dialog agent
 	 */
-	public boolean isVerifiedByDialogAgent() {
-		return verifiedByDialogAgent;
+	public boolean confidenceIsVerified() {
+		return confidenceVerified;
 	}
 
 	/**
-	 * @param verifiedByDialogAgent
-	 *            the verifiedByDialogAgent to set
+	 * @param confidenceVerified
+	 *            the to set
 	 */
-	public void setVerifiedByDialogAgent(boolean verifiedByDialogAgent) {
-		this.verifiedByDialogAgent = verifiedByDialogAgent;
+	public void setConfidenceVerified(boolean confidenceVerified) {
+		this.confidenceVerified = confidenceVerified;
 	}
 
 }

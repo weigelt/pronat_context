@@ -151,8 +151,8 @@ public class SRLArgumentRelation extends ActionEntityRelation {
 		relation = new SRLArgumentRelation(name, propBankRoleDescr, vnRoles, fnRoles, action, entity);
 		action.addRelationWithoutSettingChanged(relation);
 		entity.addRelationWithoutSettingChanged(relation);
-		if (arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT) != null) {
-			relation.setVerifiedByDialogAgent((boolean) arc.getAttributeValue(VERIFIED_BY_DIALOG_AGENT));
+		if (arc.getAttributeValue(CONFIDENCE_VERIFIED) != null) {
+			relation.setConfidenceVerified((boolean) arc.getAttributeValue(CONFIDENCE_VERIFIED));
 		}
 		return relation;
 	}
