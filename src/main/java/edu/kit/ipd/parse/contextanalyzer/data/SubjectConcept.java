@@ -51,7 +51,7 @@ public class SubjectConcept extends EntityConcept {
 	}
 
 	@Override
-	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
 		Set<Relation> alreadyUpdated = super.updateNode(node, graph, graphNodes);
 		node.setAttributeValue(CONCEPT_TYPE, TYPE);
 		node.setAttributeValue(GENDER, getGender());

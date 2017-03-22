@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import edu.kit.ipd.parse.contextanalyzer.data.CommandType;
-import edu.kit.ipd.parse.contextanalyzer.data.ContextIndividual;
 import edu.kit.ipd.parse.contextanalyzer.data.relations.Relation;
 import edu.kit.ipd.parse.contextanalyzer.util.GraphUtils;
 import edu.kit.ipd.parse.luna.graph.IArc;
@@ -75,7 +74,7 @@ public class SubjectEntity extends Entity {
 	}
 
 	@Override
-	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
 		Set<Relation> alreadyUpdated = super.updateNode(node, graph, graphNodes);
 		node.setAttributeValue(ENTITY_TYPE, TYPE);
 		node.setAttributeValue(GENDER, getGender());

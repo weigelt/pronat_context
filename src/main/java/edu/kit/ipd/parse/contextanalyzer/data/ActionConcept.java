@@ -127,7 +127,7 @@ public class ActionConcept extends AbstractConcept {
 	}
 
 	@Override
-	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
 		Set<Relation> alreadyUpdated = super.updateNode(node, graph, graphNodes);
 		node.setAttributeValue(CONCEPT_TYPE, TYPE);
 		node.setAttributeValue(INDEXWORD, getIndexWordLemma());
@@ -135,7 +135,7 @@ public class ActionConcept extends AbstractConcept {
 		return alreadyUpdated;
 	}
 
-	private void updateConceptRelations(INode node, IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	private void updateConceptRelations(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
 		Set<IArc> arcs = new HashSet<IArc>();
 		arcs.addAll(node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
 		arcs.addAll(node.getIncomingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
@@ -149,10 +149,12 @@ public class ActionConcept extends AbstractConcept {
 				case ANTONYM_ACTION_TYPE:
 					match = false;
 					for (AbstractConcept abstractConcept : antonymActions) {
-						if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept))
-								|| Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept.getID()))
+									|| Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 
 					}
@@ -163,9 +165,11 @@ public class ActionConcept extends AbstractConcept {
 				case STATES_CHANGED_RELATION_TYPE:
 					match = false;
 					for (AbstractConcept abstractConcept : statesChangedTo) {
-						if (Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 
 					}
@@ -179,18 +183,18 @@ public class ActionConcept extends AbstractConcept {
 			}
 		}
 		for (AbstractConcept abstractConcept : antonymActions) {
-			if (!alreadyConsidered.contains(abstractConcept)) {
-				INode current = graphNodes.get(this);
-				INode related = graphNodes.get(abstractConcept);
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
+				INode current = graphNodes.get(this.getID());
+				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, ANTONYM_ACTION_TYPE);
 			}
 
 		}
 		for (AbstractConcept abstractConcept : statesChangedTo) {
-			if (!alreadyConsidered.contains(abstractConcept)) {
-				INode current = graphNodes.get(this);
-				INode related = graphNodes.get(abstractConcept);
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
+				INode current = graphNodes.get(this.getID());
+				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, STATES_CHANGED_RELATION_TYPE);
 			}
@@ -208,17 +212,17 @@ public class ActionConcept extends AbstractConcept {
 	}
 
 	@Override
-	public IArcType printConceptRelations(IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public IArcType printConceptRelations(IGraph graph, HashMap<Long, INode> graphNodes) {
 		IArcType type = super.printConceptRelations(graph, graphNodes);
 		for (State state : statesChangedTo) {
-			INode current = graphNodes.get(this);
-			INode related = graphNodes.get(state);
+			INode current = graphNodes.get(this.getID());
+			INode related = graphNodes.get(state.getID());
 			IArc arc = graph.createArc(current, related, type);
 			arc.setAttributeValue(TYPE_OF_RELATION, STATES_CHANGED_RELATION_TYPE);
 		}
 		for (ActionConcept actionConcept : antonymActions) {
-			INode current = graphNodes.get(this);
-			INode related = graphNodes.get(actionConcept);
+			INode current = graphNodes.get(this.getID());
+			INode related = graphNodes.get(actionConcept.getID());
 			IArc arc = graph.createArc(current, related, type);
 			arc.setAttributeValue(TYPE_OF_RELATION, ANTONYM_ACTION_TYPE);
 		}

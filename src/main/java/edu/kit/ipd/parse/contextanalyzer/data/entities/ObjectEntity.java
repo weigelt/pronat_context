@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import edu.kit.ipd.parse.contextanalyzer.data.CommandType;
-import edu.kit.ipd.parse.contextanalyzer.data.ContextIndividual;
 import edu.kit.ipd.parse.contextanalyzer.data.State;
 import edu.kit.ipd.parse.contextanalyzer.data.relations.EntityStateRelation;
 import edu.kit.ipd.parse.contextanalyzer.data.relations.Relation;
@@ -289,7 +288,7 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	}
 
 	@Override
-	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
 		Set<Relation> alreadyUpdated = super.updateNode(node, graph, graphNodes);
 		node.setAttributeValue(ENTITY_TYPE, TYPE);
 		node.setAttributeValue(DETERMINER, getDeterminer());

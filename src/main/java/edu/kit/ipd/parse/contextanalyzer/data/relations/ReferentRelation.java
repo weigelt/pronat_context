@@ -47,7 +47,7 @@ public class ReferentRelation extends EntityEntityRelation {
 	}
 
 	@Override
-	public IArc printToGraph(IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public IArc printToGraph(IGraph graph, HashMap<Long, INode> graphNodes) {
 		IArc arc = super.printToGraph(graph, graphNodes);
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 		arc.setAttributeValue(CONFIDENCE, this.confidence);
@@ -63,7 +63,7 @@ public class ReferentRelation extends EntityEntityRelation {
 	}
 
 	@Override
-	public boolean isRepresentedByArc(IArc arc, HashMap<ContextIndividual, INode> graphNodes) {
+	public boolean isRepresentedByArc(IArc arc, HashMap<Long, INode> graphNodes) {
 		boolean result = super.isRepresentedByArc(arc, graphNodes);
 		result = result && arc.getAttributeValue(RELATION_TYPE).equals(getCompareType());
 		return result;

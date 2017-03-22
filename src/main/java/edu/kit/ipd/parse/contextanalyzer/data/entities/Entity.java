@@ -128,7 +128,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	}
 
 	@Override
-	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
 		Set<Relation> alreadyUpdated = super.updateNode(node, graph, graphNodes);
 		node.setAttributeValue(ENTITY_NAME, getName());
 		node.setAttributeValue(GRAMMATICAL_NUMBER, getGrammaticalNumber());

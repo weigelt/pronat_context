@@ -106,7 +106,9 @@ public class EntityRecognizer implements IContextAnalyzer {
 		this.graph = graph;
 		currentContext = context;
 		List<INode> utteranceNodes = GraphUtils.getNodesOfUtterance(graph);
-		context.addEntities(getEntities(utteranceNodes));
+		for (Entity entity : getEntities(utteranceNodes)) {
+			context.addEntity(entity);
+		}
 
 	}
 

@@ -86,7 +86,9 @@ public class ActionRecognizer implements IContextAnalyzer {
 		this.graph = graph;
 		this.currentContext = context;
 		List<INode> utteranceNodes = GraphUtils.getNodesOfUtterance(graph);
-		context.addActions(getActions(utteranceNodes, context));
+		for (Action action : getActions(utteranceNodes, context)) {
+			context.addAction(action);
+		}
 
 	}
 

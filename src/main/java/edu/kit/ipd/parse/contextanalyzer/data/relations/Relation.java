@@ -52,7 +52,7 @@ public abstract class Relation {
 		this.name = name;
 	}
 
-	public abstract IArc printToGraph(IGraph graph, HashMap<ContextIndividual, INode> graphNodes);
+	public abstract IArc printToGraph(IGraph graph, HashMap<Long, INode> graphNodes);
 
 	protected IArcType createRelationArcType(IGraph graph) {
 		IArcType arcType = graph.createArcType(RELATION_ARC_TYPE);
@@ -116,7 +116,7 @@ public abstract class Relation {
 		return "[" + this.name + "]";
 	}
 
-	public boolean isRepresentedByArc(IArc arc, HashMap<ContextIndividual, INode> graphNodes) {
+	public boolean isRepresentedByArc(IArc arc, HashMap<Long, INode> graphNodes) {
 		if (arc.getType().getName().equals(RELATION_ARC_TYPE)) {
 			if (arc.getAttributeValue(RELATION_NAME).equals(this.getName())
 					&& ((Boolean) arc.getAttributeValue(CONFIDENCE_VERIFIED)).equals(Boolean.valueOf(this.confidenceIsVerified()))) {

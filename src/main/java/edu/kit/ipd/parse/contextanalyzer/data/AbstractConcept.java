@@ -454,7 +454,7 @@ public abstract class AbstractConcept extends ContextIndividual {
 	}
 
 	@Override
-	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
 		Set<Relation> alreadyUpdated = super.updateNode(node, graph, graphNodes);
 		node.setAttributeValue(CONCEPT_NAME, getName());
 		node.setAttributeValue(ONTOLOGY_INDIVIDUAL, getOntologyIndividual());
@@ -463,7 +463,7 @@ public abstract class AbstractConcept extends ContextIndividual {
 		return alreadyUpdated;
 	}
 
-	private void updateConceptRelations(INode node, IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	private void updateConceptRelations(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
 		Set<IArc> arcs = new HashSet<IArc>();
 		arcs.addAll(node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
 		arcs.addAll(node.getIncomingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
@@ -476,10 +476,12 @@ public abstract class AbstractConcept extends ContextIndividual {
 				case EQUAL_RELATION_TYPE:
 					match = false;
 					for (AbstractConcept abstractConcept : equalConcepts) {
-						if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept))
-								|| Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept.getID()))
+									|| Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 
 					}
@@ -490,16 +492,20 @@ public abstract class AbstractConcept extends ContextIndividual {
 				case PART_OF_RELATION_TYPE:
 					match = false;
 					for (AbstractConcept abstractConcept : partOfConcepts) {
-						if (Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 
 					}
 					for (AbstractConcept abstractConcept : partConcepts) {
-						if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 					}
 					if (!match) {
@@ -509,16 +515,20 @@ public abstract class AbstractConcept extends ContextIndividual {
 				case PART_RELATION_TYPE:
 					match = false;
 					for (AbstractConcept abstractConcept : partConcepts) {
-						if (Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 
 					}
 					for (AbstractConcept abstractConcept : partOfConcepts) {
-						if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 					}
 					if (!match) {
@@ -528,16 +538,20 @@ public abstract class AbstractConcept extends ContextIndividual {
 				case SUB_RELATION_TYPE:
 					match = false;
 					for (AbstractConcept abstractConcept : subConcepts) {
-						if (Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 
 					}
 					for (AbstractConcept abstractConcept : superConcepts) {
-						if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 					}
 					if (!match) {
@@ -547,16 +561,20 @@ public abstract class AbstractConcept extends ContextIndividual {
 				case SUPER_RELATION_TYPE:
 					match = false;
 					for (AbstractConcept abstractConcept : superConcepts) {
-						if (Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getTargetNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 
 					}
 					for (AbstractConcept abstractConcept : subConcepts) {
-						if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept))) {
-							alreadyConsidered.add(abstractConcept);
-							match = true;
+						if (graphNodes.get(abstractConcept.getID()) != null) {
+							if (Objects.equals(arc.getSourceNode(), graphNodes.get(abstractConcept.getID()))) {
+								alreadyConsidered.add(abstractConcept);
+								match = true;
+							}
 						}
 					}
 					if (!match) {
@@ -569,42 +587,42 @@ public abstract class AbstractConcept extends ContextIndividual {
 			}
 		}
 		for (AbstractConcept abstractConcept : equalConcepts) {
-			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept)) {
-				INode current = graphNodes.get(this);
-				INode related = graphNodes.get(abstractConcept);
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
+				INode current = graphNodes.get(this.getID());
+				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, EQUAL_RELATION_TYPE);
 			}
 
 		}
 		for (AbstractConcept abstractConcept : partOfConcepts) {
-			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept)) {
-				INode current = graphNodes.get(this);
-				INode related = graphNodes.get(abstractConcept);
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
+				INode current = graphNodes.get(this.getID());
+				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, PART_OF_RELATION_TYPE);
 			}
 		}
 		for (AbstractConcept abstractConcept : partConcepts) {
-			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept)) {
-				INode current = graphNodes.get(this);
-				INode related = graphNodes.get(abstractConcept);
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
+				INode current = graphNodes.get(this.getID());
+				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, PART_RELATION_TYPE);
 			}
 		}
 		for (AbstractConcept abstractConcept : subConcepts) {
-			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept)) {
-				INode current = graphNodes.get(this);
-				INode related = graphNodes.get(abstractConcept);
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
+				INode current = graphNodes.get(this.getID());
+				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, SUB_RELATION_TYPE);
 			}
 		}
 		for (AbstractConcept abstractConcept : superConcepts) {
-			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept)) {
-				INode current = graphNodes.get(this);
-				INode related = graphNodes.get(abstractConcept);
+			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
+				INode current = graphNodes.get(this.getID());
+				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, SUPER_RELATION_TYPE);
 
@@ -633,7 +651,7 @@ public abstract class AbstractConcept extends ContextIndividual {
 	 * @param graph
 	 * @param graphNodes
 	 */
-	public IArcType printConceptRelations(IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public IArcType printConceptRelations(IGraph graph, HashMap<Long, INode> graphNodes) {
 		IArcType arcType;
 		if (graph.hasArcType(CONCEPT_ARC_TYPE)) {
 			arcType = graph.getArcType(CONCEPT_ARC_TYPE);
@@ -641,33 +659,33 @@ public abstract class AbstractConcept extends ContextIndividual {
 			arcType = createConceptRelationArcType(graph);
 		}
 		for (AbstractConcept abstractConcept : equalConcepts) {
-			INode current = graphNodes.get(this);
-			INode related = graphNodes.get(abstractConcept);
+			INode current = graphNodes.get(this.getID());
+			INode related = graphNodes.get(abstractConcept.getID());
 			IArc arc = graph.createArc(current, related, arcType);
 			arc.setAttributeValue(TYPE_OF_RELATION, EQUAL_RELATION_TYPE);
 
 		}
 		for (AbstractConcept abstractConcept : partOfConcepts) {
-			INode current = graphNodes.get(this);
-			INode related = graphNodes.get(abstractConcept);
+			INode current = graphNodes.get(this.getID());
+			INode related = graphNodes.get(abstractConcept.getID());
 			IArc arc = graph.createArc(current, related, arcType);
 			arc.setAttributeValue(TYPE_OF_RELATION, PART_OF_RELATION_TYPE);
 		}
 		for (AbstractConcept abstractConcept : partConcepts) {
-			INode current = graphNodes.get(this);
-			INode related = graphNodes.get(abstractConcept);
+			INode current = graphNodes.get(this.getID());
+			INode related = graphNodes.get(abstractConcept.getID());
 			IArc arc = graph.createArc(current, related, arcType);
 			arc.setAttributeValue(TYPE_OF_RELATION, PART_RELATION_TYPE);
 		}
 		for (AbstractConcept abstractConcept : subConcepts) {
-			INode current = graphNodes.get(this);
-			INode related = graphNodes.get(abstractConcept);
+			INode current = graphNodes.get(this.getID());
+			INode related = graphNodes.get(abstractConcept.getID());
 			IArc arc = graph.createArc(current, related, arcType);
 			arc.setAttributeValue(TYPE_OF_RELATION, SUB_RELATION_TYPE);
 		}
 		for (AbstractConcept abstractConcept : superConcepts) {
-			INode current = graphNodes.get(this);
-			INode related = graphNodes.get(abstractConcept);
+			INode current = graphNodes.get(this.getID());
+			INode related = graphNodes.get(abstractConcept.getID());
 			IArc arc = graph.createArc(current, related, arcType);
 			arc.setAttributeValue(TYPE_OF_RELATION, SUPER_RELATION_TYPE);
 		}

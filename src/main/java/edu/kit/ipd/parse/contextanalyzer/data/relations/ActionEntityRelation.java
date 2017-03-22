@@ -65,25 +65,25 @@ public class ActionEntityRelation extends Relation {
 	}
 
 	@Override
-	public boolean isRepresentedByArc(IArc arc, HashMap<ContextIndividual, INode> graphNodes) {
+	public boolean isRepresentedByArc(IArc arc, HashMap<Long, INode> graphNodes) {
 		boolean result = super.isRepresentedByArc(arc, graphNodes);
 		result = result && arc.getAttributeValue(RELATION_TYPE).equals(getCompareType());
 		if (result) {
-			result = result && arc.getSourceNode().equals(graphNodes.get(getAction()))
-					&& arc.getTargetNode().equals(graphNodes.get(getEntity()));
+			result = result && arc.getSourceNode().equals(graphNodes.get(getAction().getID()))
+					&& arc.getTargetNode().equals(graphNodes.get(getEntity().getID()));
 		}
 		return result;
 	}
 
 	@Override
-	public IArc printToGraph(IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public IArc printToGraph(IGraph graph, HashMap<Long, INode> graphNodes) {
 		IArcType arcType;
 		if (graph.hasArcType(RELATION_ARC_TYPE)) {
 			arcType = graph.getArcType(RELATION_ARC_TYPE);
 		} else {
 			arcType = createRelationArcType(graph);
 		}
-		IArc arc = graph.createArc(graphNodes.get(getAction()), graphNodes.get(getEntity()), arcType);
+		IArc arc = graph.createArc(graphNodes.get(getAction().getID()), graphNodes.get(getEntity().getID()), arcType);
 		arc.setAttributeValue(RELATION_NAME, getName());
 		arc.setAttributeValue(RELATION_TYPE, TYPE);
 

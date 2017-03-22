@@ -29,25 +29,26 @@ public class Context {
 
 	private Set<AbstractConcept> concepts;
 
-	private HashMap<ContextIndividual, INode> nodesMap;
+	private HashMap<Long, INode> nodesMap;
 
 	private boolean readFromGraph = false;
+
+	public static long id = 0;
 
 	public Context() {
 		entities = new HashSet<Entity>();
 		actions = new HashSet<Action>();
-		setConcepts(new HashSet<AbstractConcept>());
+		concepts = new HashSet<AbstractConcept>();
+		id = 0;
 	}
 
-	private Context(HashMap<ContextIndividual, INode> graphNodeMap) {
+	private Context(boolean readFromGraph) {
 		entities = new HashSet<Entity>();
 		actions = new HashSet<Action>();
-		setConcepts(new HashSet<AbstractConcept>());
-		this.nodesMap = graphNodeMap;
-		if (!graphNodeMap.isEmpty()) {
-			readFromGraph = true;
-		}
-
+		concepts = new HashSet<AbstractConcept>();
+		this.nodesMap = new HashMap<Long, INode>();
+		this.readFromGraph = readFromGraph;
+		id = 0;
 	}
 
 	/**
@@ -66,11 +67,9 @@ public class Context {
 	}
 
 	public boolean addEntity(Entity entity) {
+		entity.setID(id);
+		id++;
 		return this.entities.add(entity);
-	}
-
-	public boolean addEntities(List<Entity> entities) {
-		return this.entities.addAll(entities);
 	}
 
 	/**
@@ -89,79 +88,88 @@ public class Context {
 	}
 
 	public boolean addAction(Action action) {
+		action.setID(id);
+		id++;
 		return this.actions.add(action);
 
 	}
 
-	public boolean addActions(List<Action> actions) {
-		return this.actions.addAll(actions);
-
-	}
-
 	public void printToGraph(IGraph graph) {
-		HashMap<ContextIndividual, INode> graphNodesMap = new HashMap<>(nodesMap);
+		HashMap<Long, INode> graphNodesMap = new HashMap<>(nodesMap);
 		HashSet<Relation> relations = new HashSet<>();
 		HashSet<Relation> alreadyUpdated = new HashSet<>();
 		if (readFromGraph) {
+			Entity speaker = getSpeaker();
+			if (speaker != null && !this.nodesMap.containsKey(speaker.getID())) {
+				graphNodesMap.put(speaker.getID(), speaker.printToGraph(graph));
+				relations.addAll(speaker.getRelations());
+			}
 			for (Entity entity : entities) {
-				if (entity.hasChanged()) {
-					if (this.nodesMap.containsKey(entity)) {
+				if (!(entity instanceof SpeakerEntity)) {
+					if (entity.hasChanged()) {
+						if (this.nodesMap.containsKey(entity.getID())) {
 
-						alreadyUpdated.addAll(entity.updateNode(this.nodesMap.get(entity), graph, graphNodesMap));
+							alreadyUpdated.addAll(entity.updateNode(this.nodesMap.get(entity.getID()), graph, graphNodesMap));
+
+						} else {
+							graphNodesMap.put(entity.getID(), entity.printToGraph(graph));
+
+						}
+						relations.addAll(entity.getRelations());
+					} else if (!this.nodesMap.containsKey(entity.getID())) {
+						graphNodesMap.put(entity.getID(), entity.printToGraph(graph));
+
+						relations.addAll(entity.getRelations());
 
 					} else {
-						graphNodesMap.put(entity, entity.printToGraph(graph));
-
+						graphNodesMap.put(entity.getID(), this.nodesMap.get(entity.getID()));
+						//	relations.addAll(entity.getRelations());
 					}
-					relations.addAll(entity.getRelations());
-				} else if (!this.nodesMap.containsKey(entity)) {
-					graphNodesMap.put(entity, entity.printToGraph(graph));
-
-					relations.addAll(entity.getRelations());
-
-				} else {
-					graphNodesMap.put(entity, this.nodesMap.get(entity));
 				}
 			}
 
 			for (Action action : actions) {
 				if (action.hasChanged()) {
-					if (this.nodesMap.containsKey(action)) {
-						alreadyUpdated.addAll(action.updateNode(this.nodesMap.get(action), graph, graphNodesMap));
+					if (this.nodesMap.containsKey(action.getID())) {
+						alreadyUpdated.addAll(action.updateNode(this.nodesMap.get(Long.valueOf(action.getID())), graph, graphNodesMap));
 					} else {
-						graphNodesMap.put(action, action.printToGraph(graph));
+						graphNodesMap.put(action.getID(), action.printToGraph(graph));
 
 					}
 					relations.addAll(action.getRelations());
-				} else if (!this.nodesMap.containsKey(action)) {
-					graphNodesMap.put(action, action.printToGraph(graph));
+				} else if (!this.nodesMap.containsKey(action.getID())) {
+					graphNodesMap.put(action.getID(), action.printToGraph(graph));
 
 					relations.addAll(action.getRelations());
 				} else {
-					graphNodesMap.put(action, this.nodesMap.get(action));
+					graphNodesMap.put(action.getID(), this.nodesMap.get(action.getID()));
+
+					//relations.addAll(action.getRelations());
 				}
 
 			}
 
 			for (AbstractConcept concept : concepts) {
 				if (concept.hasChanged()) {
-					if (this.nodesMap.containsKey(concept)) {
-						alreadyUpdated.addAll(concept.updateNode(this.nodesMap.get(concept), graph, graphNodesMap));
+					if (this.nodesMap.containsKey(concept.getID())) {
+						alreadyUpdated.addAll(concept.updateNode(this.nodesMap.get(concept.getID()), graph, graphNodesMap));
 					} else {
-						graphNodesMap.put(concept, concept.printToGraph(graph));
+						graphNodesMap.put(concept.getID(), concept.printToGraph(graph));
 
 					}
 					relations.addAll(concept.getRelations());
-				} else if (!this.nodesMap.containsKey(concept)) {
-					graphNodesMap.put(concept, concept.printToGraph(graph));
+				} else if (!this.nodesMap.containsKey(concept.getID())) {
+					graphNodesMap.put(concept.getID(), concept.printToGraph(graph));
 
 					relations.addAll(concept.getRelations());
 				} else {
-					graphNodesMap.put(concept, this.nodesMap.get(concept));
+					graphNodesMap.put(concept.getID(), this.nodesMap.get(concept.getID()));
+
+					//relations.addAll(concept.getRelations());
 				}
 			}
 			for (AbstractConcept concept : concepts) {
-				if (concept.hasChanged() || !this.nodesMap.containsKey(concept)) {
+				if (concept.hasChanged() || !this.nodesMap.containsKey(concept.getID())) {
 
 					concept.printConceptRelations(graph, graphNodesMap);
 				}
@@ -175,16 +183,16 @@ public class Context {
 		} else {
 
 			for (Entity entity : entities) {
-				graphNodesMap.put(entity, entity.printToGraph(graph));
+				graphNodesMap.put(entity.getID(), entity.printToGraph(graph));
 
 				relations.addAll(entity.getRelations());
 			}
 			for (Action action : actions) {
-				graphNodesMap.put(action, action.printToGraph(graph));
+				graphNodesMap.put(action.getID(), action.printToGraph(graph));
 				relations.addAll(action.getRelations());
 			}
 			for (AbstractConcept concept : concepts) {
-				graphNodesMap.put(concept, concept.printToGraph(graph));
+				graphNodesMap.put(concept.getID(), concept.printToGraph(graph));
 				relations.addAll(concept.getRelations());
 			}
 			for (AbstractConcept concept : concepts) {
@@ -255,11 +263,29 @@ public class Context {
 				Relation.readFromArc(relationArc, graphNodesToIndividuals, graph);
 			}
 		}
-		Context result = new Context(graphNodeMap);
-		result.addActions(actions);
-		result.addEntities(entities);
-		result.addConcepts(concepts);
+
+		Context result = new Context(true);
+		for (Action action : actions) {
+			result.addAction(action);
+
+		}
+		for (Entity entity : entities) {
+			result.addEntity(entity);
+		}
+		for (AbstractConcept abstractConcept : concepts) {
+			result.addConcept(abstractConcept);
+		}
+		HashMap<Long, INode> nodes = new HashMap<>();
+		for (ContextIndividual ind : graphNodeMap.keySet()) {
+			nodes.put(ind.getID(), graphNodeMap.get(ind));
+		}
+		result.setNodeMap(nodes);
 		return result;
+	}
+
+	private void setNodeMap(HashMap<Long, INode> nodes) {
+		this.nodesMap = nodes;
+
 	}
 
 	@Override
@@ -354,11 +380,9 @@ public class Context {
 	}
 
 	public boolean addConcept(AbstractConcept concept) {
+		concept.setID(id);
+		id++;
 		return this.concepts.add(concept);
-	}
-
-	public boolean addConcepts(List<AbstractConcept> concepts) {
-		return this.concepts.addAll(concepts);
 	}
 
 	/**

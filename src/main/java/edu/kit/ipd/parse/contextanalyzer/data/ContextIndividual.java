@@ -23,6 +23,8 @@ public abstract class ContextIndividual {
 	protected boolean changed = false;
 	private Set<Relation> relations;
 
+	private long ID = -1;
+
 	public ContextIndividual() {
 		relations = new HashSet<Relation>();
 		this.changed = false;
@@ -30,7 +32,7 @@ public abstract class ContextIndividual {
 
 	public abstract INode printToGraph(IGraph graph);
 
-	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<ContextIndividual, INode> graphNodes) {
+	public Set<Relation> updateNode(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
 		Set<Relation> alreadyUpdated = new HashSet<>();
 		Set<IArc> arcs = new HashSet<>();
 		for (Relation relation : relations) {
@@ -131,6 +133,21 @@ public abstract class ContextIndividual {
 	public boolean addRelationWithoutSettingChanged(Relation relation) {
 		boolean hasChanged = this.relations.add(relation);
 		return hasChanged;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public long getID() {
+		return ID;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setID(long id) {
+		this.ID = id;
 	}
 
 }
