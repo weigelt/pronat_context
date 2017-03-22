@@ -21,12 +21,12 @@ import edu.kit.ipd.parse.luna.graph.INode;
 public abstract class ContextIndividual {
 
 	protected boolean changed = false;
-	private Set<Relation> relations;
+	private List<Relation> relations;
 
 	private long ID = -1;
 
 	public ContextIndividual() {
-		relations = new HashSet<Relation>();
+		relations = new ArrayList<Relation>();
 		this.changed = false;
 	}
 
@@ -106,7 +106,7 @@ public abstract class ContextIndividual {
 	/**
 	 * @return the relations
 	 */
-	public Set<Relation> getRelations() {
+	public List<Relation> getRelations() {
 		return relations;
 	}
 
@@ -121,9 +121,13 @@ public abstract class ContextIndividual {
 	 *            the relations to set
 	 */
 	public boolean addRelation(Relation relation) {
-		boolean hasChanged = this.relations.add(relation);
-		changed = changed || hasChanged;
-		return hasChanged;
+		if (!this.getRelations().contains(relation)) {
+			changed = true;
+			return this.relations.add(relation);
+
+		}
+
+		return false;
 	}
 
 	/**
@@ -131,8 +135,11 @@ public abstract class ContextIndividual {
 	 *            the relations to set
 	 */
 	public boolean addRelationWithoutSettingChanged(Relation relation) {
-		boolean hasChanged = this.relations.add(relation);
-		return hasChanged;
+		if (!this.getRelations().contains(relation)) {
+			return this.relations.add(relation);
+
+		}
+		return false;
 	}
 
 	/**
