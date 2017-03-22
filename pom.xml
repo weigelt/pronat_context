@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>edu.kit.ipd.parse</groupId>
 	<artifactId>ContextAnalyzer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<description>	</description>
 	<repositories>
 		<repository>
@@ -130,7 +130,6 @@
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>condition_detection</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
