@@ -5,6 +5,7 @@ package edu.kit.ipd.parse.contextanalyzer.data;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -61,8 +62,11 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 
 	@Override
 	public int compareTo(AbstractConcept o) {
-
-		return this.getName().compareTo(o.name);
+		int resultName = this.getName().compareTo(o.name);
+		if (resultName == 0) {
+			return this.getClass().getName().compareTo(o.getClass().getName());
+		}
+		return resultName;
 	}
 
 	/**
@@ -470,7 +474,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	}
 
 	private void updateConceptRelations(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
-		Set<IArc> arcs = new TreeSet<IArc>();
+		Set<IArc> arcs = new HashSet<IArc>();
 		arcs.addAll(node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
 		arcs.addAll(node.getIncomingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
 		Set<AbstractConcept> alreadyConsidered = new TreeSet<>();
