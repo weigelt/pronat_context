@@ -480,15 +480,15 @@ public class ContextAnalyzerTest {
 				System.out.println(result.getEntities());
 				System.out.println(result.getActions());
 				System.out.println(result.getConcepts());
-			} while (!prev.equals(result));
-			HashMap<Integer, Integer> indexMap = produceIndexMappings(text, graph);
-			Pair<List<String>, int[]> resultEval = evaluateConceptHierarchieBuilding(text, result, indexMap);
-			int[] res = resultEval.getRight();
-			System.out.println(
-					"Total: " + res[0] + ", truePositive: " + res[1] + ", falsePositive: " + res[2] + ", falseNegative: " + res[3]);
-			for (String string : resultEval.getLeft()) {
-				System.out.println(string);
-			}
+			} while (true);//!prev.equals(result));
+			//			HashMap<Integer, Integer> indexMap = produceIndexMappings(text, graph);
+			//			Pair<List<String>, int[]> resultEval = evaluateConceptHierarchieBuilding(text, result, indexMap);
+			//			int[] res = resultEval.getRight();
+			//			System.out.println(
+			//					"Total: " + res[0] + ", truePositive: " + res[1] + ", falsePositive: " + res[2] + ", falseNegative: " + res[3]);
+			//			for (String string : resultEval.getLeft()) {
+			//				System.out.println(string);
+			//			}
 		} catch (MissingDataException e) {
 			e.printStackTrace();
 		}

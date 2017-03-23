@@ -6,9 +6,9 @@ package edu.kit.ipd.parse.contextanalyzer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import edu.kit.ipd.parse.contextanalyzer.data.AbstractConcept;
 import edu.kit.ipd.parse.contextanalyzer.data.ActionConcept;
@@ -82,7 +82,7 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 
 						// check adjectives for state info
 						Set<State> adjectiveStates = checkAdjectives((ObjectEntity) entity, entityConcept);
-						Set<State> prevStates = new HashSet<>();
+						Set<State> prevStates = new TreeSet<>();
 						// check coref
 						if (entity.hasRelationsOfType(ReferentRelation.class)) {
 							Entity lastBefore = ContextUtils.getLastPrecedingReferent(entity);
@@ -94,7 +94,7 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 								}
 							}
 						}
-						Set<State> srlStates = new HashSet<>();
+						Set<State> srlStates = new TreeSet<>();
 						if (!entity.getCommandType().equals(CommandType.IF_STATEMENT)) {
 							// is entity part of an action recognized by srl
 							if (entity.hasRelationsOfType(SRLArgumentRelation.class)) {
@@ -140,7 +140,7 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 					}
 				}
 			} else if (entity instanceof PronounEntity) {
-				Set<State> prevStates = new HashSet<>();
+				Set<State> prevStates = new TreeSet<>();
 				// check coref
 				if (entity.hasRelationsOfType(ReferentRelation.class)) {
 					Entity lastBefore = ContextUtils.getLastPrecedingReferent(entity);
@@ -152,7 +152,7 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 						}
 					}
 				}
-				Set<State> srlStates = new HashSet<>();
+				Set<State> srlStates = new TreeSet<>();
 				if (!entity.getCommandType().equals(CommandType.IF_STATEMENT)) {
 					if (entity.hasRelationsOfType(SRLArgumentRelation.class)) {
 						List<SRLArgumentRelation> srlRels = getSRLArgumentRelationsInOrderOfVerbOccurrence(
@@ -202,7 +202,7 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 	}
 
 	private Set<State> combineStates(Set<State> prevStates, Set<State> srlStates) {
-		Set<State> result = new HashSet<>();
+		Set<State> result = new TreeSet<>();
 		if (!prevStates.isEmpty()) {
 			for (State prevState : prevStates) {
 				boolean isAssociated = false;
@@ -221,8 +221,8 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 	}
 
 	private Set<State> combineStates(Set<State> prevStates, Set<State> adjectiveStates, Set<State> srlStates) {
-		Set<State> result = new HashSet<>();
-		Set<State> combined = new HashSet<>();
+		Set<State> result = new TreeSet<>();
+		Set<State> combined = new TreeSet<>();
 		combined.addAll(adjectiveStates);
 		combined.addAll(srlStates);
 
@@ -254,7 +254,7 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 	}
 
 	private Set<State> checkAdjectives(ObjectEntity entity, ObjectConcept concept) {
-		Set<State> result = new HashSet<>();
+		Set<State> result = new TreeSet<>();
 		for (String adjective : entity.getDescribingAdjectives()) {
 			for (State state : concept.getStates()) {
 				if (jaroWinkler.similarity(adjective.toLowerCase(),
@@ -305,7 +305,7 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 	 * @param actionConcept
 	 */
 	private Set<State> getResultingStates(ObjectConcept objectConcept, ActionConcept actionConcept) {
-		Set<State> result = new HashSet<>();
+		Set<State> result = new TreeSet<>();
 		if (actionConcept.hasStatesChangedTo() && objectConcept.hasStates()) {
 			Set<State> states = objectConcept.getStates();
 			Set<State> statesChangedTo = actionConcept.getStatesChangedTo();

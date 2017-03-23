@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import edu.kit.ipd.parse.contextanalyzer.data.relations.Relation;
 import edu.kit.ipd.parse.contextanalyzer.util.GraphUtils;
@@ -19,7 +20,7 @@ public class State extends AbstractConcept {
 
 	private static final String ASSOCIATED_STATE_RELATION_TYPE = "associatedState";
 
-	private Set<State> associatedStates = new HashSet<State>();
+	private Set<State> associatedStates = new TreeSet<State>();
 
 	public State(String name) {
 		super(name);
@@ -75,7 +76,7 @@ public class State extends AbstractConcept {
 		Set<IArc> arcs = new HashSet<IArc>();
 		arcs.addAll(node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
 		arcs.addAll(node.getIncomingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
-		Set<AbstractConcept> alreadyConsidered = new HashSet<>();
+		Set<AbstractConcept> alreadyConsidered = new TreeSet<>();
 		for (IArc arc : arcs) {
 			if (arc.getType().getName().equals(CONCEPT_ARC_TYPE)) {
 				String type = (String) arc.getAttributeValue(TYPE_OF_RELATION);

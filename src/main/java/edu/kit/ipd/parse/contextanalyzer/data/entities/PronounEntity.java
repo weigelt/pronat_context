@@ -5,9 +5,9 @@ package edu.kit.ipd.parse.contextanalyzer.data.entities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import edu.kit.ipd.parse.contextanalyzer.data.CommandType;
 import edu.kit.ipd.parse.contextanalyzer.data.State;
@@ -130,7 +130,7 @@ public class PronounEntity extends Entity implements IStateOwner {
 	}
 
 	public Set<State> getStates() {
-		Set<State> states = new HashSet<>();
+		Set<State> states = new TreeSet<>();
 		for (Relation rel : getRelationsOfType(EntityStateRelation.class)) {
 			EntityStateRelation esRel = (EntityStateRelation) rel;
 			states.add((State) esRel.getEnd());

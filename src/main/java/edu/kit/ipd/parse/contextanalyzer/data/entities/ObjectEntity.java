@@ -6,10 +6,10 @@ package edu.kit.ipd.parse.contextanalyzer.data.entities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import edu.kit.ipd.parse.contextanalyzer.data.CommandType;
 import edu.kit.ipd.parse.contextanalyzer.data.State;
@@ -67,15 +67,15 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		this.setDeterminer(det);
 		this.setQuantity(quantity);
 		this.setPossessivePronouns(possessivePronouns);
-		this.synonyms = new HashSet<>();
+		this.synonyms = new TreeSet<>();
 		this.synonyms.addAll(synonyms);
-		this.directHypernyms = new HashSet<>();
+		this.directHypernyms = new TreeSet<>();
 		this.directHypernyms.addAll(directHypernyms);
-		this.directHyponyms = new HashSet<>();
+		this.directHyponyms = new TreeSet<>();
 		this.directHyponyms.addAll(directHyponyms);
-		this.holonyms = new HashSet<>();
+		this.holonyms = new TreeSet<>();
 		this.holonyms.addAll(holonyms);
-		this.meronyms = new HashSet<>();
+		this.meronyms = new TreeSet<>();
 		this.meronyms.addAll(meronyms);
 		this.setDescribingAdjectives(describingAdjectives);
 		this.changed = false;
@@ -88,15 +88,15 @@ public class ObjectEntity extends Entity implements IStateOwner {
 		this.setQuantity(quantity);
 		this.setPossessivePronouns(possessivePronouns);
 		this.setDescribingAdjectives(describingAdjectives);
-		this.synonyms = new HashSet<>();
+		this.synonyms = new TreeSet<>();
 
-		this.directHypernyms = new HashSet<>();
+		this.directHypernyms = new TreeSet<>();
 
-		this.directHyponyms = new HashSet<>();
+		this.directHyponyms = new TreeSet<>();
 
-		this.holonyms = new HashSet<>();
+		this.holonyms = new TreeSet<>();
 
-		this.meronyms = new HashSet<>();
+		this.meronyms = new TreeSet<>();
 		this.changed = false;
 	}
 
@@ -500,7 +500,7 @@ public class ObjectEntity extends Entity implements IStateOwner {
 	}
 
 	public Set<State> getStates() {
-		Set<State> states = new HashSet<>();
+		Set<State> states = new TreeSet<>();
 		for (Relation rel : getRelationsOfType(EntityStateRelation.class)) {
 			EntityStateRelation esRel = (EntityStateRelation) rel;
 			states.add((State) esRel.getEnd());

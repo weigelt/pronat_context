@@ -5,9 +5,9 @@ package edu.kit.ipd.parse.contextanalyzer.data;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import edu.kit.ipd.parse.contextanalyzer.data.relations.Relation;
 import edu.kit.ipd.parse.luna.graph.IArc;
@@ -20,7 +20,7 @@ import edu.kit.ipd.parse.luna.graph.INodeType;
  * @author Tobias Hey
  *
  */
-public abstract class AbstractConcept extends ContextIndividual {
+public abstract class AbstractConcept extends ContextIndividual implements Comparable<AbstractConcept> {
 
 	public static final String CONCEPT_NODE_TYPE = "contextConcept";
 	protected static final String CONCEPT_TYPE = "typeOfConcept";
@@ -41,22 +41,28 @@ public abstract class AbstractConcept extends ContextIndividual {
 
 	private String ontologyIndividual = "";
 
-	private Set<String> synonyms = new HashSet<String>();
+	private Set<String> synonyms = new TreeSet<String>();
 
-	private Set<AbstractConcept> equalConcepts = new HashSet<AbstractConcept>();
+	private Set<AbstractConcept> equalConcepts = new TreeSet<AbstractConcept>();
 
-	private Set<AbstractConcept> superConcepts = new HashSet<AbstractConcept>();
+	private Set<AbstractConcept> superConcepts = new TreeSet<AbstractConcept>();
 
-	private Set<AbstractConcept> subConcepts = new HashSet<AbstractConcept>();
+	private Set<AbstractConcept> subConcepts = new TreeSet<AbstractConcept>();
 
-	private Set<AbstractConcept> partOfConcepts = new HashSet<AbstractConcept>();
+	private Set<AbstractConcept> partOfConcepts = new TreeSet<AbstractConcept>();
 
-	private Set<AbstractConcept> partConcepts = new HashSet<AbstractConcept>();
+	private Set<AbstractConcept> partConcepts = new TreeSet<AbstractConcept>();
 
 	protected AbstractConcept(String name) {
 		super();
 		this.name = name;
 		changed = false;
+	}
+
+	@Override
+	public int compareTo(AbstractConcept o) {
+
+		return this.getName().compareTo(o.name);
 	}
 
 	/**
@@ -464,10 +470,10 @@ public abstract class AbstractConcept extends ContextIndividual {
 	}
 
 	private void updateConceptRelations(INode node, IGraph graph, HashMap<Long, INode> graphNodes) {
-		Set<IArc> arcs = new HashSet<IArc>();
+		Set<IArc> arcs = new TreeSet<IArc>();
 		arcs.addAll(node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
 		arcs.addAll(node.getIncomingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
-		Set<AbstractConcept> alreadyConsidered = new HashSet<>();
+		Set<AbstractConcept> alreadyConsidered = new TreeSet<>();
 		for (IArc arc : arcs) {
 			if (arc.getType().getName().equals(CONCEPT_ARC_TYPE)) {
 				String type = (String) arc.getAttributeValue(TYPE_OF_RELATION);

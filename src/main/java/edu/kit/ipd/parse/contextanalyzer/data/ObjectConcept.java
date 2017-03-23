@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import edu.kit.ipd.parse.contextanalyzer.data.relations.Relation;
 import edu.kit.ipd.parse.contextanalyzer.util.GraphUtils;
@@ -26,7 +27,7 @@ public class ObjectConcept extends EntityConcept {
 
 	private static final String STATE_RELATION_TYPE = "stateOfConcept";
 
-	private Set<State> states = new HashSet<State>();
+	private Set<State> states = new TreeSet<State>();
 
 	private String indexWordLemma = "";
 
@@ -99,7 +100,7 @@ public class ObjectConcept extends EntityConcept {
 		Set<IArc> arcs = new HashSet<IArc>();
 		arcs.addAll(node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
 		arcs.addAll(node.getIncomingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE)));
-		Set<AbstractConcept> alreadyConsidered = new HashSet<>();
+		Set<AbstractConcept> alreadyConsidered = new TreeSet<>();
 		for (IArc arc : arcs) {
 			if (arc.getType().getName().equals(CONCEPT_ARC_TYPE)) {
 				String type = (String) arc.getAttributeValue(TYPE_OF_RELATION);

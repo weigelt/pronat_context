@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import edu.kit.ipd.parse.contextanalyzer.data.AbstractConcept;
 import edu.kit.ipd.parse.contextanalyzer.data.Action;
@@ -116,7 +117,7 @@ public final class ContextUtils {
 	}
 
 	public static final Set<String> getVerbNetRoles(Entity entity) {
-		Set<String> result = new HashSet<>();
+		Set<String> result = new TreeSet<>();
 		if (entity.hasRelationsOfType(SRLArgumentRelation.class)) {
 			List<Relation> relations = entity.getRelationsOfType(SRLArgumentRelation.class);
 			for (Relation relation : relations) {

@@ -3,11 +3,11 @@ package edu.kit.ipd.parse.contextanalyzer.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import edu.kit.ipd.parse.contextanalyzer.data.relations.ActionConceptRelation;
 import edu.kit.ipd.parse.contextanalyzer.data.relations.Relation;
@@ -88,13 +88,13 @@ public class Action extends ContextIndividual {
 		this.verbNetFrames = verbNetFrames;
 		this.frameNetFrames = frameNetFrames;
 		this.eventTypes = eventTypes;
-		this.antonyms = new HashSet<>();
+		this.antonyms = new TreeSet<>();
 		this.antonyms.addAll(antonyms);
-		this.synonyms = new HashSet<>();
+		this.synonyms = new TreeSet<>();
 		this.synonyms.addAll(synonyms);
-		this.directHyponyms = new HashSet<>();
+		this.directHyponyms = new TreeSet<>();
 		this.directHyponyms.addAll(directHyponyms);
-		this.directHypernyms = new HashSet<>();
+		this.directHypernyms = new TreeSet<>();
 		this.directHypernyms.addAll(directHypernyms);
 		this.reference = reference;
 		this.commandType = CommandType.INDEPENDENT_STATEMENT;
@@ -105,13 +105,13 @@ public class Action extends ContextIndividual {
 			List<INode> reference) {
 		super();
 		this.name = name;
-		this.antonyms = new HashSet<>();
+		this.antonyms = new TreeSet<>();
 		this.antonyms.addAll(antonyms);
-		this.synonyms = new HashSet<>();
+		this.synonyms = new TreeSet<>();
 		this.synonyms.addAll(synonyms);
-		this.directHyponyms = new HashSet<>();
+		this.directHyponyms = new TreeSet<>();
 		this.directHyponyms.addAll(directHyponyms);
-		this.directHypernyms = new HashSet<>();
+		this.directHypernyms = new TreeSet<>();
 		this.directHypernyms.addAll(directHypernyms);
 		this.verbNetFrames = new ArrayList<>();
 		this.frameNetFrames = new ArrayList<>();

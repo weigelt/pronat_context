@@ -6,9 +6,9 @@ package edu.kit.ipd.parse.contextanalyzer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -103,7 +103,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 		for (Action action : context.getActions()) {
 			connectAction(action);
 		}
-		Set<AbstractConcept> concepts = new HashSet<>(context.getConcepts());
+		Set<AbstractConcept> concepts = new TreeSet<>(context.getConcepts());
 		for (AbstractConcept concept : concepts) {
 			if (concept instanceof ObjectConcept) {
 				findCommonSubsumers((ObjectConcept) concept);
@@ -539,7 +539,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	private Set<AbstractConcept> getAlreadyConnectedSuperConcepts(List<Pair<IIndividual, Double>> directCandidates) {
-		Set<AbstractConcept> result = new HashSet<>();
+		Set<AbstractConcept> result = new TreeSet<>();
 		for (Pair<IIndividual, Double> pair : directCandidates) {
 			IIndividual individual = pair.getLeft();
 			if (individual instanceof IObject) {
@@ -1099,7 +1099,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	private void findCommonSubsumers(ObjectConcept concept) {
-		Set<ObjectConcept> objectConcepts = new HashSet<>();
+		Set<ObjectConcept> objectConcepts = new TreeSet<>();
 		for (AbstractConcept abstractConcept : context.getConcepts()) {
 			if (abstractConcept instanceof ObjectConcept && !abstractConcept.equals(concept)) {
 				objectConcepts.add((ObjectConcept) abstractConcept);
@@ -1213,7 +1213,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	private Set<String> getObjectConceptWNSynsets(ObjectConcept concept) {
-		Set<String> result = new HashSet<>();
+		Set<String> result = new TreeSet<>();
 		List<Relation> relations = concept.getRelationsOfType(EntityConceptRelation.class);
 		for (Relation relation : relations) {
 			EntityConceptRelation rel = (EntityConceptRelation) relation;

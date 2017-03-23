@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import edu.kit.ipd.parse.contextanalyzer.data.entities.Entity;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.SpeakerEntity;
@@ -38,14 +39,14 @@ public class Context {
 	public Context() {
 		entities = new HashSet<Entity>();
 		actions = new HashSet<Action>();
-		concepts = new HashSet<AbstractConcept>();
+		concepts = new TreeSet<AbstractConcept>();
 		id = 0;
 	}
 
 	private Context(boolean readFromGraph) {
 		entities = new HashSet<Entity>();
 		actions = new HashSet<Action>();
-		concepts = new HashSet<AbstractConcept>();
+		concepts = new TreeSet<AbstractConcept>();
 		this.nodesMap = new HashMap<Long, INode>();
 		this.readFromGraph = readFromGraph;
 		id = 0;
