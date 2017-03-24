@@ -321,6 +321,16 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	public boolean equals(Object obj) {
 		if (obj instanceof AbstractConcept) {
 			AbstractConcept concept = (AbstractConcept) obj;
+			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual);
+
+			return result;
+		}
+		return false;
+	}
+
+	public boolean equalsComplex(Object obj) {
+		if (obj instanceof AbstractConcept) {
+			AbstractConcept concept = (AbstractConcept) obj;
 			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual)
 					&& Objects.equals(this.synonyms, concept.synonyms) && matchesConcepts(this.equalConcepts, concept.equalConcepts)
 					&& matchesConcepts(this.subConcepts, concept.subConcepts) && matchesConcepts(this.superConcepts, concept.superConcepts)
@@ -382,7 +392,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 		int hash = this.name.hashCode();
 		hash = 31 * hash + this.getClass().hashCode();
 
-		//		hash = this.ontologyIndividual == null ? hash : 31 * hash + this.ontologyIndividual.hashCode();
+		hash = this.ontologyIndividual == null ? hash : 31 * hash + this.ontologyIndividual.hashCode();
 		//
 		//		for (AbstractConcept abstractConcept : equalConcepts) {
 		//			hash = 31 * hash + abstractConcept.getName().hashCode();
@@ -403,7 +413,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 		//		for (AbstractConcept abstractConcept : partOfConcepts) {
 		//			hash = 31 * hash + abstractConcept.getName().hashCode();
 		//		}
-		hash = this.synonyms == null ? hash : 31 * hash + this.synonyms.hashCode();
+		//hash = this.synonyms == null ? hash : 31 * hash + this.synonyms.hashCode();
 		return hash;
 	}
 

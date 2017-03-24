@@ -298,7 +298,7 @@ public class Context {
 				boolean entitiesmatch = contextIndividualMatch(this.entities, other.entities);//this.entities.containsAll(other.entities) && other.entities.containsAll(this.entities);
 
 				boolean actionsmatch = contextIndividualMatch(this.actions, other.actions);
-				boolean conceptsmatch = contextIndividualMatch(this.concepts, other.concepts);//this.concepts.containsAll(other.concepts) && other.concepts.containsAll(this.concepts);
+				boolean conceptsmatch = conceptsMatch(this.concepts, other.concepts);//this.concepts.containsAll(other.concepts) && other.concepts.containsAll(this.concepts);
 				return entitiesmatch && actionsmatch && conceptsmatch;
 			}
 		}
@@ -312,6 +312,26 @@ public class Context {
 				boolean individualResult = false;
 				for (ContextIndividual otherIndividual : other) {
 					if (currentIndividual.equals(otherIndividual)) {
+						individualResult = true;
+						break;
+					}
+				}
+				if (individualResult != true) {
+					result = false;
+				}
+			}
+			return result;
+		}
+		return false;
+	}
+
+	private boolean conceptsMatch(Set<? extends AbstractConcept> current, Set<? extends AbstractConcept> other) {
+		if (current.size() == other.size()) {
+			boolean result = true;
+			for (AbstractConcept currentIndividual : current) {
+				boolean individualResult = false;
+				for (AbstractConcept otherIndividual : other) {
+					if (currentIndividual.equalsComplex(otherIndividual)) {
 						individualResult = true;
 						break;
 					}

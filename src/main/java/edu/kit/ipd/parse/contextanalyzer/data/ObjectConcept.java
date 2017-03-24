@@ -165,6 +165,16 @@ public class ObjectConcept extends EntityConcept {
 	public boolean equals(Object obj) {
 		if (obj instanceof ObjectConcept) {
 			ObjectConcept other = (ObjectConcept) obj;
+			return super.equals(obj) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
+
+		}
+		return false;
+	}
+
+	@Override
+	public boolean equalsComplex(Object obj) {
+		if (obj instanceof ObjectConcept) {
+			ObjectConcept other = (ObjectConcept) obj;
 			return super.equals(obj) && matchesConcepts(states, other.states) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
 
 		}

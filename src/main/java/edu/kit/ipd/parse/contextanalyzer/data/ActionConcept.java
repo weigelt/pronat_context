@@ -234,6 +234,16 @@ public class ActionConcept extends AbstractConcept {
 	public boolean equals(Object obj) {
 		if (obj instanceof ActionConcept) {
 			ActionConcept other = (ActionConcept) obj;
+			return super.equals(obj) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
+
+		}
+		return false;
+	}
+
+	@Override
+	public boolean equalsComplex(Object obj) {
+		if (obj instanceof ActionConcept) {
+			ActionConcept other = (ActionConcept) obj;
 			return super.equals(obj) && matchesConcepts(statesChangedTo, other.statesChangedTo)
 					&& matchesConcepts(antonymActions, other.antonymActions) && Objects.equals(this.indexWordLemma, other.indexWordLemma);
 

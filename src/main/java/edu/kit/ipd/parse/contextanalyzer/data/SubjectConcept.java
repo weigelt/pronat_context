@@ -78,6 +78,16 @@ public class SubjectConcept extends EntityConcept {
 	}
 
 	@Override
+	public boolean equalsComplex(Object obj) {
+		if (obj instanceof SubjectConcept) {
+			SubjectConcept other = (SubjectConcept) obj;
+			return super.equals(obj) && Objects.equals(gender, other.gender);
+
+		}
+		return false;
+	}
+
+	@Override
 	public boolean equalsWithoutRelation(Object obj) {
 		if (obj instanceof SubjectConcept) {
 			SubjectConcept other = (SubjectConcept) obj;

@@ -141,6 +141,16 @@ public class State extends AbstractConcept {
 	public boolean equals(Object obj) {
 		if (obj instanceof State) {
 			State other = (State) obj;
+			return super.equals(obj);
+
+		}
+		return false;
+	}
+
+	@Override
+	public boolean equalsComplex(Object obj) {
+		if (obj instanceof State) {
+			State other = (State) obj;
 			return super.equals(obj) && matchesConcepts(associatedStates, other.associatedStates);
 
 		}

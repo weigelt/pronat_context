@@ -216,7 +216,8 @@ public final class ContextUtils {
 	}
 
 	public static final boolean isSubsumed(AbstractConcept concept, AbstractConcept possibleSubsumer) {
-		if (concept.equals(possibleSubsumer)) {
+		if (concept.getClass().getName().equals(possibleSubsumer.getClass().getName())
+				&& concept.getName().equals(possibleSubsumer.getName())) {
 			return true;
 		}
 		if (concept.getSuperConcepts().contains(possibleSubsumer)) {
