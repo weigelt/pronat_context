@@ -72,50 +72,53 @@ public class LocativeRelationAnalyzer implements IContextAnalyzer {
 	private void searchForLocativeRelations(List<Entity> entities, List<INode> utteranceNodes) {
 		ListIterator<Entity> iterator = entities.listIterator();
 
-		Entity previous = iterator.next();
-		while (iterator.hasNext()) {
-			Entity current = iterator.next();
-			if (!isFrontOf(current)) {
+		if (iterator.hasNext()) {
+			Entity previous = iterator.next();
+			while (iterator.hasNext()) {
+				Entity current = iterator.next();
+				if (!isFrontOf(current)) {
 
-				// remove virtual SpeakerEntity from consideration
-				if (!(previous instanceof SpeakerEntity) && !(current instanceof SpeakerEntity)) {
+					// remove virtual SpeakerEntity from consideration
+					if (!(previous instanceof SpeakerEntity) && !(current instanceof SpeakerEntity)) {
 
-					if (!(ContextUtils.belongToSameAction(previous, current) && !ContextUtils.hasLocativeRole(current))
-							&& !ContextUtils.actionInBetween(previous, current, currentContext)) {
-						checkForLocatives(utteranceNodes, previous, current);
-					} else {
-						if (ContextUtils.belongToSameAction(previous, current)) {
-							if (ContextUtils.hasLocativeRole(current)) {
-								if (ContextUtils.isProtoPatient(previous)) {
-									checkForLocatives(utteranceNodes, previous, current);
-								} else {
-									Entity protoPatient = ContextUtils.getProtoPatientForAction(ContextUtils.getActionForEntity(current));
-									if (protoPatient != null && ContextUtils.getPositionInUtterance(protoPatient) < ContextUtils
-											.getPositionInUtterance(current)) {
-										checkForLocatives(utteranceNodes, protoPatient, current);
+						if (!(ContextUtils.belongToSameAction(previous, current) && !ContextUtils.hasLocativeRole(current))
+								&& !ContextUtils.actionInBetween(previous, current, currentContext)) {
+							checkForLocatives(utteranceNodes, previous, current);
+						} else {
+							if (ContextUtils.belongToSameAction(previous, current)) {
+								if (ContextUtils.hasLocativeRole(current)) {
+									if (ContextUtils.isProtoPatient(previous)) {
+										checkForLocatives(utteranceNodes, previous, current);
+									} else {
+										Entity protoPatient = ContextUtils
+												.getProtoPatientForAction(ContextUtils.getActionForEntity(current));
+										if (protoPatient != null && ContextUtils.getPositionInUtterance(protoPatient) < ContextUtils
+												.getPositionInUtterance(current)) {
+											checkForLocatives(utteranceNodes, protoPatient, current);
+										}
 									}
 								}
-							}
-							if (ContextUtils.isProtoPatient(previous)) {
-								if (ContextUtils.hasLocativeRole(current)) {//|| ContextUtils.isSourceOrDestination(current)) {
+								if (ContextUtils.isProtoPatient(previous)) {
+									if (ContextUtils.hasLocativeRole(current)) {//|| ContextUtils.isSourceOrDestination(current)) {
 
+									}
 								}
-							}
 
+							}
 						}
 					}
-				}
-				previous = current;
-			} else {
-				for (Relation rel : current.getRelations()) {
-					if (rel instanceof ActionEntityRelation) {
-						((ActionEntityRelation) rel).getAction().getRelations().remove(rel);
+					previous = current;
+				} else {
+					for (Relation rel : current.getRelations()) {
+						if (rel instanceof ActionEntityRelation) {
+							((ActionEntityRelation) rel).getAction().getRelations().remove(rel);
+						}
 					}
+					currentContext.getEntities().remove(current);
+
 				}
-				currentContext.getEntities().remove(current);
 
 			}
-
 		}
 
 	}
