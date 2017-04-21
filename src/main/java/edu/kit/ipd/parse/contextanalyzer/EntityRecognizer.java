@@ -220,6 +220,9 @@ public class EntityRecognizer implements IContextAnalyzer {
 				}
 				gNumber = determineGrammaticalNumber(gNumber, quantity, pos);
 			} else if (isAdjective(pos)) {
+				if (noNounFollows(node, phrase)) {
+					name = determineName(name, (String) node.getAttributeValue("value"));
+				}
 				reference.add(node);
 				describingAdjectives.add((String) node.getAttributeValue("value"));
 			} else if (isPossessivePronoun(pos)) {
@@ -240,6 +243,9 @@ public class EntityRecognizer implements IContextAnalyzer {
 					lemma = (String) node.getAttributeValue("value");
 				}
 				quantity = lemma;
+
+			} else if (isPredeterminer(pos)) {
+				reference.add(node);
 
 			}
 		}
@@ -263,6 +269,16 @@ public class EntityRecognizer implements IContextAnalyzer {
 		entity.setStatement(mostLikelyConditionNumber);
 		entity.setWNSense(wnSense);
 		return entity;
+	}
+
+	private boolean noNounFollows(INode node, List<INode> phrase) {
+		for (int i = phrase.indexOf(node) + 1; i < phrase.size(); i++) {
+			INode curr = phrase.get(i);
+			if (isNoun(curr)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private Pair<String, Double> getWnSense(List<INode> phrase) {
@@ -701,6 +717,11 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	private boolean isCardinalNumber(String pos) {
 		return pos.equals("CD");
+	}
+
+	private boolean isPredeterminer(String pos) {
+
+		return pos.equals("PDT");
 	}
 
 	private boolean isDeterminer(String pos) {
