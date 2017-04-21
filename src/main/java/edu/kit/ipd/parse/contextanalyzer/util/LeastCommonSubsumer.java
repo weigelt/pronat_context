@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer.util;
 
@@ -17,15 +17,19 @@ public class LeastCommonSubsumer {
 
 	private Synset synsetOne;
 	private Synset synsetTwo;
+	private String iwCurr;
+	private String iwCand;
 	private Synset leastCommonSubsumer;
 	private String name = "";
 
 	/**
-	 * 
+	 *
 	 */
-	public LeastCommonSubsumer(Synset synsetOne, Synset synsetTwo, Synset leastCommonSubsumer) {
+	public LeastCommonSubsumer(Synset synsetOne, Synset synsetTwo, Synset leastCommonSubsumer, String iwCurr, String iwCand) {
 		this.synsetOne = synsetOne;
 		this.synsetTwo = synsetTwo;
+		this.iwCurr = iwCurr;
+		this.iwCand = iwCand;
 		this.leastCommonSubsumer = leastCommonSubsumer;
 		this.name = calcName();
 	}
@@ -63,6 +67,13 @@ public class LeastCommonSubsumer {
 	private String calcName() {
 		List<Word> words = leastCommonSubsumer.getWords();
 		words.sort(new UseCountComparer());
+		for (Word word : words) {
+			if (word.getLemma().equals(iwCurr)) {
+				return iwCurr;
+			} else if (word.getLemma().equals(iwCand)) {
+				return iwCand;
+			}
+		}
 		return words.get(0).getLemma();
 	}
 

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer.util;
 
@@ -76,7 +76,8 @@ public final class WordNetUtils {
 									.getInformationContent(asym.getNodeList().get(asym.getCommonParentIndex()).getSynset());
 							if (informationContent > icMax) {
 								result = new LeastCommonSubsumer(currSynset, candSynset,
-										asym.getNodeList().get(asym.getCommonParentIndex()).getSynset());
+										asym.getNodeList().get(asym.getCommonParentIndex()).getSynset(), current.getLemma(),
+										candidate.getLemma());
 								icMax = informationContent;
 							}
 						}
@@ -129,7 +130,8 @@ public final class WordNetUtils {
 							AsymmetricRelationship asym = (AsymmetricRelationship) relationship;
 
 							result.add(new LeastCommonSubsumer(currSynset, candSynset,
-									asym.getNodeList().get(asym.getCommonParentIndex()).getSynset()));
+									asym.getNodeList().get(asym.getCommonParentIndex()).getSynset(), current.getLemma(),
+									candidate.getLemma()));
 
 						}
 					}
@@ -152,7 +154,7 @@ public final class WordNetUtils {
 		if (startDepth == -1 || endDepth == -1 || lcsDepth == -1) {
 			return 0.0;
 		} else {
-			return (double) 2 * lcsDepth / (double) (startDepth + endDepth);
+			return (double) 2 * lcsDepth / (startDepth + endDepth);
 		}
 	}
 
