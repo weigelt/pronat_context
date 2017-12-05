@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer;
 
@@ -39,7 +39,7 @@ import net.sf.extjwnl.dictionary.Dictionary;
  * This class analyzes the constructed Context {@link Entity}s for possible
  * {@link State} they can be in. Adds {@link EntityStateRelation} for found
  * {@link State}s
- * 
+ *
  * @author Tobias Hey
  *
  */
@@ -51,10 +51,10 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 
 	/**
 	 * Constructs new {@link EntityStateDeterminer}
-	 * 
+	 *
 	 * @param dictionary
 	 *            The WordNet {@link Dictionary}
-	 * 
+	 *
 	 */
 	public EntityStateDeterminer(Dictionary dictionary) {
 		this.dictionary = dictionary;
@@ -62,7 +62,7 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * edu.kit.ipd.parse.contextanalyzer.IContextAnalyzer#analyze(edu.kit.ipd.
 	 * parse.luna.graph.IGraph, edu.kit.ipd.parse.contextanalyzer.data.Context)
@@ -178,22 +178,30 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 				}
 				Set<State> resultingStates = combineStates(prevStates, srlStates);
 				for (State state : resultingStates) {
-
+					boolean exists = false;
+					EntityStateRelation relation = new EntityStateRelation(entity, state, 1.0);
 					// remove previous state relation
 					if (entity.hasRelationsOfType(EntityStateRelation.class)) {
 						List<Relation> prevESRels = entity.getRelationsOfType(EntityStateRelation.class);
 						for (Relation prevRel : prevESRels) {
 							EntityStateRelation prevESRel = (EntityStateRelation) prevRel;
-							if (prevESRel.getEnd().equals(state) || state.getAssociatedStates().contains(prevESRel.getEnd())) {
-								entity.getRelations().remove(prevRel);
-								prevESRel.getEnd().getRelations().remove(prevRel);
+							if (!prevESRel.equals(relation)) {
+								if (prevESRel.getEnd().equals(state) || state.getAssociatedStates().contains(prevESRel.getEnd())) {
+									entity.getRelations().remove(prevRel);
+									prevESRel.getEnd().getRelations().remove(prevRel);
+								}
+							} else {
+								exists = true;
+								break;
 							}
+
 						}
 					}
 					// add new
-					EntityStateRelation relation = new EntityStateRelation(entity, state, 1.0);
-					entity.addRelation(relation);
-					state.addRelation(relation);
+					if (!exists) {
+						entity.addRelation(relation);
+						state.addRelation(relation);
+					}
 				}
 			}
 
@@ -279,7 +287,7 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 	/**
 	 * Checks if the {@link Entity} takes a proto patient role in this
 	 * {@link SRLArgumentRelation}
-	 * 
+	 *
 	 * @param srlArgumentRelation
 	 * @return
 	 */
@@ -300,7 +308,7 @@ public class EntityStateDeterminer implements IContextAnalyzer {
 	 * Returns all resulting {@link State} which result from the changed States
 	 * of the {@link ActionConcept} with any of the {@link State} of the
 	 * {@link EntityConcept} or the part Concepts of the {@link EntityConcept}
-	 * 
+	 *
 	 * @param objectConcept
 	 * @param actionConcept
 	 */
