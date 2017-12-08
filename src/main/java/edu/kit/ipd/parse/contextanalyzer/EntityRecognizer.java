@@ -739,25 +739,26 @@ public class EntityRecognizer implements IContextAnalyzer {
 	}
 
 	private boolean isActingSubject(INode node) {
-		String ner = (String) node.getAttributeValue(NER_ATTRIBUTE_NAME);
-		/*
-		 * SRL produces more failures
-		 *
-		 * Set<? extends IArc> srlArcs =
-		 * node.getIncomingArcsOfType(graph.getArcType(SRLabeler.
-		 * SRL_ARCTYPE_NAME)); for (IArc arc : srlArcs) { String
-		 * verbNetRoleString = (String)
-		 * arc.getAttributeValue(SRLabeler.VN_ROLE_NAME); List<String>
-		 * verbNetRoles =
-		 * GraphUtils.getListFromArrayToString(verbNetRoleString); if
-		 * (verbNetRoles.contains("Agent") || verbNetRoles.contains("Actor")) {
-		 * return true; } }
-		 */
-		if (ner != null) {
-			return ner.equals("S-PER");
-		} else {
-			return false;
+		if (node.getType().containsAttribute(NER_ATTRIBUTE_NAME, "String")) {
+			String ner = (String) node.getAttributeValue(NER_ATTRIBUTE_NAME);
+			/*
+			 * SRL produces more failures
+			 *
+			 * Set<? extends IArc> srlArcs =
+			 * node.getIncomingArcsOfType(graph.getArcType(SRLabeler.
+			 * SRL_ARCTYPE_NAME)); for (IArc arc : srlArcs) { String
+			 * verbNetRoleString = (String)
+			 * arc.getAttributeValue(SRLabeler.VN_ROLE_NAME); List<String>
+			 * verbNetRoles =
+			 * GraphUtils.getListFromArrayToString(verbNetRoleString); if
+			 * (verbNetRoles.contains("Agent") ||
+			 * verbNetRoles.contains("Actor")) { return true; } }
+			 */
+			if (ner != null) {
+				return ner.equals("S-PER");
+			}
 		}
+		return false;
 	}
 
 	private boolean containsSubject(List<INode> phrase) {
