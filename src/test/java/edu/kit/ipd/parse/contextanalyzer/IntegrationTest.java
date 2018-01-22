@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer;
 
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.contextanalyzer.data.Context;
@@ -27,17 +27,17 @@ import edu.kit.ipd.parse.srlabeler.SRLabeler;
  *
  */
 public class IntegrationTest {
-	ShallowNLP snlp;
-	SRLabeler srLabeler;
-	NERTagger nerTagger;
-	ContextAnalyzer contextAnalyzer;
-	GraphBuilder graphBuilder;
+	private static ShallowNLP snlp;
+	private static SRLabeler srLabeler;
+	private static NERTagger nerTagger;
+	private static ContextAnalyzer contextAnalyzer;
+	private static GraphBuilder graphBuilder;
 	PrePipelineData ppd;
-	HashMap<String, String> texts;
+	private static HashMap<String, String> texts;
 	private static Properties props;
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		props = ConfigManager.getConfiguration(Domain.class);
 		props.setProperty("ONTOLOGY_PATH", "/ontology.owl");
 		props.setProperty("SYSTEM", "System");

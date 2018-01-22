@@ -6,7 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.contextanalyzer.data.AbstractConcept;
@@ -42,20 +43,20 @@ import edu.kit.ipd.parse.wsd.Wsd;
 
 public class ContextAnalyzerTest {
 
-	ShallowNLP snlp;
-	SRLabeler srLabeler;
-	NERTagger nerTagger;
-	ContextAnalyzer contextAnalyzer;
-	GraphBuilder graphBuilder;
-	Wsd wsd;
-	PrePipelineData ppd;
-	HashMap<String, String> texts;
-	HashMap<String, List<Pair<String, String>>> evalTexts;
-	HashMap<String, List<Pair<String, String>>> stateTexts;
+	private static ShallowNLP snlp;
+	private static SRLabeler srLabeler;
+	private static NERTagger nerTagger;
+	private static ContextAnalyzer contextAnalyzer;
+	private static GraphBuilder graphBuilder;
+	private static Wsd wsd;
+	private PrePipelineData ppd;
+	private static HashMap<String, String> texts;
+	private static HashMap<String, List<Pair<String, String>>> evalTexts;
+	private static HashMap<String, List<Pair<String, String>>> stateTexts;
 	private static Properties props;
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		props = ConfigManager.getConfiguration(Domain.class);
 		props.setProperty("ONTOLOGY_PATH", "/ontology.owl");
 		props.setProperty("SYSTEM", "System");
@@ -288,6 +289,7 @@ public class ContextAnalyzerTest {
 		System.out.println("----------------------------------------------------");
 	}
 
+	@Ignore
 	@Test
 	public void conceptBuildingEval() {
 		int total = 0;
@@ -344,6 +346,7 @@ public class ContextAnalyzerTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void conceptHierarchieBuildingEval() {
 		int total = 0;
@@ -401,6 +404,7 @@ public class ContextAnalyzerTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void conceptStateEval() {
 		int total = 0;
