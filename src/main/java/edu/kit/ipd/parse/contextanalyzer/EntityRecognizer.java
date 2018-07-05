@@ -755,7 +755,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 			 * verbNetRoles.contains("Actor")) { return true; } }
 			 */
 			if (ner != null) {
-				return ner.equals("S-PER");
+				return ner.equalsIgnoreCase("S-PER") || ner.equalsIgnoreCase("PERSON");
 			}
 		}
 		return false;
