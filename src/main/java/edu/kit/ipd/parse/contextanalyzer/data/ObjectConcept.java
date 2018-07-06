@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer.data;
 
@@ -81,7 +81,7 @@ public class ObjectConcept extends EntityConcept {
 	}
 
 	public boolean hasIndexWordLemma() {
-		if (indexWordLemma != "") {
+		if (!indexWordLemma.equals("")) {
 			return true;
 		}
 		return false;
@@ -222,7 +222,7 @@ public class ObjectConcept extends EntityConcept {
 
 	/**
 	 * Invoke only after all concepts are read out
-	 * 
+	 *
 	 * @param node
 	 * @param graphNodes
 	 * @param graph

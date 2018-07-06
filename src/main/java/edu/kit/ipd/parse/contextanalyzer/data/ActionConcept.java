@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer.data;
 
@@ -121,7 +121,7 @@ public class ActionConcept extends AbstractConcept {
 	}
 
 	public boolean hasIndexWordLemma() {
-		if (indexWordLemma != "") {
+		if (!indexWordLemma.equals("")) {
 			return true;
 		}
 		return false;
@@ -296,11 +296,12 @@ public class ActionConcept extends AbstractConcept {
 
 	/**
 	 * Invoke only after all concepts are read out
-	 * 
+	 *
 	 * @param node
 	 * @param graphNodes
 	 * @param graph
 	 */
+	@Override
 	public void readConceptRelationsOfNode(INode node, ContextIndividual[] graphNodes, IGraph graph) {
 		super.readConceptRelationsOfNode(node, graphNodes, graph);
 		for (IArc arc : node.getOutgoingArcsOfType(graph.getArcType(CONCEPT_ARC_TYPE))) {

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer;
 
@@ -52,7 +52,7 @@ import net.sf.extjwnl.dictionary.Dictionary;
  * This {@link IContextAnalyzer} analyzes the found {@link Entity}s and
  * {@link Action}s for equivalents in the domain knowledge ontology or builds
  * new concepts from the Informations in the {@link ContextIndividual}s.
- * 
+ *
  * @author Tobias Hey
  *
  */
@@ -73,7 +73,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 
 	/**
 	 * Constructs new {@link KnowledgeConnector}
-	 * 
+	 *
 	 * @param dictionary
 	 *            The WordNet {@link Dictionary}
 	 * @param domain
@@ -87,7 +87,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * edu.kit.ipd.parse.contextanalyzer.IContextAnalyzer#analyze(edu.kit.ipd.
 	 * parse.luna.graph.IGraph, edu.kit.ipd.parse.contextanalyzer.data.Context)
@@ -114,7 +114,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Connects the specified {@link Action} with the Domainknowledge and
 	 * creates {@link AbstractConcept}s for the found connections
-	 * 
+	 *
 	 * @param action
 	 *            The {@link Action} to connect
 	 */
@@ -159,7 +159,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Extracts an {@link ActionConcept} from the specified {@link Action}
 	 * {@link IMethod} connection
-	 * 
+	 *
 	 * @param action
 	 * @param method
 	 * @param similarity
@@ -219,7 +219,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Gives or creates an {@link ActionConcept} from the specified
 	 * {@link IMethod}
-	 * 
+	 *
 	 * @param method
 	 * @return
 	 */
@@ -276,7 +276,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Builds an {@link ActionConcept} from the Information extracted from
 	 * WordNet and saved in the {@link Action}
-	 * 
+	 *
 	 * @param action
 	 * @return
 	 */
@@ -367,7 +367,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Analyzes the given List for the most likely {@link IMethod} and extracts
 	 * the {@link ActionConcept} belonging to this {@link IMethod}
-	 * 
+	 *
 	 * @param candidates
 	 * @return
 	 */
@@ -396,7 +396,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Connects the specified {@link Entity} with the Domainknowledge and
 	 * creates {@link AbstractConcept}s for the found connections
-	 * 
+	 *
 	 * @param entity
 	 *            The {@link Entity} to connect
 	 */
@@ -561,7 +561,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Extracts an {@link EntityConcept} from the specified {@link ObjectEntity}
 	 * {@link IObject} connection
-	 * 
+	 *
 	 * @param objectEntity
 	 * @param object
 	 * @param similarity
@@ -618,7 +618,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Creates or returns the {@link EntityConcept} to the specified
 	 * {@link IObject}
-	 * 
+	 *
 	 * @param object
 	 * @return
 	 */
@@ -643,7 +643,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 					for (String string : split) {
 						compare += string + " ";
 					}
-					compare.trim();
+					compare = compare.trim();
 					indexWord = WordNetUtils.getIndexWord(compare, POS.NOUN, dictionary);
 					if (indexWord != null) {
 						if (indexWord.getLemma().contains(split[split.length - 1].toLowerCase())) {
@@ -728,7 +728,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Builds an {@link EntityConcept} from the Information extracted from
 	 * WordNet and saved in the {@link ObjectEntity}
-	 * 
+	 *
 	 * @param objectEntity
 	 * @return
 	 */
@@ -859,7 +859,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Analyzes the given List for the most likely {@link IObject} and extracts
 	 * the {@link EntityConcept} belonging to this {@link IObject}
-	 * 
+	 *
 	 * @param entity
 	 * @param candidates
 	 * @return
@@ -889,7 +889,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Returns a String representation of the specified {@link Entity} which can
 	 * be compared with the domain knowledge
-	 * 
+	 *
 	 * @param objectEntity
 	 * @return
 	 */
@@ -930,7 +930,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Returns a String representation of the specified {@link Entity} which
 	 * includes the adjectives
-	 * 
+	 *
 	 * @param objectEntity
 	 * @return
 	 */
@@ -950,7 +950,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 
 	/**
 	 * Creates or returns the {@link State} to the specified {@link IState}
-	 * 
+	 *
 	 * @param state
 	 * @return
 	 */
@@ -988,7 +988,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Extracts an {@link EntityConcept} from the specified
 	 * {@link SubjectEntity} {@link ISystemClass} connection
-	 * 
+	 *
 	 * @param subject
 	 * @param system
 	 * @param similarity
@@ -1016,7 +1016,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/**
 	 * Returns the found {@link AbstractConcept} to the specified WordNet word
 	 * with respect to the specified domain knowledge individuals
-	 * 
+	 *
 	 * @param wordNetWord
 	 * @param individuals
 	 * @return
@@ -1077,7 +1077,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 
 	/**
 	 * Returns the most likely candidate of the specified candidates
-	 * 
+	 *
 	 * @param candidates
 	 * @return
 	 */

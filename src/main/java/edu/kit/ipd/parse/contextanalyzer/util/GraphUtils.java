@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer.util;
 
@@ -151,7 +151,7 @@ public final class GraphUtils {
 
 	public static final List<String> getListFromArrayToString(String representation) {
 		List<String> result = new ArrayList<>();
-		if (representation != null && representation != "[]") {
+		if (representation != null && !representation.equals("[]")) {
 			result = Arrays.asList(representation.substring(1, representation.length() - 1).split(", "));
 		}
 		return result;
