@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import edu.kit.ipd.parse.contextanalyzer.data.entities.SubjectEntity.Gender;
-
 public class GenderNumberUtils {
 
-	public static final Map<List<String>, Gender> genderNumber = new HashMap<List<String>, Gender>();
+	/**
+	 * map containing names and their respective gender as MALE, FEMALE, NEUTRAL
+	 * or UNKNOWN
+	 */
+	public static final Map<List<String>, Object> genderNumber = new HashMap<List<String>, Object>();
 
 	/**
 	 * Use serialized genderMap of StanfordCoreNLP-models version 3.9.2
@@ -21,7 +23,7 @@ public class GenderNumberUtils {
 		ObjectInputStream ois;
 		try {
 			ois = new ObjectInputStream(new GZIPInputStream(GenderNumberUtils.class.getResourceAsStream("/gender/gender.map.ser.gz")));
-			Map<List<String>, Gender> temp = (Map<List<String>, Gender>) ois.readObject();
+			Map<List<String>, Object> temp = (Map<List<String>, Object>) ois.readObject();
 			genderNumber.putAll(temp);
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block

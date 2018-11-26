@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -838,7 +839,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 			for (int i = 0; i <= firstNameIdx; i++) {
 				if (GenderNumberUtils.genderNumber.containsKey(words.subList(i, len))) {
-					return GenderNumberUtils.genderNumber.get(words.subList(i, len));
+					return convertGender(GenderNumberUtils.genderNumber.get(words.subList(i, len)));
 				}
 			}
 
@@ -847,18 +848,31 @@ public class EntityRecognizer implements IContextAnalyzer {
 			convertedStr.add(words.get(firstNameIdx));
 			convertedStr.add("!");
 			if (GenderNumberUtils.genderNumber.containsKey(convertedStr)) {
-				return GenderNumberUtils.genderNumber.get(convertedStr);
+				return convertGender(GenderNumberUtils.genderNumber.get(convertedStr));
 			}
 
 			if (GenderNumberUtils.genderNumber.containsKey(words.subList(firstNameIdx, firstNameIdx + 1))) {
-				return GenderNumberUtils.genderNumber.get(words.subList(firstNameIdx, firstNameIdx + 1));
+				return convertGender(GenderNumberUtils.genderNumber.get(words.subList(firstNameIdx, firstNameIdx + 1)));
 			}
 		}
 
 		if (words.size() > 0 && GenderNumberUtils.genderNumber.containsKey(words.subList(len - 1, len))) {
-			return GenderNumberUtils.genderNumber.get(words.subList(len - 1, len));
+			return convertGender(GenderNumberUtils.genderNumber.get(words.subList(len - 1, len)));
 		}
 		return Gender.UNKNOWN;
 
 	}
+
+	private Gender convertGender(Object gender) {
+		if (Objects.equals(gender.toString(), Gender.MALE.name())) {
+			return Gender.MALE;
+		} else if (Objects.equals(gender.toString(), Gender.FEMALE.name())) {
+			return Gender.FEMALE;
+		} else if (Objects.equals(gender.toString(), Gender.NEUTRAL.name())) {
+			return Gender.NEUTRAL;
+		} else {
+			return Gender.UNKNOWN;
+		}
+	}
+
 }
