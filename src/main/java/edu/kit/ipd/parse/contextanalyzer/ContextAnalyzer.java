@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer;
 
@@ -17,16 +17,13 @@ import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 import edu.kit.ipd.parse.ontology_connection.Domain;
-import edu.stanford.nlp.dcoref.Constants;
-import edu.stanford.nlp.dcoref.Dictionaries;
-import edu.stanford.nlp.pipeline.DefaultPaths;
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.dictionary.Dictionary;
 
 /**
  * This class represents the {@link AbstractAgent} which analyzes the current
  * context and prints the result into the {@link IGraph}.
- * 
+ *
  * @author Tobias Hey
  *
  */
@@ -35,7 +32,6 @@ public class ContextAnalyzer extends AbstractAgent {
 
 	private static final String ID = "contextAnalyzer";
 	private Dictionary dictionary;
-	private Dictionaries stanfordDict;
 	private Domain domain;
 	private List<IContextAnalyzer> analyzer;
 	private Context context;
@@ -46,7 +42,7 @@ public class ContextAnalyzer extends AbstractAgent {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see edu.kit.ipd.parse.luna.agent.LunaObserver#init()
 	 */
 	@Override
@@ -57,11 +53,6 @@ public class ContextAnalyzer extends AbstractAgent {
 		try {
 			// init extjwnl
 			dictionary = Dictionary.getDefaultResourceInstance();
-
-			//init StanfordDictionary
-			Properties props = new Properties();
-			props.setProperty(Constants.GENDER_NUMBER_PROP, DefaultPaths.DEFAULT_DCOREF_GENDER_NUMBER);
-			stanfordDict = new Dictionaries(props);
 		} catch (JWNLException e) {
 			logger.error("WordNet Dictionary not accessible!");
 			throw new RuntimeException(e);
@@ -69,7 +60,7 @@ public class ContextAnalyzer extends AbstractAgent {
 
 		domain = Domain.getInstance();
 		analyzer = new ArrayList<IContextAnalyzer>();
-		analyzer.add(new EntityRecognizer(dictionary, stanfordDict, domain));
+		analyzer.add(new EntityRecognizer(dictionary, domain));
 		analyzer.add(new ActionRecognizer(dictionary, domain));
 		analyzer.add(new LocativeRelationAnalyzer());
 		analyzer.add(new KnowledgeConnector(dictionary, domain, similarityMetric));
@@ -79,7 +70,7 @@ public class ContextAnalyzer extends AbstractAgent {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see edu.kit.ipd.parse.luna.agent.AbstractAgent#exec()
 	 */
 	@Override
@@ -98,7 +89,7 @@ public class ContextAnalyzer extends AbstractAgent {
 
 	/**
 	 * Get the current context from the {@link IGraph}
-	 * 
+	 *
 	 * @return the current context from the {@link IGraph}
 	 */
 	Context readContextFromGraph() {
@@ -108,7 +99,7 @@ public class ContextAnalyzer extends AbstractAgent {
 
 	/**
 	 * Returns the current {@link Context} representation
-	 * 
+	 *
 	 * @return the current {@link Context} representation
 	 */
 	Context getContext() {

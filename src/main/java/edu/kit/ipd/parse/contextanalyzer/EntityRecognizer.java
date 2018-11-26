@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -24,6 +23,7 @@ import edu.kit.ipd.parse.contextanalyzer.data.entities.SubjectEntity;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.SubjectEntity.Gender;
 import edu.kit.ipd.parse.contextanalyzer.data.relations.ConjunctionRelation;
 import edu.kit.ipd.parse.contextanalyzer.util.ContextUtils;
+import edu.kit.ipd.parse.contextanalyzer.util.GenderNumberUtils;
 import edu.kit.ipd.parse.contextanalyzer.util.GraphUtils;
 import edu.kit.ipd.parse.contextanalyzer.util.WordNetUtils;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
@@ -33,7 +33,6 @@ import edu.kit.ipd.parse.luna.graph.Pair;
 import edu.kit.ipd.parse.ontology_connection.Domain;
 import edu.kit.ipd.parse.ontology_connection.IClassContainer;
 import edu.kit.ipd.parse.ontology_connection.system.ISystemClass;
-import edu.stanford.nlp.dcoref.Dictionaries;
 import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.dictionary.Dictionary;
 
@@ -61,8 +60,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 	private IGraph graph;
 	private Context currentContext;
 	private Dictionary dictionary;
-	private Dictionaries stanfordDict;
-	private Domain domain;
+	private GenderNumberUtils genderUtil;
 	private static final Logger logger = LoggerFactory.getLogger(EntityRecognizer.class);
 
 	private final List<List<String>> SYSTEM_NAMES = new ArrayList<>();
@@ -80,10 +78,9 @@ public class EntityRecognizer implements IContextAnalyzer {
 	 * @param domain
 	 *            The domainknowledge {@link Domain}
 	 */
-	public EntityRecognizer(Dictionary dictionary, Dictionaries stanfordDict, Domain domain) {
+	public EntityRecognizer(Dictionary dictionary, Domain domain) {
 		this.dictionary = dictionary;
-		this.stanfordDict = stanfordDict;
-		this.domain = domain;
+		genderUtil = new GenderNumberUtils();
 		IClassContainer<ISystemClass> systems = domain.getSystemClasses();
 		if (systems.hasMembers()) {
 			Set<ISystemClass> sysSet = systems.asSet();
@@ -840,8 +837,8 @@ public class EntityRecognizer implements IContextAnalyzer {
 			}
 
 			for (int i = 0; i <= firstNameIdx; i++) {
-				if (stanfordDict.genderNumber.containsKey(words.subList(i, len))) {
-					return convertGender(stanfordDict.genderNumber.get(words.subList(i, len)));
+				if (GenderNumberUtils.genderNumber.containsKey(words.subList(i, len))) {
+					return GenderNumberUtils.genderNumber.get(words.subList(i, len));
 				}
 			}
 
@@ -849,31 +846,19 @@ public class EntityRecognizer implements IContextAnalyzer {
 			List<String> convertedStr = new ArrayList<String>(2);
 			convertedStr.add(words.get(firstNameIdx));
 			convertedStr.add("!");
-			if (stanfordDict.genderNumber.containsKey(convertedStr)) {
-				return convertGender(stanfordDict.genderNumber.get(convertedStr));
+			if (GenderNumberUtils.genderNumber.containsKey(convertedStr)) {
+				return GenderNumberUtils.genderNumber.get(convertedStr);
 			}
 
-			if (stanfordDict.genderNumber.containsKey(words.subList(firstNameIdx, firstNameIdx + 1))) {
-				return convertGender(stanfordDict.genderNumber.get(words.subList(firstNameIdx, firstNameIdx + 1)));
+			if (GenderNumberUtils.genderNumber.containsKey(words.subList(firstNameIdx, firstNameIdx + 1))) {
+				return GenderNumberUtils.genderNumber.get(words.subList(firstNameIdx, firstNameIdx + 1));
 			}
 		}
 
-		if (words.size() > 0 && stanfordDict.genderNumber.containsKey(words.subList(len - 1, len))) {
-			return convertGender(stanfordDict.genderNumber.get(words.subList(len - 1, len)));
+		if (words.size() > 0 && GenderNumberUtils.genderNumber.containsKey(words.subList(len - 1, len))) {
+			return GenderNumberUtils.genderNumber.get(words.subList(len - 1, len));
 		}
 		return Gender.UNKNOWN;
 
-	}
-
-	private Gender convertGender(edu.stanford.nlp.dcoref.Dictionaries.Gender gender) {
-		if (Objects.equals(gender.name(), Gender.MALE.name())) {
-			return Gender.MALE;
-		} else if (Objects.equals(gender.name(), Gender.FEMALE.name())) {
-			return Gender.FEMALE;
-		} else if (Objects.equals(gender.name(), Gender.NEUTRAL.name())) {
-			return Gender.NEUTRAL;
-		} else {
-			return Gender.UNKNOWN;
-		}
 	}
 }
