@@ -95,6 +95,7 @@ public class ContextAnalyzerTest {
 		contextAnalyzer.init();
 	}
 
+	@Ignore
 	@Test
 	public void threeTwo() {
 		ppd = new PrePipelineData();
@@ -125,6 +126,7 @@ public class ContextAnalyzerTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void twoThree() {
 		ppd = new PrePipelineData();
@@ -145,6 +147,7 @@ public class ContextAnalyzerTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void twelveTwo() {
 		ppd = new PrePipelineData();
@@ -165,6 +168,7 @@ public class ContextAnalyzerTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void thirteenOne() {
 		ppd = new PrePipelineData();
@@ -185,6 +189,7 @@ public class ContextAnalyzerTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void iffourTen() {
 		ppd = new PrePipelineData();
@@ -205,6 +210,7 @@ public class ContextAnalyzerTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void variabel() {
 		ppd = new PrePipelineData();
@@ -225,6 +231,7 @@ public class ContextAnalyzerTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void countInstr() {
 		int instructionsS6 = 0;
@@ -461,6 +468,7 @@ public class ContextAnalyzerTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void multiple() {
 		ppd = new PrePipelineData();
@@ -484,15 +492,15 @@ public class ContextAnalyzerTest {
 				System.out.println(result.getEntities());
 				System.out.println(result.getActions());
 				System.out.println(result.getConcepts());
-			} while (true);//!prev.equals(result));
-			//			HashMap<Integer, Integer> indexMap = produceIndexMappings(text, graph);
-			//			Pair<List<String>, int[]> resultEval = evaluateConceptHierarchieBuilding(text, result, indexMap);
-			//			int[] res = resultEval.getRight();
-			//			System.out.println(
-			//					"Total: " + res[0] + ", truePositive: " + res[1] + ", falsePositive: " + res[2] + ", falseNegative: " + res[3]);
-			//			for (String string : resultEval.getLeft()) {
-			//				System.out.println(string);
-			//			}
+			} while (!prev.equals(result));
+			HashMap<Integer, Integer> indexMap = produceIndexMappings(text, graph);
+			Pair<List<String>, int[]> resultEval = evaluateConceptHierarchieBuilding(text, result, indexMap);
+			int[] res = resultEval.getRight();
+			System.out.println(
+					"Total: " + res[0] + ", truePositive: " + res[1] + ", falsePositive: " + res[2] + ", falseNegative: " + res[3]);
+			for (String string : resultEval.getLeft()) {
+				System.out.println(string);
+			}
 		} catch (MissingDataException e) {
 			e.printStackTrace();
 		}
@@ -967,6 +975,7 @@ public class ContextAnalyzerTest {
 		return input;
 	}
 
+	@Ignore
 	@Test
 	public void multipleScenario1() {
 		ppd = new PrePipelineData();
@@ -996,6 +1005,7 @@ public class ContextAnalyzerTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void multipleScenario2() {
 		ppd = new PrePipelineData();
