@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer.data;
 
@@ -103,8 +103,8 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 
 	/**
 	 * The {@link AbstractConcept}s which this Concept is a Part of
-	 * 
-	 * 
+	 *
+	 *
 	 * @return the partOfConcepts
 	 */
 	public Set<AbstractConcept> getPartOfConcepts() {
@@ -113,7 +113,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 
 	/**
 	 * The {@link AbstractConcept}s which are a Part of this Concept
-	 * 
+	 *
 	 * @return the partConcepts
 	 */
 	public Set<AbstractConcept> getPartConcepts() {
@@ -229,7 +229,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public boolean addPartOfConcept(AbstractConcept partOfConcept) {
 		if (!partOfConcept.equals(this)) {
@@ -241,7 +241,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public boolean addPartOfConceptWithoutSettingChanged(AbstractConcept partOfConcept) {
 		if (!partOfConcept.equals(this)) {
@@ -251,7 +251,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public boolean addPartConcept(AbstractConcept partConcept) {
 		if (!partConcept.equals(this)) {
@@ -263,7 +263,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public boolean addPartConceptWithoutSettingChanged(AbstractConcept partConcept) {
 		if (!partConcept.equals(this)) {
@@ -274,7 +274,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public boolean addSuperConcept(AbstractConcept superConcept) {
 		if (!superConcept.equals(this)) {
@@ -286,7 +286,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public boolean addSuperConceptWithoutSettingChanged(AbstractConcept superConcept) {
 		if (!superConcept.equals(this)) {
@@ -296,7 +296,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public boolean addSubConcept(AbstractConcept subConcept) {
 		if (!subConcept.equals(this)) {
@@ -308,7 +308,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public boolean addSubConceptWithoutSettingChanged(AbstractConcept subConcept) {
 		if (!subConcept.equals(this)) {
@@ -335,9 +335,21 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 					&& Objects.equals(this.synonyms, concept.synonyms) && matchesConcepts(this.equalConcepts, concept.equalConcepts)
 					&& matchesConcepts(this.subConcepts, concept.subConcepts) && matchesConcepts(this.superConcepts, concept.superConcepts)
 					&& matchesConcepts(this.partConcepts, concept.partConcepts)
-					&& matchesConcepts(this.partOfConcepts, concept.partOfConcepts)
-					&& Objects.equals(this.getRelations(), concept.getRelations());
+					&& matchesConcepts(this.partOfConcepts, concept.partOfConcepts);
 
+			if (concept.getRelations().size() != this.getRelations().size()) {
+				return false;
+			}
+			for (Relation rel : getRelations()) {
+				if (!concept.getRelations().contains(rel)) {
+					return false;
+				}
+			}
+			for (Relation rel : concept.getRelations()) {
+				if (!getRelations().contains(rel)) {
+					return false;
+				}
+			}
 			return result;
 		}
 		return false;
@@ -434,7 +446,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 
 	/**
 	 * Invoke only after all concepts are read out
-	 * 
+	 *
 	 * @param node
 	 * @param graphNodes
 	 * @param graph
@@ -651,6 +663,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 
 	}
 
+	@Override
 	public INode printToGraph(IGraph graph) {
 		INodeType nodeType;
 		if (graph.hasNodeType(CONCEPT_NODE_TYPE)) {
@@ -667,7 +680,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 
 	/**
 	 * Invoke only after printToGraph is called on all concepts
-	 * 
+	 *
 	 * @param graph
 	 * @param graphNodes
 	 */

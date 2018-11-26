@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.kit.ipd.parse.contextanalyzer.data.entities;
 
@@ -137,6 +137,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 		return alreadyUpdated;
 	}
 
+	@Override
 	public INode printToGraph(IGraph graph) {
 		INodeType nodeType;
 		if (graph.hasNodeType(ENTITY_NODE_TYPE)) {
@@ -204,8 +205,20 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 			Entity other = (Entity) obj;
 			boolean result = Objects.equals(name, other.name) && Objects.equals(grammaticalNumber, other.grammaticalNumber)
 					&& Objects.equals(commandType, other.commandType) && Objects.equals(statement, other.statement)
-					&& Objects.equals(reference, other.reference) && Objects.equals(this.getRelations(), other.getRelations());
-
+					&& Objects.equals(reference, other.reference);
+			if (other.getRelations().size() != this.getRelations().size()) {
+				return false;
+			}
+			for (Relation rel : getRelations()) {
+				if (!other.getRelations().contains(rel)) {
+					return false;
+				}
+			}
+			for (Relation rel : other.getRelations()) {
+				if (!getRelations().contains(rel)) {
+					return false;
+				}
+			}
 			return result;
 		}
 		return false;
