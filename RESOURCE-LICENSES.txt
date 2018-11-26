@@ -1,0 +1,12 @@
+These resources were used in the creation of Stanford CoreNLP:
+
+-----------------------------------------------------------------
+Stanford CoreNLP serialized genderMap
+
+Resource File: src/main/resources/gender/gender.map.ser.gz
+
+Notes: The serialized gender Map was used to get gender information
+
+URL: https://stanfordnlp.github.io/CoreNLP/
+
+License:  GNU General Public License v3
