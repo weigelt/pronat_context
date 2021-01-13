@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
+import edu.kit.ipd.parse.contextanalyzer.data.entities.SubjectEntity;
 import edu.kit.ipd.parse.contextanalyzer.data.relations.Relation;
 import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IArcType;
@@ -62,9 +63,9 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 
 	@Override
 	public int compareTo(AbstractConcept o) {
-		int resultName = this.getName().compareTo(o.name);
+		int resultName = getName().compareTo(o.name);
 		if (resultName == 0) {
-			return this.getClass().getName().compareTo(o.getClass().getName());
+			return getClass().getName().compareTo(o.getClass().getName());
 		}
 		return resultName;
 	}
@@ -174,7 +175,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 *            the synonym to add
 	 */
 	public boolean addSynonym(String synonym) {
-		boolean hasChanged = this.synonyms.add(synonym);
+		boolean hasChanged = synonyms.add(synonym);
 		changed = changed || hasChanged;
 		return hasChanged;
 	}
@@ -210,7 +211,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 */
 	public boolean addEqualConcept(AbstractConcept equalConcept) {
 		if (!equalConcept.equals(this)) {
-			boolean hasChanged = this.equalConcepts.add(equalConcept);
+			boolean hasChanged = equalConcepts.add(equalConcept);
 			changed = changed || hasChanged;
 			return hasChanged;
 		}
@@ -223,7 +224,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 */
 	public boolean addEqualConceptWithoutSettingChanged(AbstractConcept equalConcept) {
 		if (!equalConcept.equals(this)) {
-			return this.equalConcepts.add(equalConcept);
+			return equalConcepts.add(equalConcept);
 		}
 		return false;
 	}
@@ -233,7 +234,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 */
 	public boolean addPartOfConcept(AbstractConcept partOfConcept) {
 		if (!partOfConcept.equals(this)) {
-			boolean hasChanged = this.partOfConcepts.add(partOfConcept);
+			boolean hasChanged = partOfConcepts.add(partOfConcept);
 			changed = changed || hasChanged;
 			return hasChanged;
 		}
@@ -245,7 +246,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 */
 	public boolean addPartOfConceptWithoutSettingChanged(AbstractConcept partOfConcept) {
 		if (!partOfConcept.equals(this)) {
-			return this.partOfConcepts.add(partOfConcept);
+			return partOfConcepts.add(partOfConcept);
 		}
 		return false;
 	}
@@ -255,7 +256,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 */
 	public boolean addPartConcept(AbstractConcept partConcept) {
 		if (!partConcept.equals(this)) {
-			boolean hasChanged = this.partConcepts.add(partConcept);
+			boolean hasChanged = partConcepts.add(partConcept);
 			changed = changed || hasChanged;
 			return hasChanged;
 		}
@@ -267,7 +268,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 */
 	public boolean addPartConceptWithoutSettingChanged(AbstractConcept partConcept) {
 		if (!partConcept.equals(this)) {
-			return this.partConcepts.add(partConcept);
+			return partConcepts.add(partConcept);
 
 		}
 		return false;
@@ -278,7 +279,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 */
 	public boolean addSuperConcept(AbstractConcept superConcept) {
 		if (!superConcept.equals(this)) {
-			boolean hasChanged = this.superConcepts.add(superConcept);
+			boolean hasChanged = superConcepts.add(superConcept);
 			changed = changed || hasChanged;
 			return hasChanged;
 		}
@@ -290,7 +291,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 */
 	public boolean addSuperConceptWithoutSettingChanged(AbstractConcept superConcept) {
 		if (!superConcept.equals(this)) {
-			return this.superConcepts.add(superConcept);
+			return superConcepts.add(superConcept);
 		}
 		return false;
 	}
@@ -300,7 +301,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 */
 	public boolean addSubConcept(AbstractConcept subConcept) {
 		if (!subConcept.equals(this)) {
-			boolean hasChanged = this.subConcepts.add(subConcept);
+			boolean hasChanged = subConcepts.add(subConcept);
 			changed = changed || hasChanged;
 			return hasChanged;
 		}
@@ -312,7 +313,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	 */
 	public boolean addSubConceptWithoutSettingChanged(AbstractConcept subConcept) {
 		if (!subConcept.equals(this)) {
-			return this.subConcepts.add(subConcept);
+			return subConcepts.add(subConcept);
 		}
 		return false;
 	}
@@ -321,7 +322,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	public boolean equals(Object obj) {
 		if (obj instanceof AbstractConcept) {
 			AbstractConcept concept = (AbstractConcept) obj;
-			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual);
+			boolean result = Objects.equals(name, concept.name) && Objects.equals(ontologyIndividual, concept.ontologyIndividual);
 
 			return result;
 		}
@@ -331,13 +332,13 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	public boolean equalsComplex(Object obj) {
 		if (obj instanceof AbstractConcept) {
 			AbstractConcept concept = (AbstractConcept) obj;
-			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual)
-					&& Objects.equals(this.synonyms, concept.synonyms) && matchesConcepts(this.equalConcepts, concept.equalConcepts)
-					&& matchesConcepts(this.subConcepts, concept.subConcepts) && matchesConcepts(this.superConcepts, concept.superConcepts)
-					&& matchesConcepts(this.partConcepts, concept.partConcepts)
-					&& matchesConcepts(this.partOfConcepts, concept.partOfConcepts);
+			boolean result = Objects.equals(name, concept.name) && Objects.equals(ontologyIndividual, concept.ontologyIndividual)
+					&& Objects.equals(synonyms, concept.synonyms) && matchesConcepts(equalConcepts, concept.equalConcepts)
+					&& matchesConcepts(subConcepts, concept.subConcepts) && matchesConcepts(superConcepts, concept.superConcepts)
+					&& matchesConcepts(partConcepts, concept.partConcepts)
+					&& matchesConcepts(partOfConcepts, concept.partOfConcepts);
 
-			if (concept.getRelations().size() != this.getRelations().size()) {
+			if (concept.getRelations().size() != getRelations().size()) {
 				return false;
 			}
 			for (Relation rel : getRelations()) {
@@ -388,11 +389,11 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 	public boolean equalsWithoutRelation(Object obj) {
 		if (obj instanceof AbstractConcept) {
 			AbstractConcept concept = (AbstractConcept) obj;
-			boolean result = Objects.equals(name, concept.name) && Objects.equals(this.ontologyIndividual, concept.ontologyIndividual)
-					&& Objects.equals(this.synonyms, concept.synonyms) && matchesConcepts(this.equalConcepts, concept.equalConcepts)
-					&& matchesConcepts(this.subConcepts, concept.subConcepts) && matchesConcepts(this.superConcepts, concept.superConcepts)
-					&& matchesConcepts(this.partConcepts, concept.partConcepts)
-					&& matchesConcepts(this.partOfConcepts, concept.partOfConcepts);
+			boolean result = Objects.equals(name, concept.name) && Objects.equals(ontologyIndividual, concept.ontologyIndividual)
+					&& Objects.equals(synonyms, concept.synonyms) && matchesConcepts(equalConcepts, concept.equalConcepts)
+					&& matchesConcepts(subConcepts, concept.subConcepts) && matchesConcepts(superConcepts, concept.superConcepts)
+					&& matchesConcepts(partConcepts, concept.partConcepts)
+					&& matchesConcepts(partOfConcepts, concept.partOfConcepts);
 
 			return result;
 		}
@@ -401,10 +402,10 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 
 	@Override
 	public int hashCode() {
-		int hash = this.name.hashCode();
-		hash = 31 * hash + this.getClass().hashCode();
+		int hash = name.hashCode();
+		hash = 31 * hash + getClass().hashCode();
 
-		hash = this.ontologyIndividual == null ? hash : 31 * hash + this.ontologyIndividual.hashCode();
+		hash = ontologyIndividual == null ? hash : 31 * hash + ontologyIndividual.hashCode();
 		//
 		//		for (AbstractConcept abstractConcept : equalConcepts) {
 		//			hash = 31 * hash + abstractConcept.getName().hashCode();
@@ -457,26 +458,26 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 			AbstractConcept target;
 			switch (type) {
 			case EQUAL_RELATION_TYPE:
-				this.equalConcepts.add((AbstractConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]);
+				equalConcepts.add((AbstractConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())]);
 				break;
 			case PART_OF_RELATION_TYPE:
 				target = (AbstractConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())];
-				this.partOfConcepts.add(target);
+				partOfConcepts.add(target);
 				target.addPartConceptWithoutSettingChanged(this);
 				break;
 			case PART_RELATION_TYPE:
 				target = (AbstractConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())];
-				this.partConcepts.add(target);
+				partConcepts.add(target);
 				target.addPartOfConceptWithoutSettingChanged(this);
 				break;
 			case SUB_RELATION_TYPE:
 				target = (AbstractConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())];
-				this.subConcepts.add(target);
+				subConcepts.add(target);
 				target.addSuperConceptWithoutSettingChanged(this);
 				break;
 			case SUPER_RELATION_TYPE:
 				target = (AbstractConcept) graphNodes[graph.getNodes().indexOf(arc.getTargetNode())];
-				this.superConcepts.add(target);
+				superConcepts.add(target);
 				target.addSubConceptWithoutSettingChanged(this);
 				break;
 			default:
@@ -620,7 +621,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 		}
 		for (AbstractConcept abstractConcept : equalConcepts) {
 			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
-				INode current = graphNodes.get(this.getID());
+				INode current = graphNodes.get(getID());
 				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, EQUAL_RELATION_TYPE);
@@ -629,7 +630,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 		}
 		for (AbstractConcept abstractConcept : partOfConcepts) {
 			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
-				INode current = graphNodes.get(this.getID());
+				INode current = graphNodes.get(getID());
 				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, PART_OF_RELATION_TYPE);
@@ -637,7 +638,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 		}
 		for (AbstractConcept abstractConcept : partConcepts) {
 			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
-				INode current = graphNodes.get(this.getID());
+				INode current = graphNodes.get(getID());
 				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, PART_RELATION_TYPE);
@@ -645,7 +646,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 		}
 		for (AbstractConcept abstractConcept : subConcepts) {
 			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
-				INode current = graphNodes.get(this.getID());
+				INode current = graphNodes.get(getID());
 				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, SUB_RELATION_TYPE);
@@ -653,7 +654,7 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 		}
 		for (AbstractConcept abstractConcept : superConcepts) {
 			if (!alreadyConsidered.contains(abstractConcept) && graphNodes.containsKey(abstractConcept.getID())) {
-				INode current = graphNodes.get(this.getID());
+				INode current = graphNodes.get(getID());
 				INode related = graphNodes.get(abstractConcept.getID());
 				IArc arc = graph.createArc(current, related, graph.getArcType(CONCEPT_ARC_TYPE));
 				arc.setAttributeValue(TYPE_OF_RELATION, SUPER_RELATION_TYPE);
@@ -692,32 +693,32 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 			arcType = createConceptRelationArcType(graph);
 		}
 		for (AbstractConcept abstractConcept : equalConcepts) {
-			INode current = graphNodes.get(this.getID());
+			INode current = graphNodes.get(getID());
 			INode related = graphNodes.get(abstractConcept.getID());
 			IArc arc = graph.createArc(current, related, arcType);
 			arc.setAttributeValue(TYPE_OF_RELATION, EQUAL_RELATION_TYPE);
 
 		}
 		for (AbstractConcept abstractConcept : partOfConcepts) {
-			INode current = graphNodes.get(this.getID());
+			INode current = graphNodes.get(getID());
 			INode related = graphNodes.get(abstractConcept.getID());
 			IArc arc = graph.createArc(current, related, arcType);
 			arc.setAttributeValue(TYPE_OF_RELATION, PART_OF_RELATION_TYPE);
 		}
 		for (AbstractConcept abstractConcept : partConcepts) {
-			INode current = graphNodes.get(this.getID());
+			INode current = graphNodes.get(getID());
 			INode related = graphNodes.get(abstractConcept.getID());
 			IArc arc = graph.createArc(current, related, arcType);
 			arc.setAttributeValue(TYPE_OF_RELATION, PART_RELATION_TYPE);
 		}
 		for (AbstractConcept abstractConcept : subConcepts) {
-			INode current = graphNodes.get(this.getID());
+			INode current = graphNodes.get(getID());
 			INode related = graphNodes.get(abstractConcept.getID());
 			IArc arc = graph.createArc(current, related, arcType);
 			arc.setAttributeValue(TYPE_OF_RELATION, SUB_RELATION_TYPE);
 		}
 		for (AbstractConcept abstractConcept : superConcepts) {
-			INode current = graphNodes.get(this.getID());
+			INode current = graphNodes.get(getID());
 			INode related = graphNodes.get(abstractConcept.getID());
 			IArc arc = graph.createArc(current, related, arcType);
 			arc.setAttributeValue(TYPE_OF_RELATION, SUPER_RELATION_TYPE);
@@ -737,14 +738,14 @@ public abstract class AbstractConcept extends ContextIndividual implements Compa
 		nodeType.addAttributeToType("String", CONCEPT_TYPE);
 		nodeType.addAttributeToType("String", ONTOLOGY_INDIVIDUAL);
 		nodeType.addAttributeToType("String", SYNONYMS);
-		nodeType.addAttributeToType("String", GENDER);
+		nodeType.addAttributeToType(SubjectEntity.Gender.class.getName(), GENDER);
 		nodeType.addAttributeToType("String", INDEXWORD);
 		return nodeType;
 	}
 
 	@Override
 	public String toString() {
-		String output = this.getClass().getSimpleName() + "=" + getName();
+		String output = getClass().getSimpleName() + "=" + getName();
 		return output;
 	}
 

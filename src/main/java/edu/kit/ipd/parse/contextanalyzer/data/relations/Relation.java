@@ -6,6 +6,7 @@ package edu.kit.ipd.parse.contextanalyzer.data.relations;
 import java.util.HashMap;
 
 import edu.kit.ipd.parse.contextanalyzer.data.ContextIndividual;
+import edu.kit.ipd.parse.contextanalyzer.data.entities.PositionType;
 import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IArcType;
 import edu.kit.ipd.parse.luna.graph.IGraph;
@@ -33,8 +34,8 @@ public abstract class Relation {
 	 * 
 	 */
 	public Relation(String name) {
-		this.setName(name);
-		this.setConfidenceVerified(false);
+		setName(name);
+		setConfidenceVerified(false);
 	}
 
 	/**
@@ -62,7 +63,7 @@ public abstract class Relation {
 		arcType.addAttributeToType("String", VN_ROLES);
 		arcType.addAttributeToType("String", FN_ROLES);
 		arcType.addAttributeToType("double", CONFIDENCE);
-		arcType.addAttributeToType("String", LOCATION);
+		arcType.addAttributeToType(PositionType.class.getName(), LOCATION);
 		arcType.addAttributeToType("boolean", CONFIDENCE_VERIFIED);
 		return arcType;
 	}
@@ -113,13 +114,14 @@ public abstract class Relation {
 
 	@Override
 	public String toString() {
-		return "[" + this.name + "]";
+		return "[" + name + "]";
 	}
 
 	public boolean isRepresentedByArc(IArc arc, HashMap<Long, INode> graphNodes) {
 		if (arc.getType().getName().equals(RELATION_ARC_TYPE)) {
-			if (arc.getAttributeValue(RELATION_NAME).equals(this.getName())
-					&& ((Boolean) arc.getAttributeValue(CONFIDENCE_VERIFIED)).equals(Boolean.valueOf(this.confidenceIsVerified()))) {
+			if (arc.getAttributeValue(RELATION_NAME).equals(getName())
+					&& ((Boolean) arc.getAttributeValue(CONFIDENCE_VERIFIED)).equals(Boolean.valueOf(
+					confidenceIsVerified()))) {
 				return true;
 			}
 		}

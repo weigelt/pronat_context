@@ -97,8 +97,8 @@ public class Action extends ContextIndividual {
 		this.directHypernyms = new TreeSet<>();
 		this.directHypernyms.addAll(directHypernyms);
 		this.reference = reference;
-		this.commandType = CommandType.INDEPENDENT_STATEMENT;
-		this.changed = false;
+		commandType = CommandType.INDEPENDENT_STATEMENT;
+		changed = false;
 	}
 
 	public Action(String name, List<String> antonyms, List<String> synonyms, List<String> directHyponyms, List<String> directHypernyms,
@@ -113,13 +113,13 @@ public class Action extends ContextIndividual {
 		this.directHyponyms.addAll(directHyponyms);
 		this.directHypernyms = new TreeSet<>();
 		this.directHypernyms.addAll(directHypernyms);
-		this.verbNetFrames = new ArrayList<>();
-		this.frameNetFrames = new ArrayList<>();
-		this.eventTypes = new ArrayList<>();
+		verbNetFrames = new ArrayList<>();
+		frameNetFrames = new ArrayList<>();
+		eventTypes = new ArrayList<>();
 		this.reference = reference;
-		this.commandType = CommandType.INDEPENDENT_STATEMENT;
-		this.srlConfidence = -1.0;
-		this.changed = false;
+		commandType = CommandType.INDEPENDENT_STATEMENT;
+		srlConfidence = -1.0;
+		changed = false;
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setName(String name) {
 		if (!Objects.equals(this.name, name)) {
-			this.changed = true;
+			changed = true;
 			this.name = name;
 		}
 	}
@@ -153,7 +153,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setCommandType(CommandType commandType) {
 		if (!Objects.equals(this.commandType, commandType)) {
-			this.changed = true;
+			changed = true;
 			this.commandType = commandType;
 		}
 	}
@@ -171,7 +171,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setReference(List<INode> reference) {
 		if (!Objects.equals(this.reference, reference)) {
-			this.changed = true;
+			changed = true;
 			this.reference = reference;
 		}
 	}
@@ -188,9 +188,9 @@ public class Action extends ContextIndividual {
 	 *            the srlConfidence to set
 	 */
 	public void setSrlConfidence(double confidence) {
-		if (this.srlConfidence != confidence) {
-			this.changed = true;
-			this.srlConfidence = confidence;
+		if (srlConfidence != confidence) {
+			changed = true;
+			srlConfidence = confidence;
 		}
 	}
 
@@ -207,7 +207,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setPropBankRolesetID(String propBankRolesetID) {
 		if (!Objects.equals(this.propBankRolesetID, propBankRolesetID)) {
-			this.changed = true;
+			changed = true;
 			this.propBankRolesetID = propBankRolesetID;
 		}
 	}
@@ -225,7 +225,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setPropBankRoleSetDescription(String propBankRoleSetDescription) {
 		if (!Objects.equals(this.propBankRoleSetDescription, propBankRoleSetDescription)) {
-			this.changed = true;
+			changed = true;
 			this.propBankRoleSetDescription = propBankRoleSetDescription;
 		}
 	}
@@ -243,7 +243,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setVerbNetFrames(List<String> verbNetFrames) {
 		if (!Objects.equals(this.verbNetFrames, verbNetFrames)) {
-			this.changed = true;
+			changed = true;
 			this.verbNetFrames = verbNetFrames;
 		}
 	}
@@ -261,7 +261,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setFrameNetFrames(List<String> frameNetFrames) {
 		if (!Objects.equals(this.frameNetFrames, frameNetFrames)) {
-			this.changed = true;
+			changed = true;
 			this.frameNetFrames = frameNetFrames;
 		}
 	}
@@ -279,7 +279,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setEventTypes(List<String> eventTypes) {
 		if (!Objects.equals(this.eventTypes, eventTypes)) {
-			this.changed = true;
+			changed = true;
 			this.eventTypes = eventTypes;
 		}
 	}
@@ -297,7 +297,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setAntonyms(Set<String> antonyms) {
 		if (!Objects.equals(this.antonyms, antonyms)) {
-			this.changed = true;
+			changed = true;
 			this.antonyms = antonyms;
 		}
 	}
@@ -315,7 +315,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setSynonyms(Set<String> synonyms) {
 		if (!Objects.equals(this.synonyms, synonyms)) {
-			this.changed = true;
+			changed = true;
 			this.synonyms = synonyms;
 		}
 	}
@@ -333,7 +333,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setDirectHyponyms(Set<String> directHyponyms) {
 		if (!Objects.equals(this.directHyponyms, directHyponyms)) {
-			this.changed = true;
+			changed = true;
 			this.directHyponyms = directHyponyms;
 		}
 	}
@@ -351,7 +351,7 @@ public class Action extends ContextIndividual {
 	 */
 	public void setDirectHypernyms(Set<String> directHypernyms) {
 		if (!Objects.equals(this.directHypernyms, directHypernyms)) {
-			this.changed = true;
+			changed = true;
 			this.directHypernyms = directHypernyms;
 		}
 	}
@@ -378,7 +378,7 @@ public class Action extends ContextIndividual {
 		return alreadyUpdated;
 	}
 
-	public INode printToGraph(IGraph graph) {
+	@Override public INode printToGraph(IGraph graph) {
 		INodeType nodeType;
 		if (graph.hasNodeType(ACTION_NODE_TYPE)) {
 			nodeType = graph.getNodeType(ACTION_NODE_TYPE);
@@ -443,7 +443,7 @@ public class Action extends ContextIndividual {
 		INodeType nodeType = graph.createNodeType(ACTION_NODE_TYPE);
 		nodeType.addAttributeToType("String", ACTION_NAME);
 		nodeType.addAttributeToType("Double", SRL_CONFIDENCE);
-		nodeType.addAttributeToType("String", COMMAND_TYPE);
+		nodeType.addAttributeToType(CommandType.class.getName(), COMMAND_TYPE);
 		nodeType.addAttributeToType("String", PB_ROLESET_ID);
 		nodeType.addAttributeToType("String", PB_ROLESET_DESCR);
 		nodeType.addAttributeToType("String", VB_FRAMES);
@@ -491,7 +491,7 @@ public class Action extends ContextIndividual {
 					&& Objects.equals(synonyms, other.synonyms) && Objects.equals(directHypernyms, other.directHypernyms)
 					&& Objects.equals(directHyponyms, other.directHyponyms)) {
 				boolean result = reference.equals(other.reference);
-				if (other.getRelations().size() != this.getRelations().size()) {
+				if (other.getRelations().size() != getRelations().size()) {
 					return false;
 				}
 				for (Relation rel : getRelations()) {
@@ -530,94 +530,94 @@ public class Action extends ContextIndividual {
 	@Override
 	public int hashCode() {
 		int hash = name.hashCode();
-		hash = this.commandType == null ? hash : 31 * hash + this.commandType.hashCode();
+		hash = commandType == null ? hash : 31 * hash + commandType.hashCode();
 		hash = Double.hashCode(srlConfidence) + 31 * hash;
-		hash = this.propBankRolesetID == null ? hash : 31 * hash + this.propBankRolesetID.hashCode();
-		hash = this.propBankRoleSetDescription == null ? hash : 31 * hash + this.propBankRoleSetDescription.hashCode();
-		hash = this.verbNetFrames == null ? hash : 31 * hash + this.verbNetFrames.hashCode();
-		hash = this.frameNetFrames == null ? hash : 31 * hash + this.frameNetFrames.hashCode();
-		hash = this.eventTypes == null ? hash : 31 * hash + this.eventTypes.hashCode();
-		hash = this.antonyms == null ? hash : 31 * hash + this.antonyms.hashCode();
-		hash = this.synonyms == null ? hash : 31 * hash + this.synonyms.hashCode();
-		hash = this.directHypernyms == null ? hash : 31 * hash + this.directHypernyms.hashCode();
-		hash = this.directHyponyms == null ? hash : 31 * hash + this.directHyponyms.hashCode();
-		hash = this.reference == null ? hash : 31 * hash + this.reference.hashCode();
+		hash = propBankRolesetID == null ? hash : 31 * hash + propBankRolesetID.hashCode();
+		hash = propBankRoleSetDescription == null ? hash : 31 * hash + propBankRoleSetDescription.hashCode();
+		hash = verbNetFrames == null ? hash : 31 * hash + verbNetFrames.hashCode();
+		hash = frameNetFrames == null ? hash : 31 * hash + frameNetFrames.hashCode();
+		hash = eventTypes == null ? hash : 31 * hash + eventTypes.hashCode();
+		hash = antonyms == null ? hash : 31 * hash + antonyms.hashCode();
+		hash = synonyms == null ? hash : 31 * hash + synonyms.hashCode();
+		hash = directHypernyms == null ? hash : 31 * hash + directHypernyms.hashCode();
+		hash = directHyponyms == null ? hash : 31 * hash + directHyponyms.hashCode();
+		hash = reference == null ? hash : 31 * hash + reference.hashCode();
 
 		return hash;
 	}
 
 	public boolean integrateActionInformation(Action other) {
 		boolean changed = false;
-		if (!this.name.equals(other.getName())) {
+		if (!name.equals(other.getName())) {
 			setName(other.getName());
 			changed = true;
 		}
-		if (!this.commandType.equals(other.getCommandType())) {
+		if (!commandType.equals(other.getCommandType())) {
 			setCommandType(other.getCommandType());
 			changed = true;
 		}
-		if (!(this.srlConfidence == other.srlConfidence)) {
+		if (!(srlConfidence == other.srlConfidence)) {
 			setSrlConfidence(other.getSrlConfidence());
 			changed = true;
 		}
-		if (!this.propBankRoleSetDescription.equals(other.getPropBankRoleSetDescription())) {
+		if (!propBankRoleSetDescription.equals(other.getPropBankRoleSetDescription())) {
 			setPropBankRoleSetDescription(other.getPropBankRoleSetDescription());
 			changed = true;
 		}
-		if (!this.propBankRolesetID.equals(other.getPropBankRolesetID())) {
+		if (!propBankRolesetID.equals(other.getPropBankRolesetID())) {
 			setPropBankRolesetID(other.getPropBankRolesetID());
 			changed = true;
 		}
 		for (String vnFrame : other.getVerbNetFrames()) {
-			if (!this.getVerbNetFrames().contains(vnFrame)) {
-				this.getVerbNetFrames().add(vnFrame);
+			if (!getVerbNetFrames().contains(vnFrame)) {
+				getVerbNetFrames().add(vnFrame);
 				changed = true;
 			}
 		}
 		for (String fnFrame : other.getFrameNetFrames()) {
-			if (!this.getFrameNetFrames().contains(fnFrame)) {
-				this.getFrameNetFrames().add(fnFrame);
+			if (!getFrameNetFrames().contains(fnFrame)) {
+				getFrameNetFrames().add(fnFrame);
 				changed = true;
 			}
 		}
 		for (String eventType : other.getEventTypes()) {
-			if (!this.getEventTypes().contains(eventType)) {
-				this.getEventTypes().add(eventType);
+			if (!getEventTypes().contains(eventType)) {
+				getEventTypes().add(eventType);
 				changed = true;
 			}
 		}
 
 		for (String synonym : other.getSynonyms()) {
-			if (!this.getSynonyms().contains(synonym)) {
-				this.getSynonyms().add(synonym);
+			if (!getSynonyms().contains(synonym)) {
+				getSynonyms().add(synonym);
 				changed = true;
 			}
 		}
 		for (String directHypernyms : other.getDirectHypernyms()) {
-			if (!this.getDirectHypernyms().contains(directHypernyms)) {
-				this.getDirectHypernyms().add(directHypernyms);
+			if (!getDirectHypernyms().contains(directHypernyms)) {
+				getDirectHypernyms().add(directHypernyms);
 				changed = true;
 			}
 		}
 		for (String directHyponyms : other.getDirectHyponyms()) {
-			if (!this.getDirectHyponyms().contains(directHyponyms)) {
-				this.getDirectHyponyms().add(directHyponyms);
+			if (!getDirectHyponyms().contains(directHyponyms)) {
+				getDirectHyponyms().add(directHyponyms);
 				changed = true;
 			}
 		}
 		for (String antonyms : other.getAntonyms()) {
-			if (!this.getAntonyms().contains(antonyms)) {
-				this.getAntonyms().add(antonyms);
+			if (!getAntonyms().contains(antonyms)) {
+				getAntonyms().add(antonyms);
 				changed = true;
 			}
 		}
 		for (INode iNode : other.getReference()) {
-			if (!this.reference.contains(iNode)) {
-				this.reference.add(iNode);
+			if (!reference.contains(iNode)) {
+				reference.add(iNode);
 				changed = true;
 			}
 		}
-		changed = changed || this.getRelations().addAll(other.getRelations());
+		changed = changed || getRelations().addAll(other.getRelations());
 		this.changed = changed;
 		return changed;
 

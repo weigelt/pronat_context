@@ -46,16 +46,6 @@ import net.sf.extjwnl.dictionary.Dictionary;
  */
 public class EntityRecognizer implements IContextAnalyzer {
 
-	/**
-	 * This enum represents the possible {@link Entity} Types
-	 *
-	 * @author Tobias Hey
-	 *
-	 */
-	private enum EntityType {
-		PRONOUN, OBJECT, SUBJECT, SYSTEM, UNKNOWN
-	}
-
 	private static final String NER_ATTRIBUTE_NAME = "ner";
 
 	private IGraph graph;
@@ -94,8 +84,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * edu.kit.ipd.parse.contextanalyzer.IContextAnalyzer#analyze(edu.kit.ipd.
+	 * @see edu.kit.ipd.parse.contextanalyzer.IContextAnalyzer#analyze(edu.kit.ipd.
 	 * parse.luna.graph.IGraph)
 	 */
 	@Override
@@ -112,8 +101,8 @@ public class EntityRecognizer implements IContextAnalyzer {
 
 	/**
 	 * Returns all {@link Entity}s occurring in the specified utterance
-	 * {@link INode}s and integrates new Information into possibly already
-	 * detected {@link Entity}s in the specified {@link Context}
+	 * {@link INode}s and integrates new Information into possibly already detected
+	 * {@link Entity}s in the specified {@link Context}
 	 *
 	 * @param utteranceNodes
 	 * @param context
@@ -501,8 +490,8 @@ public class EntityRecognizer implements IContextAnalyzer {
 	}
 
 	/**
-	 * Sets the existing {@link ConjunctionRelation}s between {@link Entity}s
-	 * next to each other
+	 * Sets the existing {@link ConjunctionRelation}s between {@link Entity}s next
+	 * to each other
 	 *
 	 * @param entitiesOfNounPhrase
 	 * @param conjunctions
@@ -578,8 +567,7 @@ public class EntityRecognizer implements IContextAnalyzer {
 	}
 
 	/**
-	 * Concatenates the specified name with the name of the specified
-	 * {@link INode}
+	 * Concatenates the specified name with the name of the specified {@link INode}
 	 *
 	 * @param name
 	 * @param node
@@ -743,14 +731,12 @@ public class EntityRecognizer implements IContextAnalyzer {
 			 * SRL produces more failures
 			 *
 			 * Set<? extends IArc> srlArcs =
-			 * node.getIncomingArcsOfType(graph.getArcType(SRLabeler.
-			 * SRL_ARCTYPE_NAME)); for (IArc arc : srlArcs) { String
-			 * verbNetRoleString = (String)
-			 * arc.getAttributeValue(SRLabeler.VN_ROLE_NAME); List<String>
-			 * verbNetRoles =
+			 * node.getIncomingArcsOfType(graph.getArcType(SRLabeler. SRL_ARCTYPE_NAME));
+			 * for (IArc arc : srlArcs) { String verbNetRoleString = (String)
+			 * arc.getAttributeValue(SRLabeler.VN_ROLE_NAME); List<String> verbNetRoles =
 			 * GraphUtils.getListFromArrayToString(verbNetRoleString); if
-			 * (verbNetRoles.contains("Agent") ||
-			 * verbNetRoles.contains("Actor")) { return true; } }
+			 * (verbNetRoles.contains("Agent") || verbNetRoles.contains("Actor")) { return
+			 * true; } }
 			 */
 			if (ner != null) {
 				return ner.equalsIgnoreCase("S-PER") || ner.equalsIgnoreCase("PERSON");

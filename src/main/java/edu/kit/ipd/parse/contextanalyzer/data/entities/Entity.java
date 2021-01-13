@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import edu.kit.ipd.parse.contextanalyzer.EntityRecognizer;
+import edu.kit.ipd.parse.contextanalyzer.EntityType;
 import edu.kit.ipd.parse.contextanalyzer.data.CommandType;
 import edu.kit.ipd.parse.contextanalyzer.data.ContextIndividual;
 import edu.kit.ipd.parse.contextanalyzer.data.EntityConcept;
@@ -63,9 +65,9 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 		this.name = name;
 		this.grammaticalNumber = grammaticalNumber;
 		this.reference = reference;
-		this.commandType = CommandType.INDEPENDENT_STATEMENT;
-		this.statement = -1;
-		this.changed = false;
+		commandType = CommandType.INDEPENDENT_STATEMENT;
+		statement = -1;
+		changed = false;
 	}
 
 	/**
@@ -81,7 +83,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	 */
 	public void setGrammaticalNumber(GrammaticalNumber grammaticalNumber) {
 		if (!Objects.equals(this.grammaticalNumber, grammaticalNumber)) {
-			this.changed = true;
+			changed = true;
 			this.grammaticalNumber = grammaticalNumber;
 		}
 	}
@@ -100,7 +102,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	public void setName(String name) {
 		if (!Objects.equals(this.name, name)) {
 			this.name = name;
-			this.changed = true;
+			changed = true;
 		}
 	}
 
@@ -118,7 +120,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	public void setReference(List<INode> reference) {
 		if (!Objects.equals(this.reference, reference)) {
 			this.reference = reference;
-			this.changed = true;
+			changed = true;
 		}
 	}
 
@@ -157,12 +159,12 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	private INodeType createEntityNodeType(IGraph graph) {
 		INodeType nodeType = graph.createNodeType(ENTITY_NODE_TYPE);
 		nodeType.addAttributeToType("String", ENTITY_NAME);
-		nodeType.addAttributeToType("String", GRAMMATICAL_NUMBER);
-		nodeType.addAttributeToType("String", COMMAND_TYPE);
+		nodeType.addAttributeToType(GrammaticalNumber.class.getName(), GRAMMATICAL_NUMBER);
+		nodeType.addAttributeToType(CommandType.class.getName(), COMMAND_TYPE);
 		nodeType.addAttributeToType("int", STATEMENT);
 		nodeType.addAttributeToType("String", ENTITY_TYPE);
-		nodeType.addAttributeToType("String", GENDER);
-		nodeType.addAttributeToType("String", DETERMINER);
+		nodeType.addAttributeToType(SubjectEntity.Gender.class.getName(), GENDER);
+		nodeType.addAttributeToType(ObjectEntity.DeterminerType.class.getName(), DETERMINER);
 		nodeType.addAttributeToType("String", QUANTITY);
 		nodeType.addAttributeToType("String", POSSESSIVE_PRONOUN);
 		nodeType.addAttributeToType("String", DESCRIBING_ADJECTIVES);
@@ -171,7 +173,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 		nodeType.addAttributeToType("String", DIRECT_HYPONYMS);
 		nodeType.addAttributeToType("String", MERONYMS);
 		nodeType.addAttributeToType("String", HOLONYMS);
-		nodeType.addAttributeToType("String", IS_SYSTEM);
+		nodeType.addAttributeToType("boolean", IS_SYSTEM);
 		nodeType.addAttributeToType(new Pair<String, Double>("", 0.0d).getClass().getName(), WN_SENSE);
 		return nodeType;
 	}
@@ -206,7 +208,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 			boolean result = Objects.equals(name, other.name) && Objects.equals(grammaticalNumber, other.grammaticalNumber)
 					&& Objects.equals(commandType, other.commandType) && Objects.equals(statement, other.statement)
 					&& Objects.equals(reference, other.reference);
-			if (other.getRelations().size() != this.getRelations().size()) {
+			if (other.getRelations().size() != getRelations().size()) {
 				return false;
 			}
 			for (Relation rel : getRelations()) {
@@ -238,10 +240,10 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	@Override
 	public int hashCode() {
 		int hash = name.hashCode();
-		hash = this.commandType == null ? hash : 31 * hash + this.commandType.hashCode();
+		hash = commandType == null ? hash : 31 * hash + commandType.hashCode();
 		hash = Integer.hashCode(statement) + 31 * hash;
-		hash = this.grammaticalNumber == null ? hash : 31 * hash + this.grammaticalNumber.hashCode();
-		hash = this.reference == null ? hash : 31 * hash + this.reference.hashCode();
+		hash = grammaticalNumber == null ? hash : 31 * hash + grammaticalNumber.hashCode();
+		hash = reference == null ? hash : 31 * hash + reference.hashCode();
 
 		return hash;
 	}
@@ -265,25 +267,25 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 
 	public boolean integrateEntityInformation(Entity entity) {
 		boolean changed = false;
-		if (!this.name.equals(entity.getName())) {
+		if (!name.equals(entity.getName())) {
 			setName(entity.getName());
 			changed = true;
 		}
-		if (!this.grammaticalNumber.equals(entity.getGrammaticalNumber())) {
+		if (!grammaticalNumber.equals(entity.getGrammaticalNumber())) {
 			setGrammaticalNumber(entity.getGrammaticalNumber());
 			changed = true;
 		}
-		if (!this.commandType.equals(entity.getCommandType())) {
+		if (!commandType.equals(entity.getCommandType())) {
 			setCommandType(entity.getCommandType());
 			changed = true;
 		}
-		if (this.statement != entity.getStatement()) {
+		if (statement != entity.getStatement()) {
 			setStatement(entity.getStatement());
 			changed = true;
 		}
 		for (INode iNode : entity.getReference()) {
-			if (!this.reference.contains(iNode)) {
-				this.reference.add(iNode);
+			if (!reference.contains(iNode)) {
+				reference.add(iNode);
 				changed = true;
 			}
 		}
@@ -292,11 +294,11 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 				EntityEntityRelation rel = (EntityEntityRelation) relation;
 				if (rel.getStart().equals(entity)) {
 					rel.setStart(this);
-					changed = changed || this.getRelations().add(rel);
+					changed = changed || getRelations().add(rel);
 
 				} else if (rel.getEnd().equals(entity)) {
 					rel.setEnd(this);
-					changed = changed || this.getRelations().add(rel);
+					changed = changed || getRelations().add(rel);
 				}
 			}
 		}
@@ -324,7 +326,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	 */
 	public void setCommandType(CommandType commandType) {
 		if (!Objects.equals(this.commandType, commandType)) {
-			this.changed = true;
+			changed = true;
 			this.commandType = commandType;
 		}
 	}
@@ -342,7 +344,7 @@ public abstract class Entity extends ContextIndividual implements Comparable<Ent
 	 */
 	public void setStatement(int statement) {
 		if (this.statement != statement) {
-			this.changed = true;
+			changed = true;
 			this.statement = statement;
 		}
 	}
