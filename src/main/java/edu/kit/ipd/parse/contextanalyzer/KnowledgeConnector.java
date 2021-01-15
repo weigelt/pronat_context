@@ -3,27 +3,14 @@
  */
 package edu.kit.ipd.parse.contextanalyzer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.ipd.parse.contextanalyzer.data.AbstractConcept;
-import edu.kit.ipd.parse.contextanalyzer.data.Action;
-import edu.kit.ipd.parse.contextanalyzer.data.ActionConcept;
-import edu.kit.ipd.parse.contextanalyzer.data.Context;
-import edu.kit.ipd.parse.contextanalyzer.data.ContextIndividual;
-import edu.kit.ipd.parse.contextanalyzer.data.EntityConcept;
-import edu.kit.ipd.parse.contextanalyzer.data.ObjectConcept;
-import edu.kit.ipd.parse.contextanalyzer.data.State;
-import edu.kit.ipd.parse.contextanalyzer.data.SubjectConcept;
+import edu.kit.ipd.parse.contextanalyzer.data.*;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.Entity;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.GrammaticalNumber;
 import edu.kit.ipd.parse.contextanalyzer.data.entities.ObjectEntity;
@@ -88,8 +75,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * edu.kit.ipd.parse.contextanalyzer.IContextAnalyzer#analyze(edu.kit.ipd.
+	 * @see edu.kit.ipd.parse.contextanalyzer.IContextAnalyzer#analyze(edu.kit.ipd.
 	 * parse.luna.graph.IGraph, edu.kit.ipd.parse.contextanalyzer.data.Context)
 	 */
 	@Override
@@ -112,8 +98,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Connects the specified {@link Action} with the Domainknowledge and
-	 * creates {@link AbstractConcept}s for the found connections
+	 * Connects the specified {@link Action} with the Domainknowledge and creates
+	 * {@link AbstractConcept}s for the found connections
 	 *
 	 * @param action
 	 *            The {@link Action} to connect
@@ -217,8 +203,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Gives or creates an {@link ActionConcept} from the specified
-	 * {@link IMethod}
+	 * Gives or creates an {@link ActionConcept} from the specified {@link IMethod}
 	 *
 	 * @param method
 	 * @return
@@ -274,8 +259,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Builds an {@link ActionConcept} from the Information extracted from
-	 * WordNet and saved in the {@link Action}
+	 * Builds an {@link ActionConcept} from the Information extracted from WordNet
+	 * and saved in the {@link Action}
 	 *
 	 * @param action
 	 * @return
@@ -365,8 +350,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Analyzes the given List for the most likely {@link IMethod} and extracts
-	 * the {@link ActionConcept} belonging to this {@link IMethod}
+	 * Analyzes the given List for the most likely {@link IMethod} and extracts the
+	 * {@link ActionConcept} belonging to this {@link IMethod}
 	 *
 	 * @param candidates
 	 * @return
@@ -394,8 +379,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Connects the specified {@link Entity} with the Domainknowledge and
-	 * creates {@link AbstractConcept}s for the found connections
+	 * Connects the specified {@link Entity} with the Domainknowledge and creates
+	 * {@link AbstractConcept}s for the found connections
 	 *
 	 * @param entity
 	 *            The {@link Entity} to connect
@@ -616,8 +601,7 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Creates or returns the {@link EntityConcept} to the specified
-	 * {@link IObject}
+	 * Creates or returns the {@link EntityConcept} to the specified {@link IObject}
 	 *
 	 * @param object
 	 * @return
@@ -726,8 +710,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Builds an {@link EntityConcept} from the Information extracted from
-	 * WordNet and saved in the {@link ObjectEntity}
+	 * Builds an {@link EntityConcept} from the Information extracted from WordNet
+	 * and saved in the {@link ObjectEntity}
 	 *
 	 * @param objectEntity
 	 * @return
@@ -857,8 +841,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Analyzes the given List for the most likely {@link IObject} and extracts
-	 * the {@link EntityConcept} belonging to this {@link IObject}
+	 * Analyzes the given List for the most likely {@link IObject} and extracts the
+	 * {@link EntityConcept} belonging to this {@link IObject}
 	 *
 	 * @param entity
 	 * @param candidates
@@ -887,8 +871,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Returns a String representation of the specified {@link Entity} which can
-	 * be compared with the domain knowledge
+	 * Returns a String representation of the specified {@link Entity} which can be
+	 * compared with the domain knowledge
 	 *
 	 * @param objectEntity
 	 * @return
@@ -986,8 +970,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Extracts an {@link EntityConcept} from the specified
-	 * {@link SubjectEntity} {@link ISystemClass} connection
+	 * Extracts an {@link EntityConcept} from the specified {@link SubjectEntity}
+	 * {@link ISystemClass} connection
 	 *
 	 * @param subject
 	 * @param system
@@ -1014,8 +998,8 @@ public class KnowledgeConnector implements IContextAnalyzer {
 	}
 
 	/**
-	 * Returns the found {@link AbstractConcept} to the specified WordNet word
-	 * with respect to the specified domain knowledge individuals
+	 * Returns the found {@link AbstractConcept} to the specified WordNet word with
+	 * respect to the specified domain knowledge individuals
 	 *
 	 * @param wordNetWord
 	 * @param individuals
@@ -1035,9 +1019,11 @@ public class KnowledgeConnector implements IContextAnalyzer {
 			AbstractConcept concept = context.getConcept(wordNetWord.toLowerCase().replaceAll(" ", ""));
 			if (!individuals.isEmpty()) {
 				Object ind = individuals.toArray()[0];
-				if (ind.getClass().getCanonicalName().equals(concept.getClass().getCanonicalName())) {
+				if ((ind instanceof IObject && concept instanceof ObjectConcept)
+						|| (ind instanceof IMethod && concept instanceof ActionConcept)) {
 					return concept;
 				}
+
 			}
 		}
 		return null;
