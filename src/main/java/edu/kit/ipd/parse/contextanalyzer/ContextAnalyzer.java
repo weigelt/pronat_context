@@ -40,6 +40,10 @@ public class ContextAnalyzer extends AbstractAgent {
 
 	private static final Logger logger = LoggerFactory.getLogger(ContextAnalyzer.class);
 
+	public ContextAnalyzer() {
+		setId(ID);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -47,7 +51,6 @@ public class ContextAnalyzer extends AbstractAgent {
 	 */
 	@Override
 	public void init() {
-		setId(ID);
 		props = ConfigManager.getConfiguration(getClass());
 		similarityMetric = props.getProperty("SIMILARITY");
 		try {
@@ -93,7 +96,7 @@ public class ContextAnalyzer extends AbstractAgent {
 	 * @return the current context from the {@link IGraph}
 	 */
 	Context readContextFromGraph() {
-		this.context = Context.readFromGraph(graph);
+		context = Context.readFromGraph(graph);
 		return context;
 	}
 
