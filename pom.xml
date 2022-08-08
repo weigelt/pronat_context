@@ -30,7 +30,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${parse_bundle.directory}/plugins/libs
+                            <outputDirectory>${pronat_bundle.directory}/plugins/libs
                             </outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
